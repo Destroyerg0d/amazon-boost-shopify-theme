@@ -60,6 +60,10 @@
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-spring: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 
+    /* Animation Keyframes */
+    --animate-float: float 3s ease-in-out infinite;
+    --animate-slide-in-right: slide-in-right 0.8s ease-out forwards;
+
     --radius: 0.75rem;
   }
 
