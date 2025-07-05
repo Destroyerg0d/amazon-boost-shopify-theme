@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Star, Users } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export const Hero = () => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [scrollY, setScrollY] = useState(0);
   const [animatedTexts, setAnimatedTexts] = useState<string[]>([]);
   
@@ -93,10 +97,33 @@ export const Hero = () => {
             Built through Facebook and Google advertising, our verified ARC community delivers honest, authentic reviews to help your book succeed on Amazon.
           </p>
           
+          {/* Auth Section */}
+          <div className="flex justify-center mb-8 animate-fade-in" style={{ animationDelay: '2.8s' }}>
+            {user ? (
+              <div className="flex items-center gap-4 bg-background/10 backdrop-blur-sm rounded-full px-6 py-3">
+                <span className="text-sm text-primary-foreground/80">
+                  Welcome, {user.email}
+                </span>
+                <Button variant="outline" size="sm" onClick={signOut} className="bg-background/20 border-primary-foreground/20 text-primary-foreground hover:bg-background/30">
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Button variant="outline" size="sm" onClick={() => navigate('/auth')} className="bg-background/10 backdrop-blur-sm border-primary-foreground/20 text-primary-foreground hover:bg-background/20">
+                Sign In / Sign Up
+              </Button>
+            )}
+          </div>
+
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-fade-in" style={{ animationDelay: '3s' }}>
-            <Button variant="accent" size="lg" className="text-lg px-8 py-4">
-              Get Reviews Now
+            <Button 
+              variant="accent" 
+              size="lg" 
+              className="text-lg px-8 py-4"
+              onClick={() => user ? navigate('/dashboard') : navigate('/auth')}
+            >
+              {user ? 'Go to Dashboard' : 'Get Reviews Now'}
               <ArrowRight className="ml-2" />
             </Button>
             <Button variant="outline" size="lg" className="text-lg px-8 py-4 bg-background/10 backdrop-blur-sm border-primary-foreground/20 text-primary-foreground hover:bg-background/20">
