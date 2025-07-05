@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Amazon Seller Success Theme Design System */
+
+@layer base {
+  :root {
+    /* Core Theme Colors */
+    --background: 0 0% 100%;
+    --foreground: 210 15% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 15% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 15% 15%;
+
+    /* Professional Blue-Green Primary */
+    --primary: 195 85% 35%;
+    --primary-foreground: 0 0% 98%;
+    --primary-hover: 195 85% 30%;
+
+    /* Trust-Building Secondary */
+    --secondary: 195 20% 95%;
+    --secondary-foreground: 195 85% 25%;
+
+    /* Subtle Backgrounds */
+    --muted: 210 10% 97%;
+    --muted-foreground: 210 10% 45%;
+
+    /* Amazon-Inspired Accent */
+    --accent: 25 95% 55%;
+    --accent-foreground: 0 0% 98%;
+    --accent-hover: 25 95% 50%;
+
+    /* Success Green */
+    --success: 140 65% 45%;
+    --success-foreground: 0 0% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 210 15% 90%;
+    --input: 210 15% 90%;
+    --ring: 195 85% 35%;
+
+    /* Professional Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(195 85% 35%), hsl(175 70% 45%));
+    --gradient-success: linear-gradient(135deg, hsl(140 65% 45%), hsl(160 60% 50%));
+    --gradient-accent: linear-gradient(135deg, hsl(25 95% 55%), hsl(35 90% 60%));
+    --gradient-hero: linear-gradient(135deg, hsl(195 85% 35%) 0%, hsl(175 70% 45%) 50%, hsl(25 95% 55%) 100%);
+
+    /* Elegant Shadows */
+    --shadow-soft: 0 4px 20px -8px hsl(195 85% 35% / 0.15);
+    --shadow-medium: 0 8px 30px -12px hsl(195 85% 35% / 0.25);
+    --shadow-strong: 0 16px 40px -16px hsl(195 85% 35% / 0.35);
+
+    /* Smooth Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* Animation Keyframes */
+    --animate-float: float 3s ease-in-out infinite;
+    --animate-slide-in-right: slide-in-right 0.8s ease-out forwards;
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 210 15% 8%;
+    --foreground: 0 0% 95%;
+    --card: 210 15% 10%;
+    --card-foreground: 0 0% 95%;
+    --primary: 195 85% 45%;
+    --primary-foreground: 210 15% 8%;
+    --secondary: 210 15% 15%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 210 15% 12%;
+    --muted-foreground: 210 10% 60%;
+    --accent: 25 95% 60%;
+    --accent-foreground: 210 15% 8%;
+    --border: 210 15% 20%;
+    --input: 210 15% 20%;
+    --ring: 195 85% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}

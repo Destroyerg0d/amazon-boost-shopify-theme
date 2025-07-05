@@ -1,0 +1,405 @@
+{% comment %}
+  Contact Section - Contact form and information
+{% endcomment %}
+
+{%- liquid
+  assign section_id = 'contact-section-' | append: section.id
+  assign section_title = section.settings.section_title | default: 'Ready to Get Started?'
+  assign section_subtitle = section.settings.section_subtitle | default: 'Contact us today to discuss your book and get a custom quote for your ARC review campaign.'
+  assign contact_email = section.settings.contact_email | default: 'hello@arcreviewservice.com'
+  assign contact_phone = section.settings.contact_phone | default: '+1 (555) 123-4567'
+  assign contact_address = section.settings.contact_address | default: '123 Book Street, Author City, AC 12345'
+-%}
+
+<style>
+  .contact-section {
+    padding: 5rem 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+
+  .contact-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .contact-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .contact-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .contact-subtitle {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .contact-form {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .contact-form-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .form-input,
+  .form-textarea,
+  .form-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .form-input::placeholder,
+  .form-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .form-input:focus,
+  .form-textarea:focus,
+  .form-select:focus {
+    outline: none;
+    border-color: #fbbf24;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .form-textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .form-button {
+    width: 100%;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .form-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(251, 191, 36, 0.3);
+  }
+
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .contact-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .contact-info-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .contact-info-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: white;
+  }
+
+  .contact-info-content h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .contact-info-content p {
+    opacity: 0.9;
+    line-height: 1.6;
+  }
+
+  .contact-info-content a {
+    color: #fbbf24;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .contact-info-content a:hover {
+    color: #f59e0b;
+  }
+
+  .contact-guarantee {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 2rem;
+  }
+
+  .contact-guarantee h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #fbbf24;
+  }
+
+  .contact-guarantee ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .contact-guarantee li {
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .contact-guarantee li svg {
+    width: 1rem;
+    height: 1rem;
+    color: #10b981;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .contact-content {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    .contact-title {
+      font-size: 2rem;
+    }
+  }
+</style>
+
+<section class="contact-section" id="{{ section_id }}">
+  <div class="contact-container">
+    <div class="contact-header">
+      <h2 class="contact-title">{{ section_title }}</h2>
+      <p class="contact-subtitle">{{ section_subtitle }}</p>
+    </div>
+
+    <div class="contact-content">
+      <div class="contact-form">
+        <h3 class="contact-form-title">Get Your Free Consultation</h3>
+        <form action="/contact" method="post" class="contact-form">
+          <div class="form-group">
+            <label for="name" class="form-label">Full Name *</label>
+            <input type="text" id="name" name="name" class="form-input" placeholder="Your full name" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address *</label>
+            <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="phone" class="form-label">Phone Number</label>
+            <input type="tel" id="phone" name="phone" class="form-input" placeholder="+1 (555) 123-4567">
+          </div>
+          
+          <div class="form-group">
+            <label for="book-title" class="form-label">Book Title *</label>
+            <input type="text" id="book-title" name="book_title" class="form-input" placeholder="Your book title" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="genre" class="form-label">Genre *</label>
+            <select id="genre" name="genre" class="form-select" required>
+              <option value="">Select a genre</option>
+              <option value="romance">Romance</option>
+              <option value="mystery-thriller">Mystery & Thriller</option>
+              <option value="science-fiction">Science Fiction</option>
+              <option value="fantasy">Fantasy</option>
+              <option value="non-fiction">Non-Fiction</option>
+              <option value="self-help">Self-Help</option>
+              <option value="business">Business</option>
+              <option value="biography">Biography</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="reviews-needed" class="form-label">Number of Reviews Needed</label>
+            <select id="reviews-needed" name="reviews_needed" class="form-select">
+              <option value="">Select number of reviews</option>
+              <option value="25">25 Reviews</option>
+              <option value="50">50 Reviews</option>
+              <option value="100">100 Reviews</option>
+              <option value="custom">Custom Package</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="message" class="form-label">Additional Information</label>
+            <textarea id="message" name="message" class="form-textarea" placeholder="Tell us about your book, target audience, or any specific requirements..."></textarea>
+          </div>
+          
+          <button type="submit" class="form-button">Get Free Quote</button>
+        </form>
+      </div>
+
+      <div class="contact-info">
+        <div class="contact-info-item">
+          <div class="contact-info-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <div class="contact-info-content">
+            <h3>Email Us</h3>
+            <p><a href="mailto:{{ contact_email }}">{{ contact_email }}</a></p>
+          </div>
+        </div>
+
+        <div class="contact-info-item">
+          <div class="contact-info-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          <div class="contact-info-content">
+            <h3>Call Us</h3>
+            <p><a href="tel:{{ contact_phone }}">{{ contact_phone }}</a></p>
+          </div>
+        </div>
+
+        <div class="contact-info-item">
+          <div class="contact-info-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <div class="contact-info-content">
+            <h3>Visit Us</h3>
+            <p>{{ contact_address }}</p>
+          </div>
+        </div>
+
+        <div class="contact-guarantee">
+          <h3>Our Guarantee</h3>
+          <ul>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20,6 9,17 4,12"/>
+              </svg>
+              Free consultation and custom quote
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20,6 9,17 4,12"/>
+              </svg>
+              100% authentic reviews from verified readers
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20,6 9,17 4,12"/>
+              </svg>
+              Money-back guarantee if not satisfied
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20,6 9,17 4,12"/>
+              </svg>
+              Dedicated support throughout the process
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Ready to Get Started?"
+    },
+    {
+      "type": "textarea",
+      "id": "section_subtitle",
+      "label": "Section Subtitle",
+      "default": "Contact us today to discuss your book and get a custom quote for your ARC review campaign."
+    },
+    {
+      "type": "text",
+      "id": "contact_email",
+      "label": "Contact Email",
+      "default": "hello@arcreviewservice.com"
+    },
+    {
+      "type": "text",
+      "id": "contact_phone",
+      "label": "Contact Phone",
+      "default": "+1 (555) 123-4567"
+    },
+    {
+      "type": "textarea",
+      "id": "contact_address",
+      "label": "Contact Address",
+      "default": "123 Book Street, Author City, AC 12345"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Section"
+    }
+  ]
+}
+{% endschema %} 

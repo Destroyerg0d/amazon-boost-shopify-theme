@@ -1,0 +1,297 @@
+{% comment %}
+  Reader Community Section - Showcases the ARC reader community
+{% endcomment %}
+
+{%- liquid
+  assign section_id = 'reader-community-' | append: section.id
+  assign section_title = section.settings.section_title | default: 'Our Million+ Strong ARC Reader Community'
+  assign section_subtitle = section.settings.section_subtitle | default: 'Built through strategic Facebook and Google advertising, our community delivers authentic reviews that drive real results.'
+  assign feature_1_title = section.settings.feature_1_title | default: 'Verified Readers'
+  assign feature_1_description = section.settings.feature_1_description | default: 'Every reader is verified through our rigorous screening process to ensure quality and authenticity.'
+  assign feature_2_title = section.settings.feature_2_title | default: 'Targeted Demographics'
+  assign feature_2_description = section.settings.feature_2_description | default: 'Readers are carefully selected based on your book\'s genre, target audience, and reading preferences.'
+  assign feature_3_title = section.settings.feature_3_title | default: 'Engaged Community'
+  assign feature_3_description = section.settings.feature_3_description | default: 'Our readers are passionate about books and committed to providing honest, detailed reviews.'
+  assign feature_4_title = section.settings.feature_4_title | default: 'Fast Turnaround'
+  assign feature_4_description = section.settings.feature_4_description | default: 'Get reviews within 7-14 days of launching your campaign, helping you build momentum quickly.'
+-%}
+
+<style>
+  .reader-community-section {
+    padding: 5rem 0;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  }
+
+  .reader-community-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .reader-community-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .reader-community-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .reader-community-subtitle {
+    font-size: 1.125rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .reader-community-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .reader-community-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+  }
+
+  .reader-community-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .reader-community-card-icon {
+    width: 3rem;
+    height: 3rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .reader-community-card-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: white;
+  }
+
+  .reader-community-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
+  }
+
+  .reader-community-card-description {
+    color: #64748b;
+    line-height: 1.6;
+  }
+
+  .reader-community-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .reader-community-stat {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .reader-community-stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 0.5rem;
+  }
+
+  .reader-community-stat-label {
+    color: #64748b;
+    font-weight: 500;
+  }
+
+  @media (min-width: 768px) {
+    .reader-community-title {
+      font-size: 3rem;
+    }
+    
+    .reader-community-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .reader-community-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
+
+<section class="reader-community-section" id="{{ section_id }}">
+  <div class="reader-community-container">
+    <div class="reader-community-header">
+      <h2 class="reader-community-title">{{ section_title }}</h2>
+      <p class="reader-community-subtitle">{{ section_subtitle }}</p>
+    </div>
+
+    <div class="reader-community-grid">
+      <div class="reader-community-card">
+        <div class="reader-community-card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="m22 21-2-2"/>
+            <path d="M16 16h6"/>
+          </svg>
+        </div>
+        <h3 class="reader-community-card-title">{{ feature_1_title }}</h3>
+        <p class="reader-community-card-description">{{ feature_1_description }}</p>
+      </div>
+
+      <div class="reader-community-card">
+        <div class="reader-community-card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        </div>
+        <h3 class="reader-community-card-title">{{ feature_2_title }}</h3>
+        <p class="reader-community-card-description">{{ feature_2_description }}</p>
+      </div>
+
+      <div class="reader-community-card">
+        <div class="reader-community-card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h3 class="reader-community-card-title">{{ feature_3_title }}</h3>
+        <p class="reader-community-card-description">{{ feature_3_description }}</p>
+      </div>
+
+      <div class="reader-community-card">
+        <div class="reader-community-card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12,6 12,12 16,14"/>
+          </svg>
+        </div>
+        <h3 class="reader-community-card-title">{{ feature_4_title }}</h3>
+        <p class="reader-community-card-description">{{ feature_4_description }}</p>
+      </div>
+    </div>
+
+    <div class="reader-community-stats">
+      <div class="reader-community-stat">
+        <div class="reader-community-stat-number">1M+</div>
+        <div class="reader-community-stat-label">Active Readers</div>
+      </div>
+      <div class="reader-community-stat">
+        <div class="reader-community-stat-number">10K+</div>
+        <div class="reader-community-stat-label">Books Reviewed</div>
+      </div>
+      <div class="reader-community-stat">
+        <div class="reader-community-stat-number">4.8</div>
+        <div class="reader-community-stat-label">Average Rating</div>
+      </div>
+      <div class="reader-community-stat">
+        <div class="reader-community-stat-number">7-14</div>
+        <div class="reader-community-stat-label">Days Turnaround</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Reader Community Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Our Million+ Strong ARC Reader Community"
+    },
+    {
+      "type": "textarea",
+      "id": "section_subtitle",
+      "label": "Section Subtitle",
+      "default": "Built through strategic Facebook and Google advertising, our community delivers authentic reviews that drive real results."
+    },
+    {
+      "type": "text",
+      "id": "feature_1_title",
+      "label": "Feature 1 Title",
+      "default": "Verified Readers"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_1_description",
+      "label": "Feature 1 Description",
+      "default": "Every reader is verified through our rigorous screening process to ensure quality and authenticity."
+    },
+    {
+      "type": "text",
+      "id": "feature_2_title",
+      "label": "Feature 2 Title",
+      "default": "Targeted Demographics"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_2_description",
+      "label": "Feature 2 Description",
+      "default": "Readers are carefully selected based on your book's genre, target audience, and reading preferences."
+    },
+    {
+      "type": "text",
+      "id": "feature_3_title",
+      "label": "Feature 3 Title",
+      "default": "Engaged Community"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_3_description",
+      "label": "Feature 3 Description",
+      "default": "Our readers are passionate about books and committed to providing honest, detailed reviews."
+    },
+    {
+      "type": "text",
+      "id": "feature_4_title",
+      "label": "Feature 4 Title",
+      "default": "Fast Turnaround"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_4_description",
+      "label": "Feature 4 Description",
+      "default": "Get reviews within 7-14 days of launching your campaign, helping you build momentum quickly."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reader Community Section"
+    }
+  ]
+}
+{% endschema %} 

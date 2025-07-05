@@ -1,0 +1,140 @@
+{
+  "current": {
+    "colors_text": "#1e293b",
+    "colors_background_1": "#ffffff",
+    "colors_background_2": "#f8fafc",
+    "colors_accent_1": "#667eea",
+    "colors_accent_2": "#764ba2",
+    "colors_solid_button_labels": "#ffffff",
+    "colors_outline_button_labels": "#667eea",
+    "type_header_font": "assistant_n4",
+    "heading_scale": 100,
+    "type_body_font": "assistant_n4",
+    "body_scale": 100,
+    "page_width": 1200,
+    "spacing_sections": 36,
+    "spacing_grid_horizontal": 20,
+    "spacing_grid_vertical": 20,
+    "buttons_radius": 8,
+    "buttons_border_thickness": 1,
+    "buttons_border_opacity": 100,
+    "buttons_shadow_opacity": 0,
+    "buttons_shadow_horizontal_offset": 0,
+    "buttons_shadow_vertical_offset": 4,
+    "buttons_shadow_blur": 5,
+    "card_corner_radius": 16,
+    "card_border_thickness": 1,
+    "card_border_opacity": 10,
+    "card_shadow_opacity": 10,
+    "card_shadow_horizontal_offset": 0,
+    "card_shadow_vertical_offset": 4,
+    "card_shadow_blur": 5,
+    "card_image_padding": 0,
+    "card_text_alignment": "left",
+    "inputs_radius": 8,
+    "inputs_border_thickness": 1,
+    "inputs_border_opacity": 55,
+    "inputs_shadow_opacity": 0,
+    "inputs_shadow_horizontal_offset": 0,
+    "inputs_shadow_vertical_offset": 4,
+    "inputs_shadow_blur": 5,
+    "cart_type": "drawer",
+    "enable_cart_notes": true,
+    "predictive_search_enabled": true,
+    "sections": {
+      "hero-section": {
+        "type": "hero-section",
+        "settings": {
+          "hero_title": "Get Authentic Book Reviews from Our Million+ Reader Community",
+          "hero_subtitle": "Built through Facebook and Google advertising, our verified ARC community delivers honest, authentic reviews to help your book succeed on Amazon.",
+          "cta_text": "Get Reviews Now",
+          "cta_url": "#contact",
+          "secondary_cta_text": "View Our Community",
+          "secondary_cta_url": "#reader-community",
+          "badge_text": "1M+ Active ARC Readers Community",
+          "stats_text": "10,000+ Books Reviewed",
+          "community_count": "1M+",
+          "community_label": "Active ARC Readers"
+        }
+      },
+      "reader-community-section": {
+        "type": "reader-community-section",
+        "settings": {
+          "section_title": "Our Million+ Strong ARC Reader Community",
+          "section_subtitle": "Built through strategic Facebook and Google advertising, our community delivers authentic reviews that drive real results.",
+          "feature_1_title": "Verified Readers",
+          "feature_1_description": "Every reader is verified through our rigorous screening process to ensure quality and authenticity.",
+          "feature_2_title": "Targeted Demographics",
+          "feature_2_description": "Readers are carefully selected based on your book's genre, target audience, and reading preferences.",
+          "feature_3_title": "Engaged Community",
+          "feature_3_description": "Our readers are passionate about books and committed to providing honest, detailed reviews.",
+          "feature_4_title": "Fast Turnaround",
+          "feature_4_description": "Get reviews within 7-14 days of launching your campaign, helping you build momentum quickly."
+        }
+      },
+      "process-timeline-section": {
+        "type": "process-timeline-section",
+        "settings": {
+          "section_title": "How It Works",
+          "section_subtitle": "Get authentic reviews in just 4 simple steps",
+          "step_1_title": "Submit Your Book",
+          "step_1_description": "Tell us about your book, target audience, and review goals.",
+          "step_2_title": "We Match Readers",
+          "step_2_description": "Our algorithm matches your book with the perfect readers from our community.",
+          "step_3_title": "Readers Get Your Book",
+          "step_3_description": "Selected readers receive your book and commit to reading and reviewing it.",
+          "step_4_title": "Reviews Go Live",
+          "step_4_description": "Authentic reviews appear on Amazon, boosting your book's visibility and sales."
+        }
+      },
+      "pricing-section": {
+        "type": "pricing-section",
+        "settings": {
+          "section_title": "Choose Your Review Package",
+          "section_subtitle": "Select the perfect package for your book's success",
+          "starter_price": "$299",
+          "starter_title": "Starter",
+          "starter_reviews": "25 Reviews",
+          "starter_features": "Basic reader matching,Standard turnaround,Email support",
+          "professional_price": "$599",
+          "professional_title": "Professional",
+          "professional_reviews": "50 Reviews",
+          "professional_features": "Advanced reader matching,Priority turnaround,Phone support,Review monitoring",
+          "premium_price": "$999",
+          "premium_title": "Premium",
+          "premium_reviews": "100 Reviews",
+          "premium_features": "Premium reader matching,Express turnaround,Dedicated manager,Review monitoring,Performance analytics"
+        }
+      },
+      "testimonials-section": {
+        "type": "testimonials-section",
+        "settings": {
+          "section_title": "What Authors Say About Us",
+          "section_subtitle": "Real success stories from authors who used our ARC review service",
+          "testimonial_1_name": "Sarah Johnson",
+          "testimonial_1_role": "Bestselling Author",
+          "testimonial_1_text": "The ARC review service transformed my book launch. I went from struggling to get reviews to having 50+ authentic reviews within 2 weeks. My sales increased by 300%!",
+          "testimonial_1_rating": 5,
+          "testimonial_2_name": "Michael Chen",
+          "testimonial_2_role": "Self-Published Author",
+          "testimonial_2_text": "The quality of reviews I received was incredible. Each review was detailed, honest, and helped boost my book's visibility on Amazon. Highly recommended!",
+          "testimonial_2_rating": 5,
+          "testimonial_3_name": "Emily Rodriguez",
+          "testimonial_3_role": "Romance Author",
+          "testimonial_3_text": "I was skeptical at first, but the results speak for themselves. My book hit the top 100 in my category thanks to the authentic reviews from their reader community.",
+          "testimonial_3_rating": 5
+        }
+      },
+      "contact-section": {
+        "type": "contact-section",
+        "settings": {
+          "section_title": "Ready to Get Started?",
+          "section_subtitle": "Contact us today to discuss your book and get a custom quote for your ARC review campaign.",
+          "contact_email": "hello@arcreviewservice.com",
+          "contact_phone": "+1 (555) 123-4567",
+          "contact_address": "123 Book Street, Author City, AC 12345"
+        }
+      }
+    }
+  }
+} 

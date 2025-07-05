@@ -1,0 +1,358 @@
+{% comment %}
+  Testimonials Section - Customer reviews and success stories
+{% endcomment %}
+
+{%- liquid
+  assign section_id = 'testimonials-section-' | append: section.id
+  assign section_title = section.settings.section_title | default: 'What Authors Say About Us'
+  assign section_subtitle = section.settings.section_subtitle | default: 'Real success stories from authors who used our ARC review service'
+  
+  assign testimonial_1_name = section.settings.testimonial_1_name | default: 'Sarah Johnson'
+  assign testimonial_1_role = section.settings.testimonial_1_role | default: 'Bestselling Author'
+  assign testimonial_1_text = section.settings.testimonial_1_text | default: 'The ARC review service transformed my book launch. I went from struggling to get reviews to having 50+ authentic reviews within 2 weeks. My sales increased by 300%!'
+  assign testimonial_1_rating = section.settings.testimonial_1_rating | default: 5
+  
+  assign testimonial_2_name = section.settings.testimonial_2_name | default: 'Michael Chen'
+  assign testimonial_2_role = section.settings.testimonial_2_role | default: 'Self-Published Author'
+  assign testimonial_2_text = section.settings.testimonial_2_text | default: 'The quality of reviews I received was incredible. Each review was detailed, honest, and helped boost my book\'s visibility on Amazon. Highly recommended!'
+  assign testimonial_2_rating = section.settings.testimonial_2_rating | default: 5
+  
+  assign testimonial_3_name = section.settings.testimonial_3_name | default: 'Emily Rodriguez'
+  assign testimonial_3_role = section.settings.testimonial_3_role | default: 'Romance Author'
+  assign testimonial_3_text = section.settings.testimonial_3_text | default: 'I was skeptical at first, but the results speak for themselves. My book hit the top 100 in my category thanks to the authentic reviews from their reader community.'
+  assign testimonial_3_rating = section.settings.testimonial_3_rating | default: 5
+-%}
+
+<style>
+  .testimonials-section {
+    padding: 5rem 0;
+    background: white;
+  }
+
+  .testimonials-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .testimonials-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .testimonials-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1rem;
+  }
+
+  .testimonials-subtitle {
+    font-size: 1.125rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  .testimonial-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+  }
+
+  .testimonial-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .testimonial-rating {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .testimonial-star {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: #fbbf24;
+    color: #fbbf24;
+  }
+
+  .testimonial-text {
+    font-size: 1.125rem;
+    color: #374151;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .testimonial-avatar {
+    width: 3rem;
+    height: 3rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.125rem;
+  }
+
+  .testimonial-author-info {
+    flex: 1;
+  }
+
+  .testimonial-author-name {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+  }
+
+  .testimonial-author-role {
+    color: #64748b;
+    font-size: 0.875rem;
+  }
+
+  .testimonials-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 4rem;
+    text-align: center;
+  }
+
+  .testimonial-stat {
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 1rem;
+    color: white;
+  }
+
+  .testimonial-stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .testimonial-stat-label {
+    font-size: 1rem;
+    opacity: 0.9;
+  }
+
+  @media (min-width: 768px) {
+    .testimonials-title {
+      font-size: 3rem;
+    }
+    
+    .testimonials-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
+
+<section class="testimonials-section" id="{{ section_id }}">
+  <div class="testimonials-container">
+    <div class="testimonials-header">
+      <h2 class="testimonials-title">{{ section_title }}</h2>
+      <p class="testimonials-subtitle">{{ section_subtitle }}</p>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-rating">
+          {% for i in (1..testimonial_1_rating) %}
+            <svg class="testimonial-star" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+            </svg>
+          {% endfor %}
+        </div>
+        <p class="testimonial-text">"{{ testimonial_1_text }}"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">{{ testimonial_1_name | slice: 0, 1 }}</div>
+          <div class="testimonial-author-info">
+            <div class="testimonial-author-name">{{ testimonial_1_name }}</div>
+            <div class="testimonial-author-role">{{ testimonial_1_role }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-rating">
+          {% for i in (1..testimonial_2_rating) %}
+            <svg class="testimonial-star" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+            </svg>
+          {% endfor %}
+        </div>
+        <p class="testimonial-text">"{{ testimonial_2_text }}"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">{{ testimonial_2_name | slice: 0, 1 }}</div>
+          <div class="testimonial-author-info">
+            <div class="testimonial-author-name">{{ testimonial_2_name }}</div>
+            <div class="testimonial-author-role">{{ testimonial_2_role }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-rating">
+          {% for i in (1..testimonial_3_rating) %}
+            <svg class="testimonial-star" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+            </svg>
+          {% endfor %}
+        </div>
+        <p class="testimonial-text">"{{ testimonial_3_text }}"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">{{ testimonial_3_name | slice: 0, 1 }}</div>
+          <div class="testimonial-author-info">
+            <div class="testimonial-author-name">{{ testimonial_3_name }}</div>
+            <div class="testimonial-author-role">{{ testimonial_3_role }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonials-stats">
+      <div class="testimonial-stat">
+        <div class="testimonial-stat-number">4.9</div>
+        <div class="testimonial-stat-label">Average Rating</div>
+      </div>
+      <div class="testimonial-stat">
+        <div class="testimonial-stat-number">500+</div>
+        <div class="testimonial-stat-label">Happy Authors</div>
+      </div>
+      <div class="testimonial-stat">
+        <div class="testimonial-stat-number">10K+</div>
+        <div class="testimonial-stat-label">Reviews Delivered</div>
+      </div>
+      <div class="testimonial-stat">
+        <div class="testimonial-stat-number">98%</div>
+        <div class="testimonial-stat-label">Satisfaction Rate</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Testimonials Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "What Authors Say About Us"
+    },
+    {
+      "type": "textarea",
+      "id": "section_subtitle",
+      "label": "Section Subtitle",
+      "default": "Real success stories from authors who used our ARC review service"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_1_name",
+      "label": "Testimonial 1 Name",
+      "default": "Sarah Johnson"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_1_role",
+      "label": "Testimonial 1 Role",
+      "default": "Bestselling Author"
+    },
+    {
+      "type": "textarea",
+      "id": "testimonial_1_text",
+      "label": "Testimonial 1 Text",
+      "default": "The ARC review service transformed my book launch. I went from struggling to get reviews to having 50+ authentic reviews within 2 weeks. My sales increased by 300%!"
+    },
+    {
+      "type": "range",
+      "id": "testimonial_1_rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Testimonial 1 Rating",
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "testimonial_2_name",
+      "label": "Testimonial 2 Name",
+      "default": "Michael Chen"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_2_role",
+      "label": "Testimonial 2 Role",
+      "default": "Self-Published Author"
+    },
+    {
+      "type": "textarea",
+      "id": "testimonial_2_text",
+      "label": "Testimonial 2 Text",
+      "default": "The quality of reviews I received was incredible. Each review was detailed, honest, and helped boost my book's visibility on Amazon. Highly recommended!"
+    },
+    {
+      "type": "range",
+      "id": "testimonial_2_rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Testimonial 2 Rating",
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "testimonial_3_name",
+      "label": "Testimonial 3 Name",
+      "default": "Emily Rodriguez"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_3_role",
+      "label": "Testimonial 3 Role",
+      "default": "Romance Author"
+    },
+    {
+      "type": "textarea",
+      "id": "testimonial_3_text",
+      "label": "Testimonial 3 Text",
+      "default": "I was skeptical at first, but the results speak for themselves. My book hit the top 100 in my category thanks to the authentic reviews from their reader community."
+    },
+    {
+      "type": "range",
+      "id": "testimonial_3_rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Testimonial 3 Rating",
+      "default": 5
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials Section"
+    }
+  ]
+}
+{% endschema %} 

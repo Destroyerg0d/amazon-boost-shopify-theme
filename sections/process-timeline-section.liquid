@@ -1,0 +1,267 @@
+{% comment %}
+  Process Timeline Section - Shows the step-by-step process
+{% endcomment %}
+
+{%- liquid
+  assign section_id = 'process-timeline-' | append: section.id
+  assign section_title = section.settings.section_title | default: 'How It Works'
+  assign section_subtitle = section.settings.section_subtitle | default: 'Get authentic reviews in just 4 simple steps'
+  assign step_1_title = section.settings.step_1_title | default: 'Submit Your Book'
+  assign step_1_description = section.settings.step_1_description | default: 'Tell us about your book, target audience, and review goals.'
+  assign step_2_title = section.settings.step_2_title | default: 'We Match Readers'
+  assign step_2_description = section.settings.step_2_description | default: 'Our algorithm matches your book with the perfect readers from our community.'
+  assign step_3_title = section.settings.step_3_title | default: 'Readers Get Your Book'
+  assign step_3_description = section.settings.step_3_description | default: 'Selected readers receive your book and commit to reading and reviewing it.'
+  assign step_4_title = section.settings.step_4_title | default: 'Reviews Go Live'
+  assign step_4_description = section.settings.step_4_description | default: 'Authentic reviews appear on Amazon, boosting your book\'s visibility and sales.'
+-%}
+
+<style>
+  .process-timeline-section {
+    padding: 5rem 0;
+    background: white;
+  }
+
+  .process-timeline-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .process-timeline-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .process-timeline-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1rem;
+  }
+
+  .process-timeline-subtitle {
+    font-size: 1.125rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .process-timeline-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    position: relative;
+  }
+
+  .process-timeline-step {
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+  }
+
+  .process-timeline-step-number {
+    width: 4rem;
+    height: 4rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    position: relative;
+    z-index: 2;
+  }
+
+  .process-timeline-step-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
+  }
+
+  .process-timeline-step-description {
+    color: #64748b;
+    line-height: 1.6;
+  }
+
+  .process-timeline-connector {
+    position: absolute;
+    top: 2rem;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+
+  .process-timeline-cta {
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  .process-timeline-cta-button {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .process-timeline-cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(251, 191, 36, 0.3);
+  }
+
+  @media (min-width: 768px) {
+    .process-timeline-title {
+      font-size: 3rem;
+    }
+    
+    .process-timeline-steps {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .process-timeline-connector {
+      display: block;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .process-timeline-connector {
+      display: none;
+    }
+  }
+</style>
+
+<section class="process-timeline-section" id="{{ section_id }}">
+  <div class="process-timeline-container">
+    <div class="process-timeline-header">
+      <h2 class="process-timeline-title">{{ section_title }}</h2>
+      <p class="process-timeline-subtitle">{{ section_subtitle }}</p>
+    </div>
+
+    <div class="process-timeline-steps">
+      <div class="process-timeline-connector"></div>
+      
+      <div class="process-timeline-step">
+        <div class="process-timeline-step-number">1</div>
+        <h3 class="process-timeline-step-title">{{ step_1_title }}</h3>
+        <p class="process-timeline-step-description">{{ step_1_description }}</p>
+      </div>
+
+      <div class="process-timeline-step">
+        <div class="process-timeline-step-number">2</div>
+        <h3 class="process-timeline-step-title">{{ step_2_title }}</h3>
+        <p class="process-timeline-step-description">{{ step_2_description }}</p>
+      </div>
+
+      <div class="process-timeline-step">
+        <div class="process-timeline-step-number">3</div>
+        <h3 class="process-timeline-step-title">{{ step_3_title }}</h3>
+        <p class="process-timeline-step-description">{{ step_3_description }}</p>
+      </div>
+
+      <div class="process-timeline-step">
+        <div class="process-timeline-step-number">4</div>
+        <h3 class="process-timeline-step-title">{{ step_4_title }}</h3>
+        <p class="process-timeline-step-description">{{ step_4_description }}</p>
+      </div>
+    </div>
+
+    <div class="process-timeline-cta">
+      <a href="#contact" class="process-timeline-cta-button">
+        Get Started Today
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12,5 19,12 12,19"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Process Timeline Section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "How It Works"
+    },
+    {
+      "type": "textarea",
+      "id": "section_subtitle",
+      "label": "Section Subtitle",
+      "default": "Get authentic reviews in just 4 simple steps"
+    },
+    {
+      "type": "text",
+      "id": "step_1_title",
+      "label": "Step 1 Title",
+      "default": "Submit Your Book"
+    },
+    {
+      "type": "textarea",
+      "id": "step_1_description",
+      "label": "Step 1 Description",
+      "default": "Tell us about your book, target audience, and review goals."
+    },
+    {
+      "type": "text",
+      "id": "step_2_title",
+      "label": "Step 2 Title",
+      "default": "We Match Readers"
+    },
+    {
+      "type": "textarea",
+      "id": "step_2_description",
+      "label": "Step 2 Description",
+      "default": "Our algorithm matches your book with the perfect readers from our community."
+    },
+    {
+      "type": "text",
+      "id": "step_3_title",
+      "label": "Step 3 Title",
+      "default": "Readers Get Your Book"
+    },
+    {
+      "type": "textarea",
+      "id": "step_3_description",
+      "label": "Step 3 Description",
+      "default": "Selected readers receive your book and commit to reading and reviewing it."
+    },
+    {
+      "type": "text",
+      "id": "step_4_title",
+      "label": "Step 4 Title",
+      "default": "Reviews Go Live"
+    },
+    {
+      "type": "textarea",
+      "id": "step_4_description",
+      "label": "Step 4 Description",
+      "default": "Authentic reviews appear on Amazon, boosting your book's visibility and sales."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Process Timeline Section"
+    }
+  ]
+}
+{% endschema %} 
