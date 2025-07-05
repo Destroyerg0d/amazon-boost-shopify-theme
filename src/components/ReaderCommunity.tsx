@@ -1,68 +1,87 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useEffect, useState } from "react";
-import { BookOpen, Users, TrendingUp } from "lucide-react";
+import { BookOpen, Users, TrendingUp, ChevronDown } from "lucide-react";
 
 export const ReaderCommunity = () => {
-  const [visibleRows, setVisibleRows] = useState<number[]>([]);
+  const [animatedCounts, setAnimatedCounts] = useState<{ [key: string]: number }>({});
   const [countsVisible, setCountsVisible] = useState(false);
 
-  const readerData = [
-    { category: "📖 Fiction", subcategory: "Romance", percentage: 13, readers: 130000 },
-    { category: "", subcategory: "Mystery, Thriller & Suspense", percentage: 12, readers: 120000 },
-    { category: "", subcategory: "Science Fiction & Fantasy", percentage: 10, readers: 100000 },
-    { category: "", subcategory: "Literature & Fiction", percentage: 5, readers: 50000 },
-    { category: "", subcategory: "Teen & Young Adult", percentage: 5, readers: 50000 },
-    { category: "", subcategory: "Comics & Manga", percentage: 4, readers: 40000 },
-    { category: "", subcategory: "LGBTQIA+ (Fiction)", percentage: 2, readers: 20000 },
-    { category: "🧠 Nonfiction", subcategory: "Self-Help", percentage: 7, readers: 70000 },
-    { category: "", subcategory: "Biographies & Memoirs", percentage: 4, readers: 40000 },
-    { category: "", subcategory: "Business & Money", percentage: 4, readers: 40000 },
-    { category: "", subcategory: "Health, Fitness & Dieting", percentage: 3, readers: 30000 },
-    { category: "", subcategory: "Religion & Spirituality", percentage: 3, readers: 30000 },
-    { category: "", subcategory: "History", percentage: 3, readers: 30000 },
-    { category: "", subcategory: "Politics & Social Sciences", percentage: 2, readers: 20000 },
-    { category: "", subcategory: "Education & Teaching", percentage: 2, readers: 20000 },
-    { category: "", subcategory: "Science & Math", percentage: 2, readers: 20000 },
-    { category: "", subcategory: "Computers & Technology", percentage: 2, readers: 20000 },
-    { category: "", subcategory: "Law", percentage: 1, readers: 10000 },
-    { category: "", subcategory: "Medical Books", percentage: 1, readers: 10000 },
-    { category: "", subcategory: "Reference", percentage: 1, readers: 10000 },
-    { category: "", subcategory: "Parenting & Relationships", percentage: 1, readers: 10000 },
-    { category: "", subcategory: "Humor & Entertainment", percentage: 1, readers: 10000 },
-    { category: "", subcategory: "Arts & Photography", percentage: 1, readers: 10000 },
-    { category: "", subcategory: "Travel", percentage: 1, readers: 10000 },
-    { category: "", subcategory: "Crafts, Hobbies & Home", percentage: 1, readers: 10000 },
-    { category: "", subcategory: "Calendars", percentage: 0.5, readers: 5000 },
-    { category: "", subcategory: "Engineering & Transportation", percentage: 0.5, readers: 5000 },
-    { category: "🍳 Cookbooks, Food & Wine", subcategory: "", percentage: 3, readers: 30000 },
-    { category: "👶 Children's Books", subcategory: "", percentage: 6, readers: 60000 },
-    { category: "📝 Shorts & Kindle Singles", subcategory: "", percentage: 1.5, readers: 15000 },
-    { category: "🌐 Diverse Voices Categories", subcategory: "", percentage: 2, readers: 20000 },
-    { category: "📚 Other / Unlisted / Niche", subcategory: "", percentage: 1.5, readers: 15000 }
-  ];
+  const categoryData = {
+    "📖 Fiction": [
+      { name: "Romance", percentage: 13, readers: 130000 },
+      { name: "Mystery, Thriller & Suspense", percentage: 12, readers: 120000 },
+      { name: "Science Fiction & Fantasy", percentage: 10, readers: 100000 },
+      { name: "Literature & Fiction", percentage: 5, readers: 50000 },
+      { name: "Teen & Young Adult", percentage: 5, readers: 50000 },
+      { name: "Comics & Manga", percentage: 4, readers: 40000 },
+      { name: "LGBTQIA+ (Fiction)", percentage: 2, readers: 20000 }
+    ],
+    "🧠 Nonfiction": [
+      { name: "Self-Help", percentage: 7, readers: 70000 },
+      { name: "Biographies & Memoirs", percentage: 4, readers: 40000 },
+      { name: "Business & Money", percentage: 4, readers: 40000 },
+      { name: "Health, Fitness & Dieting", percentage: 3, readers: 30000 },
+      { name: "Religion & Spirituality", percentage: 3, readers: 30000 },
+      { name: "History", percentage: 3, readers: 30000 },
+      { name: "Politics & Social Sciences", percentage: 2, readers: 20000 },
+      { name: "Education & Teaching", percentage: 2, readers: 20000 },
+      { name: "Science & Math", percentage: 2, readers: 20000 },
+      { name: "Computers & Technology", percentage: 2, readers: 20000 },
+      { name: "Law", percentage: 1, readers: 10000 },
+      { name: "Medical Books", percentage: 1, readers: 10000 },
+      { name: "Reference", percentage: 1, readers: 10000 },
+      { name: "Parenting & Relationships", percentage: 1, readers: 10000 },
+      { name: "Humor & Entertainment", percentage: 1, readers: 10000 },
+      { name: "Arts & Photography", percentage: 1, readers: 10000 },
+      { name: "Travel", percentage: 1, readers: 10000 },
+      { name: "Crafts, Hobbies & Home", percentage: 1, readers: 10000 },
+      { name: "Calendars", percentage: 0.5, readers: 5000 },
+      { name: "Engineering & Transportation", percentage: 0.5, readers: 5000 }
+    ],
+    "🍳 Cookbooks, Food & Wine": [
+      { name: "All Categories", percentage: 3, readers: 30000 }
+    ],
+    "👶 Children's Books": [
+      { name: "All Categories", percentage: 6, readers: 60000 }
+    ],
+    "📝 Shorts & Kindle Singles": [
+      { name: "All Categories", percentage: 1.5, readers: 15000 }
+    ],
+    "🌐 Diverse Voices Categories": [
+      { name: "All Categories", percentage: 2, readers: 20000 }
+    ],
+    "📚 Other / Unlisted / Niche": [
+      { name: "All Categories", percentage: 1.5, readers: 15000 }
+    ]
+  };
+
+  const animateCounter = (targetValue: number, key: string) => {
+    let current = 0;
+    const increment = targetValue / 50;
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= targetValue) {
+        current = targetValue;
+        clearInterval(timer);
+      }
+      setAnimatedCounts(prev => ({ ...prev, [key]: Math.floor(current) }));
+    }, 30);
+  };
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const rowIndex = parseInt(entry.target.getAttribute('data-row-index') || '0');
-            setVisibleRows(prev => [...prev, rowIndex]);
-          }
+    // Trigger count animations when component mounts
+    setTimeout(() => {
+      setCountsVisible(true);
+      Object.entries(categoryData).forEach(([category, subcategories]) => {
+        subcategories.forEach((sub, index) => {
+          setTimeout(() => {
+            animateCounter(sub.readers, `${category}-${sub.name}`);
+          }, index * 200);
         });
-      },
-      { threshold: 0.1 }
-    );
-
-    const rows = document.querySelectorAll('[data-row-index]');
-    rows.forEach(row => observer.observe(row));
-
-    // Trigger count animation
-    setTimeout(() => setCountsVisible(true), 1000);
-
-    return () => observer.disconnect();
+      });
+    }, 1000);
   }, []);
 
   const formatNumber = (num: number) => {
@@ -117,66 +136,64 @@ export const ReaderCommunity = () => {
           </Card>
         </div>
 
-        {/* Reader Demographics Table */}
+        {/* Reader Demographics Accordion */}
         <Card className="overflow-hidden">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-center">Reader Demographics by Category</CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/50">
-                    <TableHead className="font-semibold">Main Category</TableHead>
-                    <TableHead className="font-semibold">Subcategory</TableHead>
-                    <TableHead className="font-semibold text-center">Percentage</TableHead>
-                    <TableHead className="font-semibold text-right">Readers</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {readerData.map((row, index) => (
-                    <TableRow 
-                      key={index}
-                      data-row-index={index}
-                      className={`transition-all duration-500 ${
-                        visibleRows.includes(index) 
-                          ? 'opacity-100 translate-x-0' 
-                          : 'opacity-0 translate-x-8'
-                      } hover:bg-muted/30`}
-                      style={{ transitionDelay: `${index * 50}ms` }}
-                    >
-                      <TableCell className="font-medium">
-                        {row.category && (
-                          <span className="text-lg">{row.category}</span>
-                        )}
-                      </TableCell>
-                      <TableCell className={row.category ? "pl-6" : ""}>
-                        {row.subcategory || "All Categories"}
-                      </TableCell>
-                      <TableCell className="text-center">
+          <CardContent className="p-6">
+            <Accordion type="multiple" className="space-y-4">
+              {Object.entries(categoryData).map(([category, subcategories]) => (
+                <AccordionItem key={category} value={category} className="border rounded-lg">
+                  <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                    <div className="flex items-center justify-between w-full">
+                      <span className="text-lg font-semibold">{category}</span>
+                      <div className="flex items-center gap-4 mr-4">
                         <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                          {row.percentage}%
+                          {subcategories.reduce((sum, sub) => sum + sub.percentage, 0)}%
                         </Badge>
-                      </TableCell>
-                      <TableCell className="text-right font-semibold">
-                        <span className={`${countsVisible ? 'animate-count-up' : 'opacity-0'}`}>
-                          {formatNumber(row.readers)}
+                        <span className="font-bold text-accent">
+                          {formatNumber(subcategories.reduce((sum, sub) => sum + sub.readers, 0))}
                         </span>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  <TableRow className="bg-accent/10 font-bold text-lg">
-                    <TableCell className="font-bold">Total</TableCell>
-                    <TableCell></TableCell>
-                    <TableCell className="text-center">
-                      <Badge className="bg-accent text-accent-foreground">100%</Badge>
-                    </TableCell>
-                    <TableCell className="text-right text-xl font-bold text-accent">
-                      1,000,000
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+                      </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4 pb-4">
+                    <div className="space-y-3">
+                      {subcategories.map((subcategory, index) => (
+                        <div 
+                          key={subcategory.name}
+                          className="flex items-center justify-between p-3 bg-muted/30 rounded-lg"
+                        >
+                          <span className="font-medium">{subcategory.name}</span>
+                          <div className="flex items-center gap-4">
+                            <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                              {subcategory.percentage}%
+                            </Badge>
+                            <span className="font-semibold text-foreground min-w-[80px] text-right">
+                              {countsVisible 
+                                ? formatNumber(animatedCounts[`${category}-${subcategory.name}`] || 0)
+                                : "0"
+                              }
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+            
+            {/* Total Summary */}
+            <div className="mt-6 p-4 bg-accent/10 rounded-lg border border-accent/20">
+              <div className="flex items-center justify-between">
+                <span className="text-xl font-bold">Total Community</span>
+                <div className="flex items-center gap-4">
+                  <Badge className="bg-accent text-accent-foreground">100%</Badge>
+                  <span className="text-2xl font-bold text-accent">1,000,000</span>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

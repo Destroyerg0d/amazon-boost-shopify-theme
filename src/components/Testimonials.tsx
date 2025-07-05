@@ -4,52 +4,64 @@ import { Star, Quote } from "lucide-react";
 export const Testimonials = () => {
   const testimonials = [
     {
-      name: "Sarah Chen",
-      business: "Premium Kitchen Accessories",
+      name: "Ava Mitchell",
+      business: "Author, 'The Clarity Code'",
       image: "https://images.unsplash.com/photo-1494790108755-2616b2e6ae95?w=150&h=150&fit=crop&crop=face",
       rating: 5,
-      text: "In just 6 months, our product visibility increased by 340% and we went from struggling to break even to generating $50K monthly revenue. The review strategies alone transformed our business.",
-      results: "340% visibility increase, $50K monthly revenue"
+      text: "Within 6 weeks, I had over 45 honest reviews across multiple Amazon regions. That credibility bump alone pushed me into the Top 20 of my category. This ARC community is gold.",
+      results: "+45 verified reviews, category rank jump",
+      package: "Silver Package (Verified Reviews)",
+      badge: "🏷 Silver Plan (Verified)"
     },
     {
-      name: "Michael Rodriguez",
-      business: "Sports & Fitness Equipment",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-      rating: 5,
-      text: "The team's expertise in Amazon PPC and keyword optimization helped us reduce our advertising costs by 60% while doubling our sales. Their strategies are game-changing.",
-      results: "60% lower ad costs, 2x sales growth"
-    },
-    {
-      name: "Emily Thompson",
-      business: "Home & Garden Products",
+      name: "Isabella Moore",
+      business: "Romance Writer, Kindle Unlimited",
       image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
       rating: 5,
-      text: "From 20 reviews to over 500 positive reviews in 4 months. The systematic approach to review acquisition and management completely transformed our product credibility.",
-      results: "From 20 to 500+ reviews in 4 months"
+      text: "I've never seen such engagement. Readers not only left thoughtful reviews but also shared excerpts on social media. My downloads went up 300% in 2 months.",
+      results: "300% boost in downloads",
+      package: "Bronze Package (Unverified Reviews + Text Only)",
+      badge: "🏷 Bronze Plan (Unverified)"
     },
     {
-      name: "David Park",
-      business: "Electronics & Tech",
+      name: "Daniel Reyes",
+      business: "Author, 'Neon Dreams'",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
       rating: 5,
-      text: "Their competitor analysis revealed opportunities we never knew existed. We launched 3 new products based on their insights and each one hit bestseller status within weeks.",
-      results: "3 bestselling product launches"
+      text: "As a debut author, building credibility was everything. The unverified text reviews helped me get 50+ early opinions and built momentum for launch day.",
+      results: "50+ early reviews, successful launch",
+      package: "Silver Package (Unverified Reviews – Prelaunch)",
+      badge: "🏷 Silver Plan (Unverified)"
     },
     {
-      name: "Lisa Anderson",
-      business: "Beauty & Personal Care",
+      name: "Liam Harris",
+      business: "Publisher – Productivity Books",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+      rating: 5,
+      text: "We bought the 95-review Gold Package for a new productivity title and were amazed by how genuine the reviews felt. Sales doubled after week 3.",
+      results: "95 verified reviews, 2x weekly sales",
+      package: "Gold Package (Verified Reviews)",
+      badge: "🏷 Gold Plan (Verified)"
+    },
+    {
+      name: "Maya Thompson",
+      business: "Children's Book Author",
       image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
       rating: 5,
-      text: "The brand protection strategies saved us from counterfeit sellers and helped us maintain premium pricing. Our profit margins increased by 45% while sales volume grew.",
-      results: "45% higher profit margins"
+      text: "Verified reviews were posted consistently over 10 days, just like promised. We hit Amazon's 'Hot New Releases' badge within the first week.",
+      results: "Hit Hot New Release badge",
+      package: "Starter Trial (Verified Reviews – Launch Support)",
+      badge: "🏷 Starter Plan (Verified)"
     },
     {
-      name: "James Wilson",
-      business: "Automotive Accessories",
+      name: "Jaxon Lee",
+      business: "Author of 'Thorneborn Chronicles'",
       image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face",
       rating: 5,
-      text: "Outstanding results! Their systematic approach to Amazon optimization took us from page 3 to the first page for our main keywords. Sales increased by 8x in the first quarter.",
-      results: "8x sales increase in Q1"
+      text: "I used their text + image review bundle for my fantasy series relaunch. The reader quality was insane. 4.9-star avg across 3 books.",
+      results: "4.9-star average, 3-book series",
+      package: "Silver Package (Unverified Reviews – Bundle)",
+      badge: "🏷 Silver Plan (Bundle)"
     }
   ];
 
@@ -59,10 +71,10 @@ export const Testimonials = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Real Results from Real Sellers
+            Real Results from Real Authors
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Join hundreds of successful Amazon sellers who transformed their business with our proven strategies.
+            Join hundreds of successful authors who transformed their book success with our ARC community.
           </p>
         </div>
         
@@ -88,7 +100,17 @@ export const Testimonials = () => {
                 
                 {/* Results Badge */}
                 <div className="bg-success/10 text-success border border-success/20 rounded-full px-3 py-1 text-xs font-medium mb-4 inline-block">
-                  {testimonial.results}
+                  🟢 {testimonial.results}
+                </div>
+                
+                {/* Package Badge */}
+                <div className="bg-primary/10 text-primary border border-primary/20 rounded-full px-3 py-1 text-xs font-medium mb-4 inline-block">
+                  📦 Plan Used: {testimonial.package}
+                </div>
+                
+                {/* Plan Badge */}
+                <div className="mb-4">
+                  <span className="text-xs text-muted-foreground">{testimonial.badge}</span>
                 </div>
                 
                 {/* Author */}
@@ -99,7 +121,7 @@ export const Testimonials = () => {
                     className="w-12 h-12 rounded-full object-cover mr-4"
                   />
                   <div>
-                    <p className="font-semibold text-foreground">{testimonial.name}</p>
+                    <p className="font-semibold text-foreground">👤 {testimonial.name}</p>
                     <p className="text-sm text-muted-foreground">{testimonial.business}</p>
                   </div>
                 </div>
