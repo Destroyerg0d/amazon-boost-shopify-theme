@@ -22,9 +22,9 @@ export const Pricing = () => {
       {
         name: "Starter Trial",
         reviews: "10 reviews",
-        originalPrice: 160,
-        discountedPrice: 120,
-        discount: "25% OFF",
+        originalPrice: 230,
+        discountedPrice: 170,
+        discount: "26% OFF",
         baseTurnaround: 3,
         features: [
           "Written reviews only",
@@ -36,8 +36,8 @@ export const Pricing = () => {
       {
         name: "Bronze Package",
         reviews: "20–25 reviews",
-        originalPrice: 320,
-        discountedPrice: 250,
+        originalPrice: 450,
+        discountedPrice: 350,
         discount: "22% OFF",
         baseTurnaround: 5,
         features: [
@@ -51,9 +51,9 @@ export const Pricing = () => {
       {
         name: "Silver Package",
         reviews: "45–50 reviews",
-        originalPrice: 620,
-        discountedPrice: 500,
-        discount: "19% OFF",
+        originalPrice: 870,
+        discountedPrice: 700,
+        discount: "20% OFF",
         baseTurnaround: 8,
         features: [
           "Written reviews only",
@@ -68,9 +68,9 @@ export const Pricing = () => {
       {
         name: "Gold Package",
         reviews: "95–100 reviews",
-        originalPrice: 920,
-        discountedPrice: 750,
-        discount: "18% OFF",
+        originalPrice: 1290,
+        discountedPrice: 1050,
+        discount: "19% OFF",
         baseTurnaround: 15,
         features: [
           "Written reviews only",
@@ -87,9 +87,9 @@ export const Pricing = () => {
       {
         name: "Starter Trial",
         reviews: "10 reviews",
-        originalPrice: 120,
-        discountedPrice: 90,
-        discount: "25% OFF",
+        originalPrice: 170,
+        discountedPrice: 130,
+        discount: "24% OFF",
         baseTurnaround: 2,
         features: [
           "Text reviews only",
@@ -101,9 +101,9 @@ export const Pricing = () => {
       {
         name: "Bronze Package",
         reviews: "20–25 reviews",
-        originalPrice: 200,
-        discountedPrice: 160,
-        discount: "20% OFF",
+        originalPrice: 280,
+        discountedPrice: 230,
+        discount: "18% OFF",
         baseTurnaround: 3,
         features: [
           "Text reviews only",
@@ -116,8 +116,8 @@ export const Pricing = () => {
       {
         name: "Silver Package",
         reviews: "45–50 reviews",
-        originalPrice: 400,
-        discountedPrice: 320,
+        originalPrice: 560,
+        discountedPrice: 450,
         discount: "20% OFF",
         baseTurnaround: 5,
         features: [
@@ -133,9 +133,9 @@ export const Pricing = () => {
       {
         name: "Gold Package",
         reviews: "95–100 reviews",
-        originalPrice: 700,
-        discountedPrice: 560,
-        discount: "20% OFF",
+        originalPrice: 980,
+        discountedPrice: 790,
+        discount: "19% OFF",
         baseTurnaround: 8,
         features: [
           "Text reviews only",
