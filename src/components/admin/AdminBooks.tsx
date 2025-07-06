@@ -64,7 +64,7 @@ const AdminBooks = () => {
         .from('books')
         .select(`
           *,
-          profiles!books_user_id_fkey (full_name, email)
+          profiles (full_name, email)
         `)
         .order('uploaded_at', { ascending: false });
 

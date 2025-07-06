@@ -68,7 +68,7 @@ const AdminReviews = () => {
         .from('reviews')
         .select(`
           *,
-          books!reviews_book_id_fkey (title, author)
+          books (title, author)
         `)
         .order('reviewed_at', { ascending: false });
 
