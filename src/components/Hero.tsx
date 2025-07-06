@@ -3,6 +3,7 @@ import { ArrowRight, BookOpen, Star, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import logoImage from "@/assets/review-pro-max-logo.png";
 
 export const Hero = () => {
   const { user, signOut } = useAuth();
@@ -60,6 +61,15 @@ export const Hero = () => {
       {/* Content */}
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-5xl mx-auto text-center text-primary-foreground">
+          {/* Logo and Brand */}
+          <div className="flex flex-col items-center mb-8 animate-fade-in">
+            <img src={logoImage} alt="Review Pro Max Logo" className="w-24 h-24 mb-4" />
+            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-accent bg-clip-text text-transparent mb-2">
+              Review Pro Max
+            </h1>
+            <p className="text-lg opacity-90">Professional Book Review Management Platform</p>
+          </div>
+          
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-accent/10 backdrop-blur-sm border border-accent/20 rounded-full px-4 py-2 mb-6 animate-fade-in">
             <Users className="w-4 h-4 text-accent" />
@@ -87,10 +97,10 @@ export const Hero = () => {
           </div>
           
           {/* Main Headline */}
-          <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-6 animate-fade-in" style={{ animationDelay: '2s' }}>
+          <h2 className="text-3xl md:text-5xl font-bold leading-tight mb-6 animate-fade-in" style={{ animationDelay: '2s' }}>
             Get Authentic Book Reviews from Our 
             <span className="bg-gradient-success bg-clip-text text-transparent"> Million+ Reader</span> Community
-          </h1>
+          </h2>
           
           {/* Subheadline */}
           <p className="text-lg md:text-xl opacity-90 mb-8 max-w-4xl mx-auto animate-fade-in" style={{ animationDelay: '2.5s' }}>
