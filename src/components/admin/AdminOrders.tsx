@@ -36,10 +36,6 @@ interface Order {
   completed_at: string | null;
   created_at: string;
   updated_at: string;
-  profiles?: {
-    full_name: string;
-    email: string;
-  } | null;
   services?: {
     name: string;
     category: string;
@@ -65,8 +61,7 @@ const AdminOrders = () => {
         .from('orders')
         .select(`
           *,
-          profiles!orders_user_id_fkey (full_name, email),
-          services!orders_service_id_fkey (name, category)
+          services (name, category)
         `)
         .order('created_at', { ascending: false });
 
@@ -146,10 +141,9 @@ const AdminOrders = () => {
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = 
-      order.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.services?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.id.toLowerCase().includes(searchTerm.toLowerCase());
+      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.user_id.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
 
@@ -236,8 +230,8 @@ const AdminOrders = () => {
                     </TableCell>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{order.profiles?.full_name || 'Unknown'}</div>
-                        <div className="text-sm text-muted-foreground">{order.profiles?.email}</div>
+                        <div className="font-medium">User ID</div>
+                        <div className="text-sm text-muted-foreground font-mono">{order.user_id.slice(0, 8)}...</div>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -271,9 +265,8 @@ const AdminOrders = () => {
                             </DialogHeader>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div>
-                                <Label className="text-sm font-medium">Customer</Label>
-                                <p className="text-sm">{order.profiles?.full_name}</p>
-                                <p className="text-sm text-muted-foreground">{order.profiles?.email}</p>
+                                <Label className="text-sm font-medium">Customer ID</Label>
+                                <p className="text-sm font-mono">{order.user_id}</p>
                               </div>
                               <div>
                                 <Label className="text-sm font-medium">Service</Label>
