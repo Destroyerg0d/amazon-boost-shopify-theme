@@ -11,26 +11,47 @@ export type Database = {
     Tables: {
       books: {
         Row: {
+          amazon_url: string | null
+          author: string | null
           description: string | null
+          explicit_content: boolean | null
+          front_cover_url: string | null
           genre: string | null
           id: string
+          language: string | null
+          manuscript_url: string | null
           title: string
+          upload_status: string | null
           uploaded_at: string
           user_id: string
         }
         Insert: {
+          amazon_url?: string | null
+          author?: string | null
           description?: string | null
+          explicit_content?: boolean | null
+          front_cover_url?: string | null
           genre?: string | null
           id?: string
+          language?: string | null
+          manuscript_url?: string | null
           title: string
+          upload_status?: string | null
           uploaded_at?: string
           user_id: string
         }
         Update: {
+          amazon_url?: string | null
+          author?: string | null
           description?: string | null
+          explicit_content?: boolean | null
+          front_cover_url?: string | null
           genre?: string | null
           id?: string
+          language?: string | null
+          manuscript_url?: string | null
           title?: string
+          upload_status?: string | null
           uploaded_at?: string
           user_id?: string
         }

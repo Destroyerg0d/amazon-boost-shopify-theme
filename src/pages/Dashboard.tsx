@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,17 +25,32 @@ import {
   Filter,
   MoreVertical,
   Edit,
-  Trash2
+  Trash2,
+  Upload,
+  Check,
+  X,
+  FileText,
+  Image as ImageIcon,
+  Link,
+  Globe
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface Book {
   id: string;
   title: string;
+  author: string | null;
   description: string | null;
   genre: string | null;
+  language: string | null;
+  amazon_url: string | null;
+  manuscript_url: string | null;
+  front_cover_url: string | null;
+  explicit_content: boolean | null;
+  upload_status: string | null;
   uploaded_at: string;
 }
 
@@ -57,6 +72,8 @@ interface DashboardStats {
 const Dashboard = () => {
   const { user, signOut } = useAuth();
   const { toast } = useToast();
+  const manuscriptInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
   const [books, setBooks] = useState<Book[]>([]);
   const [stats, setStats] = useState<DashboardStats>({
     totalBooks: 0,
@@ -68,10 +85,18 @@ const Dashboard = () => {
   const [showAddBook, setShowAddBook] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [searchQuery, setSearchQuery] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
   const [newBook, setNewBook] = useState({
     title: '',
+    author: '',
     description: '',
-    genre: ''
+    genre: '',
+    language: 'English',
+    amazon_url: '',
+    explicit_content: false,
+    manuscript_file: null as File | null,
+    cover_file: null as File | null,
   });
 
   useEffect(() => {
@@ -138,27 +163,80 @@ const Dashboard = () => {
     }
   };
 
+  const uploadFile = async (file: File, bucket: string, filePath: string) => {
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (error) throw error;
+    return data;
+  };
+
   const handleAddBook = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!newBook.title.trim()) {
+    if (!newBook.title.trim() || !newBook.author.trim()) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Book title is required"
+        description: "Book title and author are required"
       });
       return;
     }
 
+    if (!newBook.manuscript_file || !newBook.cover_file) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please upload both manuscript and cover files"
+      });
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadProgress(10);
+
     try {
+      // Upload manuscript file
+      const manuscriptPath = `${user?.id}/${Date.now()}_${newBook.manuscript_file.name}`;
+      await uploadFile(newBook.manuscript_file, 'manuscripts', manuscriptPath);
+      setUploadProgress(40);
+
+      // Upload cover file
+      const coverPath = `${user?.id}/${Date.now()}_${newBook.cover_file.name}`;
+      await uploadFile(newBook.cover_file, 'covers', coverPath);
+      setUploadProgress(70);
+
+      // Get public URLs
+      const { data: manuscriptUrl } = supabase.storage
+        .from('manuscripts')
+        .getPublicUrl(manuscriptPath);
+
+      const { data: coverUrl } = supabase.storage
+        .from('covers')
+        .getPublicUrl(coverPath);
+
+      setUploadProgress(90);
+
+      // Insert book record
       const { data, error } = await supabase
         .from('books')
         .insert([
           {
             user_id: user?.id,
             title: newBook.title.trim(),
+            author: newBook.author.trim(),
             description: newBook.description.trim() || null,
-            genre: newBook.genre || null
+            genre: newBook.genre || null,
+            language: newBook.language,
+            amazon_url: newBook.amazon_url.trim() || null,
+            manuscript_url: manuscriptUrl.publicUrl,
+            front_cover_url: coverUrl.publicUrl,
+            explicit_content: newBook.explicit_content,
+            upload_status: 'complete'
           }
         ])
         .select()
@@ -167,26 +245,92 @@ const Dashboard = () => {
       if (error) throw error;
 
       setBooks(prev => [data, ...prev]);
-      setNewBook({ title: '', description: '', genre: '' });
+      setNewBook({
+        title: '',
+        author: '',
+        description: '',
+        genre: '',
+        language: 'English',
+        amazon_url: '',
+        explicit_content: false,
+        manuscript_file: null,
+        cover_file: null,
+      });
       setShowAddBook(false);
+      setUploadProgress(100);
       
       toast({
         title: "Success",
-        description: "Book added successfully"
+        description: "Book uploaded successfully!"
       });
+
+      // Reset progress after a delay
+      setTimeout(() => setUploadProgress(0), 2000);
     } catch (error) {
       console.error('Error adding book:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to add book"
+        description: "Failed to upload book. Please try again."
       });
+    } finally {
+      setIsUploading(false);
     }
   };
 
   const genres = [
-    'Fiction', 'Non-Fiction', 'Mystery', 'Romance', 'Science Fiction',
-    'Fantasy', 'Thriller', 'Biography', 'History', 'Self-Help', 'Other'
+    "Science Fiction",
+    "Satire", 
+    "Drama & Literary Fiction",
+    "Action and Adventure",
+    "Romance",
+    "Mystery",
+    "Horror",
+    "Poetry",
+    "Short Stories",
+    "Children's Fiction",
+    "Comics & Graphic Novels",
+    "Fantasy",
+    "Erotica",
+    "Young Adult",
+    "Chick Lit",
+    "LGBTQ+",
+    "Crime & Mystery",
+    "Self-Help",
+    "Business",
+    "Health & Fitness",
+    "Travel",
+    "Religion, Spirituality, & New Age",
+    "Math, Science & Technology",
+    "History & Biography",
+    "Academic Disciplines",
+    "Cookbooks",
+    "Diaries & Journals",
+    "Memoir & Autobiography",
+    "Art & Music",
+    "Paranormal",
+    "Philosophy",
+    "Sports",
+    "Family & Relationships",
+    "Politics",
+    "Crafts & Hobbies",
+    "Education & Reference",
+    "Pets",
+    "Nature",
+    "Children's Non-Fiction",
+    "Non-English",
+    "Learn a Language"
+  ];
+
+  const languages = [
+    "English",
+    "Spanish", 
+    "French",
+    "German",
+    "Dutch",
+    "Italian",
+    "Japanese",
+    "Other"
   ];
 
   const filteredBooks = books.filter(book =>
@@ -394,59 +538,284 @@ const Dashboard = () => {
 
       {/* Add Book Form */}
       {showAddBook && (
-        <Card>
+        <Card className="max-w-4xl mx-auto">
           <CardHeader>
-            <CardTitle>Add New Book</CardTitle>
-            <CardDescription>Fill in the details to add a new book to your collection</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Plus className="w-5 h-5" />
+                  New Book
+                </CardTitle>
+                <CardDescription>
+                  {isUploading ? `${uploadProgress}% complete` : 'Hey there! Got a new book? Awesome! First, let\'s start with the basics.'}
+                </CardDescription>
+              </div>
+              {isUploading && (
+                <Badge variant="secondary" className="bg-success/10 text-success">
+                  <Check className="w-3 h-3 mr-1" />
+                  Uploading...
+                </Badge>
+              )}
+            </div>
+            {isUploading && (
+              <Progress value={uploadProgress} className="h-2 mt-4" />
+            )}
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleAddBook} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form onSubmit={handleAddBook} className="space-y-8">
+              {/* Basic Information */}
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="title" className="text-base font-medium">
+                      Title *
+                    </Label>
+                    <Input
+                      id="title"
+                      value={newBook.title}
+                      onChange={(e) => setNewBook(prev => ({ ...prev, title: e.target.value }))}
+                      placeholder="The title of your book is required."
+                      className="h-12"
+                      required
+                      disabled={isUploading}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="author" className="text-base font-medium">
+                      Author *
+                    </Label>
+                    <Input
+                      id="author"
+                      value={newBook.author}
+                      onChange={(e) => setNewBook(prev => ({ ...prev, author: e.target.value }))}
+                      placeholder="Provide the author of your book."
+                      className="h-12"
+                      required
+                      disabled={isUploading}
+                    />
+                  </div>
+                </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="title">Book Title *</Label>
-                  <Input
-                    id="title"
-                    value={newBook.title}
-                    onChange={(e) => setNewBook(prev => ({ ...prev, title: e.target.value }))}
-                    placeholder="Enter book title"
-                    required
+                  <Label htmlFor="description" className="text-base font-medium">
+                    Description
+                  </Label>
+                  <Textarea
+                    id="description"
+                    value={newBook.description}
+                    onChange={(e) => setNewBook(prev => ({ ...prev, description: e.target.value }))}
+                    placeholder="Enter book description"
+                    rows={4}
+                    disabled={isUploading}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="genre">Genre</Label>
-                  <Select 
-                    value={newBook.genre} 
-                    onValueChange={(value) => setNewBook(prev => ({ ...prev, genre: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select genre" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {genres.map(genre => (
-                        <SelectItem key={genre} value={genre}>
-                          {genre}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+              </div>
+
+              <Separator />
+
+              {/* File Uploads */}
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">File Uploads</h3>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    All readers can review your book using a free copy that you provide to read.
+                  </p>
+                  
+                  {/* Manuscript Upload */}
+                  <div className="space-y-2 mb-6">
+                    <Label className="text-base font-medium">Manuscript *</Label>
+                    <div 
+                      className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer"
+                      onClick={() => manuscriptInputRef.current?.click()}
+                    >
+                      <input
+                        type="file"
+                        ref={manuscriptInputRef}
+                        accept=".epub,.pdf"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setNewBook(prev => ({ ...prev, manuscript_file: file }));
+                          }
+                        }}
+                        className="hidden"
+                        disabled={isUploading}
+                      />
+                      <FileText className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                      {newBook.manuscript_file ? (
+                        <div>
+                          <p className="font-medium text-foreground">{newBook.manuscript_file.name}</p>
+                          <p className="text-sm text-muted-foreground mt-1">Click to change file</p>
+                        </div>
+                      ) : (
+                        <div>
+                          <p className="font-medium text-foreground mb-2">Drop files here to upload</p>
+                          <p className="text-sm text-muted-foreground">Accepted file types: .epub, .pdf</p>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Your book copy will be securely encrypted and only made accessible to readers who have already agreed to review your book.
+                    </p>
+                  </div>
+
+                  {/* Cover Upload */}
+                  <div className="space-y-2">
+                    <Label className="text-base font-medium">Front Cover *</Label>
+                    <div 
+                      className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer"
+                      onClick={() => coverInputRef.current?.click()}
+                    >
+                      <input
+                        type="file"
+                        ref={coverInputRef}
+                        accept=".jpg,.jpeg,.png,.gif"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setNewBook(prev => ({ ...prev, cover_file: file }));
+                          }
+                        }}
+                        className="hidden"
+                        disabled={isUploading}
+                      />
+                      <ImageIcon className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                      {newBook.cover_file ? (
+                        <div>
+                          <p className="font-medium text-foreground">{newBook.cover_file.name}</p>
+                          <p className="text-sm text-muted-foreground mt-1">Click to change file</p>
+                        </div>
+                      ) : (
+                        <div>
+                          <p className="font-medium text-foreground mb-2">Drop files here to upload</p>
+                          <p className="text-sm text-muted-foreground">Accepted file types: .jpg, .png, .gif</p>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Please provide the 2D image of your front cover only. We do not accept 3D models or front-spine-back covers.
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={newBook.description}
-                  onChange={(e) => setNewBook(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Enter book description"
-                  rows={3}
-                />
+
+              <Separator />
+
+              {/* Additional Information */}
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="amazon_url" className="text-base font-medium flex items-center gap-2">
+                    <Link className="w-4 h-4" />
+                    Amazon URL
+                  </Label>
+                  <Input
+                    id="amazon_url"
+                    value={newBook.amazon_url}
+                    onChange={(e) => setNewBook(prev => ({ ...prev, amazon_url: e.target.value }))}
+                    placeholder="https://www.amazon.com/Meditations-Marcus-Aurelius-ebook/dp/B08RYB957M/"
+                    className="h-12"
+                    disabled={isUploading}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Example URL: https://www.amazon.com/Meditations-Marcus-Aurelius-ebook/dp/B08RYB957M/
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label className="text-base font-medium">Genre *</Label>
+                    <Select 
+                      value={newBook.genre} 
+                      onValueChange={(value) => setNewBook(prev => ({ ...prev, genre: value }))}
+                      disabled={isUploading}
+                    >
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="Select the genre of your book." />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-60">
+                        {genres.map(genre => (
+                          <SelectItem key={genre} value={genre}>
+                            {genre}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-base font-medium flex items-center gap-2">
+                      <Globe className="w-4 h-4" />
+                      Language *
+                    </Label>
+                    <Select 
+                      value={newBook.language} 
+                      onValueChange={(value) => setNewBook(prev => ({ ...prev, language: value }))}
+                      disabled={isUploading}
+                    >
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="Please select the language your book is written in" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {languages.map(language => (
+                          <SelectItem key={language} value={language}>
+                            {language}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="explicit_content"
+                    checked={newBook.explicit_content}
+                    onCheckedChange={(checked) => setNewBook(prev => ({ ...prev, explicit_content: !!checked }))}
+                    disabled={isUploading}
+                  />
+                  <Label htmlFor="explicit_content" className="text-base font-medium cursor-pointer">
+                    Explicit content?
+                  </Label>
+                </div>
               </div>
-              <div className="flex gap-2">
-                <Button type="submit">Add Book</Button>
+
+              <Separator />
+
+              {/* Submit Buttons */}
+              <div className="flex gap-4 pt-4">
+                <Button 
+                  type="submit" 
+                  disabled={isUploading || !newBook.title.trim() || !newBook.author.trim() || !newBook.manuscript_file || !newBook.cover_file}
+                  className="flex-1 h-12"
+                >
+                  {isUploading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Uploading...
+                    </>
+                  ) : (
+                    'Submit Book'
+                  )}
+                </Button>
                 <Button 
                   type="button" 
                   variant="outline" 
-                  onClick={() => setShowAddBook(false)}
+                  onClick={() => {
+                    setShowAddBook(false);
+                    setNewBook({
+                      title: '',
+                      author: '',
+                      description: '',
+                      genre: '',
+                      language: 'English',
+                      amazon_url: '',
+                      explicit_content: false,
+                      manuscript_file: null,
+                      cover_file: null,
+                    });
+                  }}
+                  disabled={isUploading}
+                  className="h-12"
                 >
                   Cancel
                 </Button>
