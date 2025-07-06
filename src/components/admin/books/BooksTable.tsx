@@ -74,41 +74,34 @@ const BooksTable = ({ books, getStatusBadge, onReview }: BooksTableProps) => {
                 {new Date(book.uploaded_at).toLocaleDateString()}
               </TableCell>
               <TableCell>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex gap-2">
                   <BookDetailsModal 
                     book={book} 
                     onReview={onReview}
                     getStatusBadge={getStatusBadge}
                   />
                   <Button
-                    variant="default"
+                    variant="outline"
                     size="sm"
                     onClick={() => onReview(book)}
-                    className="gap-2 bg-primary hover:bg-primary/90"
+                    className="gap-2"
                   >
                     <Check className="h-4 w-4" />
                     Review
                   </Button>
-                  {book.manuscript_url ? (
+                  {book.manuscript_url && (
                     <>
-                      <Button variant="outline" size="sm" className="gap-1 border-primary/30 hover:bg-primary/5" asChild>
-                        <a href={book.manuscript_url} target="_blank" rel="noopener noreferrer" title="Download manuscript">
+                      <Button variant="outline" size="sm" asChild>
+                        <a href={book.manuscript_url} target="_blank" rel="noopener noreferrer">
                           <Download className="h-4 w-4" />
-                          📄
                         </a>
                       </Button>
-                      <Button variant="outline" size="sm" className="gap-1 border-primary/30 hover:bg-primary/5" asChild>
-                        <a href={book.manuscript_url} target="_blank" rel="noopener noreferrer" title="View manuscript in browser">
+                      <Button variant="outline" size="sm" asChild>
+                        <a href={book.manuscript_url} target="_blank" rel="noopener noreferrer">
                           <Eye className="h-4 w-4" />
-                          👀
                         </a>
                       </Button>
                     </>
-                  ) : (
-                    <Button variant="outline" size="sm" disabled title="No manuscript available">
-                      <Download className="h-4 w-4" />
-                      📭
-                    </Button>
                   )}
                 </div>
               </TableCell>

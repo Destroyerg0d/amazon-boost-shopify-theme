@@ -34,7 +34,7 @@ const AdminBooks = () => {
         .from('books')
         .select(`
           *,
-          profiles (full_name, email)
+          profiles!books_user_id_fkey (full_name, email)
         `)
         .order('uploaded_at', { ascending: false });
 
@@ -44,7 +44,7 @@ const AdminBooks = () => {
       console.error('Error fetching books:', error);
       toast({
         title: 'Error',
-        description: 'Failed to fetch books. Please refresh the page.',
+        description: 'Failed to fetch books',
         variant: 'destructive',
       });
     } finally {
@@ -59,7 +59,6 @@ const AdminBooks = () => {
         .update({
           approval_status: status,
           admin_feedback: feedback || null,
-          updated_at: new Date().toISOString(),
         })
         .eq('id', bookId);
 
@@ -67,7 +66,7 @@ const AdminBooks = () => {
 
       toast({
         title: 'Success',
-        description: `Book has been ${status} successfully!`,
+        description: `Book ${status} successfully`,
       });
 
       fetchBooks();
@@ -77,7 +76,7 @@ const AdminBooks = () => {
       console.error('Error updating book status:', error);
       toast({
         title: 'Error',
-        description: 'Failed to update book status. Please try again.',
+        description: 'Failed to update book status',
         variant: 'destructive',
       });
     }
@@ -85,18 +84,13 @@ const AdminBooks = () => {
 
   const getStatusBadge = (status: string | null) => {
     const statusConfig = {
-      under_review: { variant: 'secondary' as const, label: 'Under Review', icon: '🔍' },
-      approved: { variant: 'default' as const, label: 'Approved', icon: '✅' }, // Changed from success variant
-      rejected: { variant: 'destructive' as const, label: 'Rejected', icon: '❌' },
+      under_review: { variant: 'secondary' as const, label: 'Under Review' },
+      approved: { variant: 'success' as const, label: 'Approved' },
+      rejected: { variant: 'destructive' as const, label: 'Rejected' },
     };
 
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.under_review;
-    return (
-      <Badge variant={config.variant} className="gap-1">
-        <span>{config.icon}</span>
-        {config.label}
-      </Badge>
-    );
+    return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
   const filteredBooks = books.filter(book => {
@@ -131,52 +125,38 @@ const AdminBooks = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">📚 Books Management</h2>
-          <p className="text-muted-foreground">Review submissions, manage approvals, and download manuscripts</p>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span className="px-3 py-1 bg-muted rounded-full">
-            Total Books: {books.length}
-          </span>
-          <span className="px-3 py-1 bg-muted rounded-full">
-            Filtered: {filteredBooks.length}
-          </span>
-        </div>
+      <div>
+        <h2 className="text-2xl font-bold">Books Management</h2>
+        <p className="text-muted-foreground">Review and approve submitted books</p>
       </div>
 
       <Card>
-        <CardHeader className="border-b bg-muted/30">
+        <CardHeader>
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
             <div>
-              <CardTitle className="text-xl flex items-center gap-2">
-                📖 Book Submissions
-              </CardTitle>
-              <CardDescription>
-                Review, approve, reject, and download manuscripts for all submitted books
-              </CardDescription>
+              <CardTitle>All Books</CardTitle>
+              <CardDescription>Review book submissions and manage approval status</CardDescription>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <div className="flex gap-2">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search by title, author, or user..."
+                  placeholder="Search books..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-full sm:w-64"
+                  className="pl-10 w-64"
                 />
               </div>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-full sm:w-48">
+                <SelectTrigger className="w-40">
                   <Filter className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Filter by status" />
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">🔍 All Status</SelectItem>
-                  <SelectItem value="under_review">⏳ Under Review</SelectItem>
-                  <SelectItem value="approved">✅ Approved</SelectItem>
-                  <SelectItem value="rejected">❌ Rejected</SelectItem>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="under_review">Under Review</SelectItem>
+                  <SelectItem value="approved">Approved</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -192,14 +172,9 @@ const AdminBooks = () => {
             }}
           />
           {filteredBooks.length === 0 && (
-            <div className="text-center py-12">
-              <BookOpen className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium mb-2">No books found</h3>
-              <p className="text-muted-foreground">
-                {searchTerm || statusFilter !== 'all' 
-                  ? 'Try adjusting your search or filter criteria' 
-                  : 'No books have been submitted yet'}
-              </p>
+            <div className="text-center py-8">
+              <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <p className="text-muted-foreground">No books found</p>
             </div>
           )}
         </CardContent>
@@ -207,14 +182,11 @@ const AdminBooks = () => {
 
       {/* Review Book Modal */}
       <Dialog open={isReviewModalOpen} onOpenChange={setIsReviewModalOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-xl flex items-center gap-2">
-              📝 Review Book: {selectedBook?.title}
-            </DialogTitle>
+            <DialogTitle>Review Book</DialogTitle>
             <DialogDescription>
-              You can approve or reject this book submission at any time, regardless of its current status.
-              Provide feedback to help authors improve their work.
+              Approve or reject this book submission
             </DialogDescription>
           </DialogHeader>
           {selectedBook && (
