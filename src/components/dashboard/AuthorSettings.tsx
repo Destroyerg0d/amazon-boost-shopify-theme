@@ -19,7 +19,9 @@ import {
   Bell,
   Save,
   Eye,
-  EyeOff
+  EyeOff,
+  Check,
+  X
 } from 'lucide-react';
 
 interface Profile {
@@ -39,6 +41,13 @@ const AuthorSettings = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showEmail, setShowEmail] = useState(false);
+  
+  // Phone verification states
+  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [verifyingPhone, setVerifyingPhone] = useState(false);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -162,6 +171,74 @@ const AuthorSettings = () => {
     const [local, domain] = email.split('@');
     const maskedLocal = local.substring(0, 2) + '*'.repeat(Math.max(1, local.length - 2));
     return `${maskedLocal}@${domain}`;
+  };
+
+  const sendOTP = async () => {
+    if (!formData.phone) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter a valid phone number"
+      });
+      return;
+    }
+
+    setSendingOtp(true);
+    try {
+      // Simulate OTP sending (in real app, use SMS service like Twilio)
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setOtpSent(true);
+      toast({
+        title: "OTP Sent",
+        description: `Verification code sent to ${formData.phone}`
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to send OTP. Please try again."
+      });
+    } finally {
+      setSendingOtp(false);
+    }
+  };
+
+  const verifyOTP = async () => {
+    if (!otpCode || otpCode.length !== 6) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter a valid 6-digit OTP"
+      });
+      return;
+    }
+
+    setVerifyingPhone(true);
+    try {
+      // Simulate OTP verification (in real app, verify with SMS service)
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // For demo, accept any 6-digit code
+      if (otpCode.length === 6) {
+        setPhoneVerified(true);
+        setOtpSent(false);
+        setOtpCode('');
+        toast({
+          title: "Phone Verified",
+          description: "Your phone number has been successfully verified!"
+        });
+      } else {
+        throw new Error('Invalid OTP');
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Invalid OTP. Please try again."
+      });
+    } finally {
+      setVerifyingPhone(false);
+    }
   };
 
   if (loading) {
@@ -362,6 +439,112 @@ const AuthorSettings = () => {
               </div>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Phone Verification */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Phone className="w-5 h-5" />
+            Phone Verification
+          </CardTitle>
+          <CardDescription>
+            Verify your phone number for enhanced account security
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+            <div className="flex items-center gap-3">
+              <Phone className="w-5 h-5 text-muted-foreground" />
+              <div>
+                <p className="font-medium">Phone Number Verification</p>
+                <p className="text-sm text-muted-foreground">
+                  {phoneVerified ? 
+                    `Phone number ${formData.phone} is verified` : 
+                    formData.phone ? 
+                      `${formData.phone} - Not verified` : 
+                      'No phone number added'}
+                </p>
+              </div>
+            </div>
+            <Badge variant={phoneVerified ? "default" : "secondary"}>
+              {phoneVerified ? (
+                <div className="flex items-center gap-1">
+                  <Check className="w-3 h-3" />
+                  Verified
+                </div>
+              ) : (
+                <div className="flex items-center gap-1">
+                  <X className="w-3 h-3" />
+                  Unverified
+                </div>
+              )}
+            </Badge>
+          </div>
+          
+          {formData.phone && !phoneVerified && (
+            <div className="space-y-4 p-4 border rounded-lg bg-card">
+              {!otpSent ? (
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">Send Verification Code</p>
+                    <p className="text-sm text-muted-foreground">
+                      We'll send a 6-digit code to {formData.phone}
+                    </p>
+                  </div>
+                  <Button 
+                    onClick={sendOTP} 
+                    disabled={sendingOtp}
+                    size="sm"
+                  >
+                    {sendingOtp ? 'Sending...' : 'Send OTP'}
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div>
+                    <p className="font-medium">Enter Verification Code</p>
+                    <p className="text-sm text-muted-foreground">
+                      Enter the 6-digit code sent to {formData.phone}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter 6-digit OTP"
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                      maxLength={6}
+                      className="flex-1"
+                    />
+                    <Button 
+                      onClick={verifyOTP} 
+                      disabled={verifyingPhone || otpCode.length !== 6}
+                      size="sm"
+                    >
+                      {verifyingPhone ? 'Verifying...' : 'Verify'}
+                    </Button>
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={sendOTP}
+                    disabled={sendingOtp}
+                  >
+                    {sendingOtp ? 'Resending...' : 'Resend Code'}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+          
+          {!formData.phone && (
+            <div className="p-4 border rounded-lg bg-muted/20">
+              <p className="text-sm text-muted-foreground">
+                Add a phone number in the Personal Information section to enable phone verification.
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 

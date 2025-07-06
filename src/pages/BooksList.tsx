@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -12,7 +13,11 @@ import {
   Search,
   MoreVertical,
   Calendar,
-  ArrowLeft
+  ArrowLeft,
+  Eye,
+  Edit,
+  Trash2,
+  ExternalLink
 } from 'lucide-react';
 
 interface Book {
@@ -174,9 +179,33 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
                       <p className="text-sm text-muted-foreground mb-3">by {book.author}</p>
                     )}
                   </div>
-                  <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                    <MoreVertical className="w-4 h-4" />
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                        <MoreVertical className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>
+                        <Eye className="w-4 h-4 mr-2" />
+                        View Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit Book
+                      </DropdownMenuItem>
+                      {book.asin && (
+                        <DropdownMenuItem onClick={() => window.open(`https://amazon.com/dp/${book.asin}`, '_blank')}>
+                          <ExternalLink className="w-4 h-4 mr-2" />
+                          View on Amazon
+                        </DropdownMenuItem>
+                      )}
+                      <DropdownMenuItem className="text-destructive">
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete Book
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
                 <CardDescription>
                   <div className="space-y-3">
