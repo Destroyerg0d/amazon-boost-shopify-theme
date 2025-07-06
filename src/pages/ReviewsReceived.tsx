@@ -60,25 +60,37 @@ const ReviewsReceived = ({ onBack }: ReviewsReceivedProps) => {
 
   const fetchReviews = async () => {
     try {
-      const { data, error } = await supabase
+      // First get all books for this user
+      const { data: userBooks, error: booksError } = await supabase
+        .from('books')
+        .select('id, title, author')
+        .eq('user_id', user?.id);
+
+      if (booksError) throw booksError;
+
+      if (!userBooks || userBooks.length === 0) {
+        setReviews([]);
+        return;
+      }
+
+      const bookIds = userBooks.map(book => book.id);
+
+      // Then get reviews for those books
+      const { data: reviewsData, error } = await supabase
         .from('reviews')
-        .select(`
-          *,
-          books!reviews_book_id_fkey(id, title, author, user_id)
-        `)
-        .eq('books.user_id', user?.id)
+        .select('*')
+        .in('book_id', bookIds)
         .order('reviewed_at', { ascending: false });
 
       if (error) throw error;
       
-      const reviewsWithBooks = data?.map(review => ({
-        ...review,
-        book: {
-          id: review.books.id,
-          title: review.books.title,
-          author: review.books.author
-        }
-      })) || [];
+      const reviewsWithBooks = reviewsData?.map(review => {
+        const book = userBooks.find(b => b.id === review.book_id);
+        return {
+          ...review,
+          book: book || { id: review.book_id, title: 'Unknown Book', author: null }
+        };
+      }) || [];
       
       setReviews(reviewsWithBooks);
     } catch (error) {
