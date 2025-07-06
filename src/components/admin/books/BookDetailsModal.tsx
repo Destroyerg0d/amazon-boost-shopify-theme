@@ -53,30 +53,34 @@ const BookDetailsModal = ({ book, onReview, getStatusBadge }: BookDetailsModalPr
             )}
             
             {/* Action Buttons */}
-            <div className="space-y-2">
-              {book.manuscript_url && (
+            <div className="space-y-3">
+              {book.manuscript_url ? (
                 <>
-                  <Button variant="outline" size="sm" className="w-full gap-2" asChild>
+                  <Button variant="default" size="sm" className="w-full gap-2 bg-primary hover:bg-primary/90" asChild>
                     <a href={book.manuscript_url} target="_blank" rel="noopener noreferrer">
                       <Download className="h-4 w-4" />
-                      Download Manuscript
+                      📄 Download Manuscript
                     </a>
                   </Button>
-                  <Button variant="outline" size="sm" className="w-full gap-2" asChild>
+                  <Button variant="outline" size="sm" className="w-full gap-2 border-primary/30 hover:bg-primary/5" asChild>
                     <a href={book.manuscript_url} target="_blank" rel="noopener noreferrer">
                       <Eye className="h-4 w-4" />
-                      View in Browser
+                      👀 View in Browser
                     </a>
                   </Button>
                 </>
+              ) : (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-center">
+                  <p className="text-sm text-amber-700">📭 No manuscript uploaded yet</p>
+                </div>
               )}
               <Button
                 size="sm"
-                className="w-full gap-2"
+                className="w-full gap-2 mt-3"
                 onClick={() => onReview(book)}
               >
                 <Check className="h-4 w-4" />
-                Review Book
+                📝 Review Book
               </Button>
             </div>
           </div>
