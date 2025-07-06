@@ -1,9 +1,24 @@
+import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import AdminDashboard from '@/components/admin/AdminDashboard';
+import AdminOrders from '@/components/admin/AdminOrders';
+import AdminBooks from '@/components/admin/AdminBooks';
+import AdminUsers from '@/components/admin/AdminUsers';
+import {
+  LayoutDashboard,
+  ShoppingCart,
+  BookOpen,
+  Users,
+  Settings,
+  LogOut
+} from 'lucide-react';
 
 const Admin = () => {
   const { user, signOut } = useAuth();
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
@@ -13,42 +28,48 @@ const Admin = () => {
             <h1 className="text-3xl font-bold">Admin Panel</h1>
             <p className="text-muted-foreground">Manage your platform, {user?.email}</p>
           </div>
-          <Button variant="outline" onClick={signOut}>
+          <Button variant="outline" onClick={signOut} className="gap-2">
+            <LogOut className="h-4 w-4" />
             Sign Out
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Orders Management</CardTitle>
-              <CardDescription>View and manage all customer orders</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">Manage order status and delivery</p>
-            </CardContent>
-          </Card>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:grid-cols-4">
+            <TabsTrigger value="dashboard" className="gap-2">
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="orders" className="gap-2">
+              <ShoppingCart className="h-4 w-4" />
+              Orders
+            </TabsTrigger>
+            <TabsTrigger value="books" className="gap-2">
+              <BookOpen className="h-4 w-4" />
+              Books
+            </TabsTrigger>
+            <TabsTrigger value="users" className="gap-2">
+              <Users className="h-4 w-4" />
+              Users
+            </TabsTrigger>
+          </TabsList>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Services Management</CardTitle>
-              <CardDescription>Configure review packages and pricing</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">Update service offerings</p>
-            </CardContent>
-          </Card>
+          <TabsContent value="dashboard" className="space-y-6">
+            <AdminDashboard />
+          </TabsContent>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>User Management</CardTitle>
-              <CardDescription>Manage user accounts and roles</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">View and manage user permissions</p>
-            </CardContent>
-          </Card>
-        </div>
+          <TabsContent value="orders" className="space-y-6">
+            <AdminOrders />
+          </TabsContent>
+
+          <TabsContent value="books" className="space-y-6">
+            <AdminBooks />
+          </TabsContent>
+
+          <TabsContent value="users" className="space-y-6">
+            <AdminUsers />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
