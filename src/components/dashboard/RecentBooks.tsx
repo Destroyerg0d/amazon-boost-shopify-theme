@@ -32,6 +32,9 @@ interface Book {
 interface RecentBooksProps {
   books: Book[];
   onAddBook: () => void;
+  onViewBook?: (book: Book) => void;
+  onEditBook?: (book: Book) => void;
+  onDeleteBook?: (book: Book) => void;
 }
 
 const getStatusColor = (status: string | null) => {
@@ -58,7 +61,33 @@ const getStatusText = (status: string | null) => {
   }
 };
 
-const RecentBooks = ({ books, onAddBook }: RecentBooksProps) => {
+const RecentBooks = ({ books, onAddBook, onViewBook, onEditBook, onDeleteBook }: RecentBooksProps) => {
+  const handleViewDetails = (book: Book) => {
+    if (onViewBook) {
+      onViewBook(book);
+    } else {
+      // Default action - could show a toast or modal
+      console.log('View book details:', book);
+    }
+  };
+
+  const handleEditBook = (book: Book) => {
+    if (onEditBook) {
+      onEditBook(book);
+    } else {
+      // Default action
+      console.log('Edit book:', book);
+    }
+  };
+
+  const handleDeleteBook = (book: Book) => {
+    if (onDeleteBook) {
+      onDeleteBook(book);
+    } else {
+      // Default action
+      console.log('Delete book:', book);
+    }
+  };
   return (
     <Card>
       <CardHeader>
@@ -108,15 +137,18 @@ const RecentBooks = ({ books, onAddBook }: RecentBooksProps) => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleViewDetails(book)}>
                       <Eye className="w-4 h-4 mr-2" />
                       View Details
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleEditBook(book)}>
                       <Edit className="w-4 h-4 mr-2" />
                       Edit Book
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-destructive">
+                    <DropdownMenuItem 
+                      className="text-destructive" 
+                      onClick={() => handleDeleteBook(book)}
+                    >
                       <Trash2 className="w-4 h-4 mr-2" />
                       Delete Book
                     </DropdownMenuItem>

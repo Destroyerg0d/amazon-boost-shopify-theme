@@ -78,6 +78,54 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
     }
   };
 
+  const handleViewDetails = (book: Book) => {
+    // You can implement a detailed view modal or navigate to a details page
+    toast({
+      title: "Book Details",
+      description: `Viewing details for "${book.title}"`,
+    });
+    console.log('View book details:', book);
+  };
+
+  const handleEditBook = (book: Book) => {
+    // You can implement edit functionality or navigate to edit page
+    toast({
+      title: "Edit Book",
+      description: `Edit mode for "${book.title}" - Feature coming soon!`,
+    });
+    console.log('Edit book:', book);
+  };
+
+  const handleDeleteBook = async (book: Book) => {
+    if (!confirm(`Are you sure you want to delete "${book.title}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('books')
+        .delete()
+        .eq('id', book.id)
+        .eq('user_id', user?.id); // Extra security check
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `"${book.title}" has been deleted successfully.`,
+      });
+
+      fetchBooks(); // Refresh the list
+    } catch (error) {
+      console.error('Error deleting book:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to delete the book. Please try again.",
+      });
+    }
+  };
+
   const filteredBooks = books.filter(book =>
     book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     book.genre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -186,11 +234,11 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleViewDetails(book)}>
                         <Eye className="w-4 h-4 mr-2" />
                         View Details
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleEditBook(book)}>
                         <Edit className="w-4 h-4 mr-2" />
                         Edit Book
                       </DropdownMenuItem>
@@ -200,7 +248,10 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
                           View on Amazon
                         </DropdownMenuItem>
                       )}
-                      <DropdownMenuItem className="text-destructive">
+                      <DropdownMenuItem 
+                        className="text-destructive" 
+                        onClick={() => handleDeleteBook(book)}
+                      >
                         <Trash2 className="w-4 h-4 mr-2" />
                         Delete Book
                       </DropdownMenuItem>

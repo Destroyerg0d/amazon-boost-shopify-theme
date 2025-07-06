@@ -7,6 +7,7 @@ import AdminDashboard from '@/components/admin/AdminDashboard';
 import AdminOrders from '@/components/admin/AdminOrders';
 import AdminBooks from '@/components/admin/AdminBooks';
 import AdminUsers from '@/components/admin/AdminUsers';
+import AdminReviews from '@/components/admin/AdminReviews';
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -35,7 +36,7 @@ const Admin = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:grid-cols-5">
             <TabsTrigger value="dashboard" className="gap-2">
               <LayoutDashboard className="h-4 w-4" />
               Dashboard
@@ -51,6 +52,10 @@ const Admin = () => {
             <TabsTrigger value="users" className="gap-2">
               <Users className="h-4 w-4" />
               Users
+            </TabsTrigger>
+            <TabsTrigger value="reviews" className="gap-2">
+              <Settings className="h-4 w-4" />
+              Add Reviews
             </TabsTrigger>
           </TabsList>
 
@@ -68,6 +73,10 @@ const Admin = () => {
 
           <TabsContent value="users" className="space-y-6">
             <AdminUsers />
+          </TabsContent>
+
+          <TabsContent value="reviews" className="space-y-6">
+            <AdminReviews />
           </TabsContent>
         </Tabs>
       </div>
