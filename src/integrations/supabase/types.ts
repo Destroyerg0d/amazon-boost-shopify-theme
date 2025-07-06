@@ -24,6 +24,7 @@ export type Database = {
           language: string | null
           manuscript_url: string | null
           title: string
+          updated_at: string | null
           upload_status: string | null
           uploaded_at: string
           user_id: string
@@ -42,6 +43,7 @@ export type Database = {
           language?: string | null
           manuscript_url?: string | null
           title: string
+          updated_at?: string | null
           upload_status?: string | null
           uploaded_at?: string
           user_id: string
@@ -60,6 +62,7 @@ export type Database = {
           language?: string | null
           manuscript_url?: string | null
           title?: string
+          updated_at?: string | null
           upload_status?: string | null
           uploaded_at?: string
           user_id?: string
