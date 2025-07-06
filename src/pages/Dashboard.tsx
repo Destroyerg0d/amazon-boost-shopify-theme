@@ -10,6 +10,7 @@ import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import StatsCards from '@/components/dashboard/StatsCards';
 import QuickActions from '@/components/dashboard/QuickActions';
 import RecentBooks from '@/components/dashboard/RecentBooks';
+import AuthorSettings from '@/components/dashboard/AuthorSettings';
 
 // Import page components
 import BookUpload from '@/pages/BookUpload';
@@ -223,10 +224,7 @@ const Dashboard = () => {
         <h2 className="text-2xl font-bold">Settings</h2>
         <p className="text-muted-foreground">Manage your account preferences</p>
       </div>
-      <div className="text-center py-12">
-        <p className="text-lg font-medium mb-2">Settings coming soon</p>
-        <p className="text-muted-foreground">This feature is under development</p>
-      </div>
+      <AuthorSettings />
     </div>
   );
 
