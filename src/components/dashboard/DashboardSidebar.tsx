@@ -33,7 +33,7 @@ const DashboardSidebar = ({ activeTab, setActiveTab }: DashboardSidebarProps) =>
             <User className="w-5 h-5 text-primary-foreground" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-medium truncate">Review Pro Max</p>
+            <p className="font-medium truncate">Author Dashboard</p>
             <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
           </div>
         </div>
