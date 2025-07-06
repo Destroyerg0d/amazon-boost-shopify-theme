@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CalendarDays, Mail, Phone, MessageSquare } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Contact = () => {
   const { toast } = useToast();
@@ -18,21 +19,49 @@ export const Contact = () => {
     message: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Strategy Call Requested!",
-      description: "We'll contact you within 24 hours to schedule your free consultation.",
-    });
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      businessType: "",
-      monthlyRevenue: "",
-      message: ""
-    });
+    
+    try {
+      const { error } = await supabase
+        .from('customers')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            business_type: formData.businessType,
+            monthly_revenue: formData.monthlyRevenue,
+            message: formData.message,
+            lead_source: 'website_footer_contact',
+            status: 'new'
+          }
+        ]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Strategy Call Request Submitted!",
+        description: "Thank you for your interest! Our Amazon experts will contact you within 12 hours to schedule your free consultation.",
+      });
+
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        businessType: "",
+        monthlyRevenue: "",
+        message: ""
+      });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast({
+        title: "Submission Failed",
+        description: "There was an error submitting your request. Please try again or contact us directly.",
+        variant: "destructive"
+      });
+    }
   };
 
   const updateFormData = (field: string, value: string) => {
@@ -57,7 +86,7 @@ export const Contact = () => {
               Ready to Dominate Amazon?
             </h2>
             <p className="text-xl opacity-90 max-w-2xl mx-auto">
-              Get a free strategy call with our Amazon experts and discover exactly how to scale your business.
+              Get a free strategy call with our Amazon experts and discover exactly how to scale your business with professional book reviews and publishing services.
             </p>
           </div>
           
@@ -164,19 +193,19 @@ export const Contact = () => {
               
               {/* Direct Contact */}
               <div className="bg-background/10 backdrop-blur-sm rounded-lg p-6 border border-primary-foreground/20">
-                <h4 className="text-xl font-semibold mb-4">Prefer to Talk Directly?</h4>
+                <h4 className="text-xl font-semibold mb-4">Need Immediate Assistance?</h4>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <Phone className="w-5 h-5 text-accent" />
-                    <span>+1 (555) 123-AMZN</span>
+                    <span>+1 (678) 831-5443</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Mail className="w-5 h-5 text-accent" />
-                    <span>success@amazonstrategy.com</span>
+                    <span>Support@reviewpromax.com</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <MessageSquare className="w-5 h-5 text-accent" />
-                    <span>Response within 2 hours</span>
+                    <span>Response within 12 hours</span>
                   </div>
                 </div>
               </div>

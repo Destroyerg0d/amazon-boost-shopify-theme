@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
 import Pricing from "./pages/Pricing";
 import Testimonials from "./pages/Testimonials";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/testimonials" element={<Testimonials />} />
+            <Route path="/contact" element={<Contact />} />
             <Route 
               path="/dashboard" 
               element={

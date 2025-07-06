@@ -77,6 +77,54 @@ export type Database = {
           },
         ]
       }
+      customers: {
+        Row: {
+          admin_notes: string | null
+          business_type: string | null
+          created_at: string
+          email: string
+          id: string
+          is_buyer: boolean
+          lead_source: string
+          message: string | null
+          monthly_revenue: string | null
+          name: string
+          phone: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          business_type?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          is_buyer?: boolean
+          lead_source?: string
+          message?: string | null
+          monthly_revenue?: string | null
+          name: string
+          phone: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          business_type?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          is_buyer?: boolean
+          lead_source?: string
+          message?: string | null
+          monthly_revenue?: string | null
+          name?: string
+          phone?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           admin_notes: string | null
