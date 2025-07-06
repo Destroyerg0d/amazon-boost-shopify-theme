@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Book } from './types';
 import BookDetailsModal from './BookDetailsModal';
+import { supabase } from '@/integrations/supabase/client';
 
 interface BooksTableProps {
   books: Book[];
@@ -91,15 +92,51 @@ const BooksTable = ({ books, getStatusBadge, onReview }: BooksTableProps) => {
                   </Button>
                   {book.manuscript_url && (
                     <>
-                      <Button variant="outline" size="sm" asChild>
-                        <a href={book.manuscript_url} target="_blank" rel="noopener noreferrer">
-                          <Download className="h-4 w-4" />
-                        </a>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={async () => {
+                          try {
+                            const path = book.manuscript_url.split('/manuscripts/')[1];
+                            const { data, error } = await supabase.storage
+                              .from('manuscripts')
+                              .download(path);
+                            
+                            if (error) throw error;
+                            
+                            const url = URL.createObjectURL(data);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${book.title}.pdf`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                          } catch (error) {
+                            console.error('Download error:', error);
+                          }
+                        }}
+                      >
+                        <Download className="h-4 w-4" />
                       </Button>
-                      <Button variant="outline" size="sm" asChild>
-                        <a href={book.manuscript_url} target="_blank" rel="noopener noreferrer">
-                          <Eye className="h-4 w-4" />
-                        </a>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={async () => {
+                          try {
+                            const path = book.manuscript_url.split('/manuscripts/')[1];
+                            const { data, error } = await supabase.storage
+                              .from('manuscripts')
+                              .download(path);
+                            
+                            if (error) throw error;
+                            
+                            const url = URL.createObjectURL(data);
+                            window.open(url, '_blank');
+                          } catch (error) {
+                            console.error('View error:', error);
+                          }
+                        }}
+                      >
+                        <Eye className="h-4 w-4" />
                       </Button>
                     </>
                   )}
