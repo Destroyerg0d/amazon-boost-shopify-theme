@@ -29,9 +29,7 @@ interface UserProfile {
   phone: string | null;
   created_at: string;
   updated_at: string;
-  user_roles?: {
-    role: 'admin' | 'customer';
-  }[];
+  user_role?: 'admin' | 'customer';
 }
 
 const AdminUsers = () => {
@@ -51,14 +49,28 @@ const AdminUsers = () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select(`
-          *,
-          user_roles (role)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setUsers(data || []);
+      
+      // Fetch user roles separately for each user
+      const usersWithRoles = await Promise.all(
+        (data || []).map(async (user) => {
+          const { data: roleData } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', user.user_id)
+            .single();
+          
+          return {
+            ...user,
+            user_role: roleData?.role || 'customer'
+          };
+        })
+      );
+      
+      setUsers(usersWithRoles);
     } catch (error) {
       console.error('Error fetching users:', error);
       toast({
@@ -108,7 +120,7 @@ const AdminUsers = () => {
   };
 
   const getUserRole = (user: UserProfile): 'admin' | 'customer' => {
-    return user.user_roles?.[0]?.role || 'customer';
+    return user.user_role || 'customer';
   };
 
   const getRoleBadge = (role: 'admin' | 'customer') => {
@@ -340,7 +352,7 @@ interface UserEditFormProps {
 
 const UserEditForm = ({ user, onUpdate, onCancel }: UserEditFormProps) => {
   const [role, setRole] = useState<'admin' | 'customer'>(
-    user.user_roles?.[0]?.role || 'customer'
+    user.user_role || 'customer'
   );
 
   const handleSubmit = (e: React.FormEvent) => {

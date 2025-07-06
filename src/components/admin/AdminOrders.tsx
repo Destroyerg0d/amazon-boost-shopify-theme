@@ -39,11 +39,11 @@ interface Order {
   profiles?: {
     full_name: string;
     email: string;
-  };
+  } | null;
   services?: {
     name: string;
     category: string;
-  };
+  } | null;
 }
 
 const AdminOrders = () => {
@@ -65,13 +65,13 @@ const AdminOrders = () => {
         .from('orders')
         .select(`
           *,
-          profiles!orders_user_id_fkey (full_name, email),
+          profiles (full_name, email),
           services (name, category)
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setOrders(data || []);
+      setOrders((data as any) || []);
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast({

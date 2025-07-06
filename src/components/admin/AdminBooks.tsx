@@ -42,7 +42,7 @@ interface Book {
   profiles?: {
     full_name: string;
     email: string;
-  };
+  } | null;
 }
 
 const AdminBooks = () => {
@@ -64,12 +64,12 @@ const AdminBooks = () => {
         .from('books')
         .select(`
           *,
-          profiles!books_user_id_fkey (full_name, email)
+          profiles (full_name, email)
         `)
         .order('uploaded_at', { ascending: false });
 
       if (error) throw error;
-      setBooks(data || []);
+      setBooks((data as any) || []);
     } catch (error) {
       console.error('Error fetching books:', error);
       toast({
