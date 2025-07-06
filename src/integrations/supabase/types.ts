@@ -11,8 +11,11 @@ export type Database = {
     Tables: {
       books: {
         Row: {
-          amazon_url: string | null
+          admin_feedback: string | null
+          approval_status: string | null
+          asin: string | null
           author: string | null
+          author_note: string | null
           description: string | null
           explicit_content: boolean | null
           front_cover_url: string | null
@@ -26,8 +29,11 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          amazon_url?: string | null
+          admin_feedback?: string | null
+          approval_status?: string | null
+          asin?: string | null
           author?: string | null
+          author_note?: string | null
           description?: string | null
           explicit_content?: boolean | null
           front_cover_url?: string | null
@@ -41,8 +47,11 @@ export type Database = {
           user_id: string
         }
         Update: {
-          amazon_url?: string | null
+          admin_feedback?: string | null
+          approval_status?: string | null
+          asin?: string | null
           author?: string | null
+          author_note?: string | null
           description?: string | null
           explicit_content?: boolean | null
           front_cover_url?: string | null
@@ -146,28 +155,85 @@ export type Database = {
         }
         Relationships: []
       }
+      review_plans: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          plan_name: string
+          plan_type: string
+          purchased_at: string
+          status: string
+          total_reviews: number
+          updated_at: string
+          used_reviews: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          plan_name: string
+          plan_type: string
+          purchased_at?: string
+          status?: string
+          total_reviews?: number
+          updated_at?: string
+          used_reviews?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          plan_name?: string
+          plan_type?: string
+          purchased_at?: string
+          status?: string
+          total_reviews?: number
+          updated_at?: string
+          used_reviews?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
+          amazon_visible: boolean | null
           book_id: string
           comment: string | null
           id: string
+          masked_reviewer_name: string | null
+          plan_type: string | null
           rating: number
+          review_plan_id: string | null
+          review_type: string | null
           reviewed_at: string
           reviewer_name: string
         }
         Insert: {
+          amazon_visible?: boolean | null
           book_id: string
           comment?: string | null
           id?: string
+          masked_reviewer_name?: string | null
+          plan_type?: string | null
           rating: number
+          review_plan_id?: string | null
+          review_type?: string | null
           reviewed_at?: string
           reviewer_name: string
         }
         Update: {
+          amazon_visible?: boolean | null
           book_id?: string
           comment?: string | null
           id?: string
+          masked_reviewer_name?: string | null
+          plan_type?: string | null
           rating?: number
+          review_plan_id?: string | null
+          review_type?: string | null
           reviewed_at?: string
           reviewer_name?: string
         }

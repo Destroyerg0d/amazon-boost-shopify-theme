@@ -46,11 +46,14 @@ interface Book {
   description: string | null;
   genre: string | null;
   language: string | null;
-  amazon_url: string | null;
+  asin: string | null;
   manuscript_url: string | null;
   front_cover_url: string | null;
   explicit_content: boolean | null;
   upload_status: string | null;
+  approval_status: string | null;
+  admin_feedback: string | null;
+  author_note: string | null;
   uploaded_at: string;
 }
 
@@ -232,7 +235,7 @@ const Dashboard = () => {
             description: newBook.description.trim() || null,
             genre: newBook.genre || null,
             language: newBook.language,
-            amazon_url: newBook.amazon_url.trim() || null,
+            asin: newBook.asin.trim() || null,
             manuscript_url: manuscriptUrl.publicUrl,
             front_cover_url: coverUrl.publicUrl,
             explicit_content: newBook.explicit_content,
