@@ -265,7 +265,7 @@ export default function Contact() {
               <CardContent>
                 <ul className="space-y-3">
                   {[
-                    "Expert team with 10+ years in Amazon publishing",
+                    "Expert team specializing in Amazon publishing",
                     "Proven track record of successful book launches",
                     "Professional review services that boost rankings",
                     "Personalized support throughout your journey",
