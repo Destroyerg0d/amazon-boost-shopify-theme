@@ -35,6 +35,7 @@ interface Book {
   admin_feedback: string | null;
   author_note: string | null;
   uploaded_at: string;
+  updated_at: string | null;
 }
 
 interface DashboardStats {
