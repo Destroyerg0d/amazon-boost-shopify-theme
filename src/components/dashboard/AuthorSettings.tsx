@@ -299,12 +299,32 @@ const AuthorSettings = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                placeholder="Enter your phone number"
-              />
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Country Code"
+                  value={formData.phone.startsWith('+') ? formData.phone.split(' ')[0] : '+1'}
+                  onChange={(e) => {
+                    const countryCode = e.target.value.startsWith('+') ? e.target.value : '+' + e.target.value.replace(/[^\d]/g, '');
+                    const phoneNumber = formData.phone.includes(' ') ? formData.phone.split(' ').slice(1).join('') : formData.phone.replace(/^\+\d+/, '');
+                    handleInputChange('phone', countryCode + (phoneNumber ? ' ' + phoneNumber : ''));
+                  }}
+                  className="w-28"
+                />
+                <Input
+                  id="phone"
+                  value={formData.phone.includes(' ') ? formData.phone.split(' ').slice(1).join('') : formData.phone.replace(/^\+\d+/, '')}
+                  onChange={(e) => {
+                    const phoneNumber = e.target.value.replace(/[^\d]/g, '');
+                    const countryCode = formData.phone.startsWith('+') ? formData.phone.split(' ')[0] : '+1';
+                    handleInputChange('phone', countryCode + (phoneNumber ? ' ' + phoneNumber : ''));
+                  }}
+                  placeholder="Enter your phone number"
+                  className="flex-1"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Enter country code (e.g., +1 for US, +91 for India) and phone number
+              </p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="website">Website (Optional)</Label>

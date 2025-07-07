@@ -109,32 +109,140 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
     }
   };
 
-  const availablePlans = [
-    {
-      name: 'Basic Review Package',
-      type: 'basic',
-      reviews: 5,
-      price: 49,
-      description: 'Perfect for new authors looking to get started',
-      features: ['5 Professional Reviews', 'Basic Review Analysis', 'Email Support']
-    },
-    {
-      name: 'Silver Review Package',
-      type: 'silver',
-      reviews: 10,
-      price: 89,
-      description: 'Great for authors building their reputation',
-      features: ['10 Professional Reviews', 'Detailed Analysis', 'Priority Support', 'Amazon Optimization Tips']
-    },
-    {
-      name: 'Gold Review Package',
-      type: 'gold',
-      reviews: 20,
-      price: 159,
-      description: 'Ultimate package for serious authors',
-      features: ['20 Professional Reviews', 'Premium Analysis', '24/7 Support', 'Marketing Consultation', 'Verified Reviews']
-    }
-  ];
+  const [selectedType, setSelectedType] = useState<'verified' | 'unverified'>('verified');
+
+  const availablePlans = {
+    verified: [
+      {
+        name: "Starter Trial",
+        type: "starter",
+        reviews: "10 reviews",
+        originalPrice: 230,
+        discountedPrice: 170,
+        discount: "26% OFF",
+        features: [
+          "Written reviews only",
+          "Verified purchase reviews",
+          "Genre-matched readers",
+          "Quality guarantee"
+        ]
+      },
+      {
+        name: "Bronze Package",
+        type: "bronze",
+        reviews: "20–25 reviews",
+        originalPrice: 450,
+        discountedPrice: 350,
+        discount: "22% OFF",
+        features: [
+          "Written reviews only",
+          "Verified purchase reviews",
+          "Genre-matched readers",
+          "Quality guarantee",
+          "Review analytics"
+        ]
+      },
+      {
+        name: "Silver Package",
+        type: "silver",
+        reviews: "45–50 reviews",
+        originalPrice: 870,
+        discountedPrice: 700,
+        discount: "20% OFF",
+        features: [
+          "Written reviews only",
+          "Verified purchase reviews",
+          "Genre-matched readers",
+          "Quality guarantee",
+          "Review analytics",
+          "Priority support"
+        ],
+        popular: true
+      },
+      {
+        name: "Gold Package",
+        type: "gold",
+        reviews: "95–100 reviews",
+        originalPrice: 1290,
+        discountedPrice: 1050,
+        discount: "19% OFF",
+        features: [
+          "Written reviews only",
+          "Verified purchase reviews",
+          "Genre-matched readers",
+          "Quality guarantee",
+          "Review analytics",
+          "Priority support",
+          "Dedicated account manager"
+        ]
+      }
+    ],
+    unverified: [
+      {
+        name: "Starter Trial",
+        type: "starter",
+        reviews: "10 reviews",
+        originalPrice: 170,
+        discountedPrice: 130,
+        discount: "24% OFF",
+        features: [
+          "Text reviews only",
+          "Fast delivery",
+          "Genre-matched readers",
+          "Quality guarantee"
+        ]
+      },
+      {
+        name: "Bronze Package",
+        type: "bronze",
+        reviews: "20–25 reviews",
+        originalPrice: 280,
+        discountedPrice: 230,
+        discount: "18% OFF",
+        features: [
+          "Text reviews only",
+          "Fast delivery",
+          "Genre-matched readers",
+          "Quality guarantee",
+          "Review analytics"
+        ]
+      },
+      {
+        name: "Silver Package",
+        type: "silver",
+        reviews: "45–50 reviews",
+        originalPrice: 560,
+        discountedPrice: 450,
+        discount: "20% OFF",
+        features: [
+          "Text reviews only",
+          "Fast delivery",
+          "Genre-matched readers",
+          "Quality guarantee",
+          "Review analytics",
+          "Priority support"
+        ],
+        popular: true
+      },
+      {
+        name: "Gold Package",
+        type: "gold",
+        reviews: "95–100 reviews",
+        originalPrice: 980,
+        discountedPrice: 790,
+        discount: "19% OFF",
+        features: [
+          "Text reviews only",
+          "Fast delivery",
+          "Genre-matched readers",
+          "Quality guarantee",
+          "Review analytics",
+          "Priority support",
+          "Dedicated account manager"
+        ]
+      }
+    ]
+  };
 
   return (
     <div className="space-y-6">
@@ -216,15 +324,84 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
             </div>
           )}
 
+          {/* Review Type Selection */}
+          <div className="mb-8">
+            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-8">
+              {/* Verified Reviews Card */}
+              <Card 
+                className={`cursor-pointer transition-all hover:shadow-medium ${
+                  selectedType === 'verified' ? 'border-success shadow-soft bg-success/5' : ''
+                }`}
+                onClick={() => setSelectedType('verified')}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                      <CheckCircle className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold">✅ Verified Reviews</h3>
+                      <p className="text-sm text-muted-foreground">Amazon verified purchase</p>
+                    </div>
+                  </div>
+                  <ul className="text-sm space-y-1 text-muted-foreground">
+                    <li>• Higher credibility & trust</li>
+                    <li>• Amazon algorithm boost</li>
+                    <li>• Verified purchase badge</li>
+                    <li>• Premium pricing</li>
+                  </ul>
+                  {selectedType === 'verified' && (
+                    <div className="mt-4 text-center">
+                      <Badge className="bg-success text-success-foreground">Selected</Badge>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Unverified Reviews Card */}
+              <Card 
+                className={`cursor-pointer transition-all hover:shadow-medium ${
+                  selectedType === 'unverified' ? 'border-primary shadow-soft bg-primary/5' : ''
+                }`}
+                onClick={() => setSelectedType('unverified')}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                      <Zap className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold">🔓 Unverified Reviews</h3>
+                      <p className="text-sm text-muted-foreground">Fast & affordable</p>
+                    </div>
+                  </div>
+                  <ul className="text-sm space-y-1 text-muted-foreground">
+                    <li>• Faster delivery</li>
+                    <li>• Budget-friendly pricing</li>
+                    <li>• Great for pre-launch</li>
+                    <li>• Build initial momentum</li>
+                  </ul>
+                  {selectedType === 'unverified' && (
+                    <div className="mt-4 text-center">
+                      <Badge className="bg-primary text-primary-foreground">Selected</Badge>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
           {/* Available Plans */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Available Review Packages</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {availablePlans.map((plan) => (
-                <Card key={plan.type} className="hover:shadow-medium transition-all relative">
-                  {plan.type === 'gold' && (
+            <h3 className="text-lg font-semibold mb-4">
+              {selectedType === 'verified' ? 'Verified' : 'Unverified'} Review Packages
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {availablePlans[selectedType].map((plan, index) => (
+                <Card key={plan.type} className={`hover:shadow-medium transition-all relative ${plan.popular ? 'border-accent shadow-medium' : ''}`}>
+                  {plan.popular && (
                     <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                      <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white">
+                      <Badge className="bg-accent text-accent-foreground">
                         Most Popular
                       </Badge>
                     </div>
@@ -234,23 +411,34 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
                       {getPlanIcon(plan.type)}
                       <CardTitle className="text-xl">{plan.name}</CardTitle>
                     </div>
-                    <CardDescription>{plan.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div className="text-center">
-                        <p className="text-3xl font-bold text-primary">${plan.price}</p>
-                        <p className="text-sm text-muted-foreground">{plan.reviews} Professional Reviews</p>
+                        <div className="text-3xl font-bold text-primary">
+                          ${plan.discountedPrice}
+                        </div>
+                        <div className="text-sm text-muted-foreground line-through">
+                          ${plan.originalPrice}
+                        </div>
+                        <Badge variant="outline" className="bg-success/10 text-success border-success/20 mt-1">
+                          {plan.discount}
+                        </Badge>
+                        <p className="text-sm text-muted-foreground mt-2 font-semibold">{plan.reviews}</p>
                       </div>
                       <ul className="space-y-2">
-                        {plan.features.map((feature, index) => (
-                          <li key={index} className="flex items-center gap-2 text-sm">
-                            <CheckCircle className="w-4 h-4 text-success" />
+                        {plan.features.map((feature, idx) => (
+                          <li key={idx} className="flex items-start gap-2 text-sm">
+                            <CheckCircle className="w-4 h-4 text-success mt-0.5 flex-shrink-0" />
                             {feature}
                           </li>
                         ))}
                       </ul>
-                      <Button className="w-full" size="lg">
+                      <Button 
+                        className="w-full" 
+                        size="lg"
+                        variant={plan.popular ? "default" : "outline"}
+                      >
                         <Plus className="w-4 h-4 mr-2" />
                         Purchase Plan
                       </Button>

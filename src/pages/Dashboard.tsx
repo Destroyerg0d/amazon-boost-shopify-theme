@@ -144,7 +144,7 @@ const Dashboard = () => {
 
   const handleViewReviews = () => {
     setActiveTab('reviews');
-    setActiveView('plans');
+    setActiveView('received');
   };
 
   const handleViewSettings = () => {

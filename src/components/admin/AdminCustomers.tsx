@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Users, Phone, Mail, MessageSquare, Calendar, DollarSign, Edit, Eye } from 'lucide-react';
+import { Users, Phone, Mail, MessageSquare, Calendar, DollarSign, Edit, Eye, Search, Filter } from 'lucide-react';
 
 interface Customer {
   id: string;
@@ -26,6 +26,8 @@ interface Customer {
   created_at: string;
   updated_at: string;
   admin_notes: string | null;
+  lifetime_spend?: number;
+  user_id?: string;
 }
 
 const AdminCustomers = () => {
@@ -35,6 +37,8 @@ const AdminCustomers = () => {
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterType, setFilterType] = useState<string>('all');
+  const [filterSpendRange, setFilterSpendRange] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -43,13 +47,83 @@ const AdminCustomers = () => {
 
   const fetchCustomers = async () => {
     try {
-      const { data, error } = await supabase
-        .from('customers')
+      // Get all profiles (registered users)
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setCustomers(data || []);
+      if (profilesError) throw profilesError;
+
+      // Get existing customers from customers table
+      const { data: existingCustomers, error: customersError } = await supabase
+        .from('customers')
+        .select('*');
+
+      if (customersError) throw customersError;
+
+      // Calculate lifetime spend for each user
+      const customersWithSpend = await Promise.all(
+        (profiles || []).map(async (profile) => {
+          // Check if user has review plans
+          const { data: plans } = await supabase
+            .from('review_plans')
+            .select('*')
+            .eq('user_id', profile.user_id);
+
+          // Calculate total spend from plans
+          const lifetimeSpend = (plans || []).reduce((total, plan) => {
+            // Estimate plan cost based on plan type and reviews
+            const planCost = getPlanCost(plan.plan_type, plan.total_reviews);
+            return total + planCost;
+          }, 0);
+
+          // Check if this user exists in customers table
+          const existingCustomer = existingCustomers?.find(c => c.email === profile.email);
+
+          if (existingCustomer) {
+            // Update existing customer with profile data
+            return {
+              ...existingCustomer,
+              name: profile.full_name || existingCustomer.name,
+              phone: profile.phone || existingCustomer.phone,
+              lifetime_spend: lifetimeSpend,
+              user_id: profile.user_id,
+              is_buyer: lifetimeSpend > 0 || existingCustomer.is_buyer
+            };
+          } else {
+            // Create new customer from profile
+            return {
+              id: profile.id,
+              user_id: profile.user_id,
+              name: profile.full_name || 'Unknown User',
+              email: profile.email || '',
+              phone: profile.phone || 'Not provided',
+              business_type: null,
+              monthly_revenue: null,
+              message: null,
+              is_buyer: lifetimeSpend > 0,
+              lead_source: 'user_registration',
+              status: lifetimeSpend > 0 ? 'converted' : 'new',
+              created_at: profile.created_at,
+              updated_at: profile.updated_at,
+              admin_notes: null,
+              lifetime_spend: lifetimeSpend
+            } as Customer;
+          }
+        })
+      );
+
+      // Add customers who don't have profiles (leads from contact forms)
+      const profileEmails = profiles?.map(p => p.email) || [];
+      const customersWithoutProfiles = existingCustomers?.filter(c => !profileEmails.includes(c.email)) || [];
+      
+      const allCustomers = [
+        ...customersWithSpend,
+        ...customersWithoutProfiles.map(c => ({ ...c, lifetime_spend: 0 }))
+      ];
+
+      setCustomers(allCustomers);
     } catch (error) {
       console.error('Error fetching customers:', error);
       toast({
@@ -60,6 +134,12 @@ const AdminCustomers = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getPlanCost = (planType: string, totalReviews: number) => {
+    // Estimate cost based on plan type and review count
+    const baseCostPerReview = planType === 'premium' ? 15 : planType === 'gold' ? 12 : planType === 'silver' ? 10 : 8;
+    return totalReviews * baseCostPerReview;
   };
 
   const updateCustomer = async (customer: Customer) => {
@@ -108,7 +188,19 @@ const AdminCustomers = () => {
     const typeMatch = filterType === 'all' || 
       (filterType === 'buyers' && customer.is_buyer) ||
       (filterType === 'leads' && !customer.is_buyer);
-    return statusMatch && typeMatch;
+    
+    const spendMatch = filterSpendRange === 'all' || 
+      (filterSpendRange === 'none' && (customer.lifetime_spend || 0) === 0) ||
+      (filterSpendRange === 'low' && (customer.lifetime_spend || 0) > 0 && (customer.lifetime_spend || 0) <= 500) ||
+      (filterSpendRange === 'medium' && (customer.lifetime_spend || 0) > 500 && (customer.lifetime_spend || 0) <= 2000) ||
+      (filterSpendRange === 'high' && (customer.lifetime_spend || 0) > 2000);
+
+    const searchMatch = !searchTerm || 
+      customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.phone.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return statusMatch && typeMatch && spendMatch && searchMatch;
   });
 
   const totalCustomers = customers.length;
@@ -173,7 +265,16 @@ const AdminCustomers = () => {
           <CardDescription>Manage your customer database and track leads</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-4 mb-6">
+          <div className="flex flex-wrap gap-4 mb-6">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search customers..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 w-64"
+              />
+            </div>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="Filter by status" />
@@ -197,6 +298,18 @@ const AdminCustomers = () => {
                 <SelectItem value="leads">Leads Only</SelectItem>
               </SelectContent>
             </Select>
+            <Select value={filterSpendRange} onValueChange={setFilterSpendRange}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Filter by spend" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Spend Ranges</SelectItem>
+                <SelectItem value="none">No Spend ($0)</SelectItem>
+                <SelectItem value="low">Low Spend ($1-$500)</SelectItem>
+                <SelectItem value="medium">Medium Spend ($501-$2000)</SelectItem>
+                <SelectItem value="high">High Spend ($2000+)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Customer Table */}
@@ -207,6 +320,7 @@ const AdminCustomers = () => {
                   <TableHead>Name</TableHead>
                   <TableHead>Contact</TableHead>
                   <TableHead>Business</TableHead>
+                  <TableHead>Lifetime Spend</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Created</TableHead>
@@ -233,6 +347,19 @@ const AdminCustomers = () => {
                       <div className="text-sm">
                         <div>{customer.business_type || 'N/A'}</div>
                         <div className="text-muted-foreground">{customer.monthly_revenue || 'N/A'}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-sm font-medium">
+                        <div className="flex items-center gap-1">
+                          <DollarSign className="h-3 w-3 text-green-600" />
+                          ${(customer.lifetime_spend || 0).toFixed(2)}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {customer.lifetime_spend === 0 ? 'No purchases' : 
+                           customer.lifetime_spend! <= 500 ? 'Low spender' :
+                           customer.lifetime_spend! <= 2000 ? 'Medium spender' : 'High spender'}
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell>
