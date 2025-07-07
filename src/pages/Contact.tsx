@@ -244,7 +244,15 @@ export default function Contact() {
                   <Badge className="ml-auto bg-blue-500">24/7</Badge>
                 </Button>
 
-                <Button className="w-full justify-start gap-3 h-14" variant="outline">
+                <Button 
+                  className="w-full justify-start gap-3 h-14" 
+                  variant="outline"
+                  onClick={() => {
+                    // Scroll to contact form
+                    const form = document.querySelector('form');
+                    form?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }}
+                >
                   <Calendar className="w-5 h-5" />
                   <div className="text-left">
                     <div className="font-medium">Schedule a Call</div>
