@@ -396,73 +396,84 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
 
             {/* Investment Calculator for Verified Reviews */}
             {selectedType === 'verified' && (
-              <Card className="max-w-2xl mx-auto">
-                <CardHeader className="text-center">
-                  <CardTitle className="flex items-center justify-center gap-2">
-                    <Calculator className="w-5 h-5 text-success" />
-                    Total Investment Calculator
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    Calculate your total investment including book purchase costs
-                  </p>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="calculatorPlan">Select Plan</Label>
-                      <select 
-                        id="calculatorPlan"
-                        value={selectedPlanIndex}
-                        onChange={(e) => setSelectedPlanIndex(parseInt(e.target.value))}
-                        className="w-full mt-1 p-2 border rounded-md bg-background"
-                      >
-                        {availablePlans[selectedType].map((plan, index) => (
-                          <option key={index} value={index}>
-                            {plan.name} - {plan.reviews}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <Label htmlFor="bookPriceCalc">Book Price on Amazon ($)</Label>
-                      <Input
-                        id="bookPriceCalc"
-                        type="number"
-                        step="0.01"
-                        value={bookPrice}
-                        onChange={(e) => setBookPrice(parseFloat(e.target.value) || 0)}
-                        placeholder="Enter your book price"
-                        className="mt-1"
-                      />
-                    </div>
-                  </div>
-                  <div className="bg-gradient-to-r from-success/10 to-primary/10 p-6 rounded-lg border border-success/20">
-                    <div className="text-center space-y-3">
-                      <h3 className="font-semibold text-lg">Investment Breakdown</h3>
-                      <div className="grid grid-cols-3 gap-4 text-sm">
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-primary">
-                            ${availablePlans[selectedType][selectedPlanIndex].discountedPrice}
+              <div className="max-w-4xl mx-auto">
+                <Card className="bg-gradient-subtle border-primary/20">
+                  <CardHeader className="text-center pb-4">
+                    <CardTitle className="flex items-center justify-center gap-2 text-2xl">
+                      <Calculator className="w-6 h-6 text-primary" />
+                      Investment Calculator
+                    </CardTitle>
+                    <p className="text-muted-foreground">
+                      Calculate your total cost including book purchases
+                    </p>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <Label htmlFor="calculatorPlan" className="text-sm font-medium">Choose Your Plan</Label>
+                        <div className="relative">
+                          <select 
+                            id="calculatorPlan"
+                            value={selectedPlanIndex}
+                            onChange={(e) => setSelectedPlanIndex(parseInt(e.target.value))}
+                            className="w-full p-3 border border-input rounded-lg bg-background/50 backdrop-blur-sm appearance-none cursor-pointer hover:border-primary/50 transition-colors"
+                          >
+                            {availablePlans[selectedType].map((plan, index) => (
+                              <option key={index} value={index} className="bg-background">
+                                {plan.name} - {plan.reviews} (${plan.discountedPrice})
+                              </option>
+                            ))}
+                          </select>
+                          <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                            <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
                           </div>
-                          <div className="text-muted-foreground">Plan Cost</div>
                         </div>
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-success">
-                            ${(bookPrice * parseInt(availablePlans[selectedType][selectedPlanIndex].reviews.split(' ')[0])).toFixed(2)}
+                      </div>
+                      <div className="space-y-3">
+                        <Label htmlFor="bookPriceCalc" className="text-sm font-medium">Your Book Price ($)</Label>
+                        <Input
+                          id="bookPriceCalc"
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={bookPrice}
+                          onChange={(e) => setBookPrice(parseFloat(e.target.value) || 0)}
+                          placeholder="e.g., 12.99"
+                          className="p-3 bg-background/50 backdrop-blur-sm border-input hover:border-primary/50 transition-colors"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-primary/5 via-success/5 to-accent/5 p-6 rounded-xl border border-primary/10">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="text-center space-y-2">
+                          <div className="text-sm text-muted-foreground font-medium">Service Fee</div>
+                          <div className="text-3xl font-bold text-primary">
+                            ${availablePlans[selectedType][selectedPlanIndex]?.discountedPrice || 0}
                           </div>
-                          <div className="text-muted-foreground">Book Purchases</div>
                         </div>
-                        <div className="text-center border-l">
-                          <div className="text-3xl font-bold text-foreground">
-                            ${(availablePlans[selectedType][selectedPlanIndex].discountedPrice + (bookPrice * parseInt(availablePlans[selectedType][selectedPlanIndex].reviews.split(' ')[0]))).toFixed(2)}
+                        <div className="text-center space-y-2">
+                          <div className="text-sm text-muted-foreground font-medium">Book Copies</div>
+                          <div className="text-3xl font-bold text-success">
+                            ${bookPrice > 0 ? (bookPrice * (parseInt(availablePlans[selectedType][selectedPlanIndex]?.reviews.split('–')[0] || '0') || parseInt(availablePlans[selectedType][selectedPlanIndex]?.reviews.split(' ')[0] || '0'))).toFixed(2) : '0.00'}
                           </div>
-                          <div className="text-muted-foreground font-medium">Total Investment</div>
+                          <div className="text-xs text-muted-foreground">
+                            {bookPrice > 0 ? `${parseInt(availablePlans[selectedType][selectedPlanIndex]?.reviews.split('–')[0] || '0') || parseInt(availablePlans[selectedType][selectedPlanIndex]?.reviews.split(' ')[0] || '0')} copies × $${bookPrice}` : 'Enter book price'}
+                          </div>
+                        </div>
+                        <div className="text-center space-y-2 md:border-l border-primary/20">
+                          <div className="text-sm text-muted-foreground font-medium">Total Investment</div>
+                          <div className="text-4xl font-bold text-foreground">
+                            ${bookPrice > 0 ? ((availablePlans[selectedType][selectedPlanIndex]?.discountedPrice || 0) + (bookPrice * (parseInt(availablePlans[selectedType][selectedPlanIndex]?.reviews.split('–')[0] || '0') || parseInt(availablePlans[selectedType][selectedPlanIndex]?.reviews.split(' ')[0] || '0')))).toFixed(2) : (availablePlans[selectedType][selectedPlanIndex]?.discountedPrice || 0)}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             )}
           </div>
 
