@@ -17,6 +17,7 @@ import BookUpload from '@/pages/BookUpload';
 import BooksList from '@/pages/BooksList';
 import ReviewPlans from '@/pages/ReviewPlans';
 import ReviewsReceived from '@/pages/ReviewsReceived';
+import BookPlanAttachment from '@/components/dashboard/BookPlanAttachment';
 
 interface Book {
   id: string;
@@ -192,14 +193,24 @@ const Dashboard = () => {
       return <ReviewsReceived onBack={() => setActiveView('plans')} />;
     }
     
+    if (activeView === 'manage') {
+      return <BookPlanAttachment />;
+    }
+    
     return (
       <div className="space-y-6">
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap">
           <Button 
             variant={activeView === 'plans' ? 'default' : 'outline'}
             onClick={() => setActiveView('plans')}
           >
             Review Plans
+          </Button>
+          <Button 
+            variant={activeView === 'manage' ? 'default' : 'outline'}
+            onClick={() => setActiveView('manage')}
+          >
+            Manage Plans
           </Button>
           <Button 
             variant={activeView === 'received' ? 'default' : 'outline'}
@@ -211,6 +222,8 @@ const Dashboard = () => {
         
         {activeView === 'plans' ? (
           <ReviewPlans onBack={() => setActiveTab('overview')} />
+        ) : activeView === 'manage' ? (
+          <BookPlanAttachment />
         ) : (
           <ReviewsReceived onBack={() => setActiveView('plans')} />
         )}

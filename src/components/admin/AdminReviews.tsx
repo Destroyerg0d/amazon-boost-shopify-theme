@@ -105,7 +105,7 @@ const AdminReviews = () => {
     try {
       const { data, error } = await supabase
         .from('books')
-        .select('id, title, author')
+        .select('id, title, author, user_id')
         .eq('approval_status', 'approved');
 
       if (error) throw error;
@@ -119,7 +119,21 @@ const AdminReviews = () => {
     try {
       const { data, error } = await supabase
         .from('review_plans')
-        .select('id, plan_name, plan_type, total_reviews, used_reviews, status')
+        .select(`
+          id, 
+          plan_name, 
+          plan_type, 
+          total_reviews, 
+          used_reviews, 
+          status, 
+          user_id, 
+          book_id,
+          books!review_plans_book_id_fkey (
+            title,
+            author,
+            user_id
+          )
+        `)
         .eq('status', 'active');
 
       if (error) throw error;
@@ -149,25 +163,33 @@ const AdminReviews = () => {
 
       if (reviewError) throw reviewError;
 
-      // Update review plan usage if a plan was selected
+      // Update review plan usage and attach to book if not already attached
       if (reviewData.review_plan_id) {
-        const { data: currentPlan } = await supabase
+        const { data: currentPlan, error: planFetchError } = await supabase
           .from('review_plans')
-          .select('used_reviews')
+          .select('used_reviews, book_id')
           .eq('id', reviewData.review_plan_id)
           .single();
 
-        if (currentPlan) {
-          const { error: updateError } = await supabase
-            .from('review_plans')
-            .update({ 
-              used_reviews: currentPlan.used_reviews + 1
-            })
-            .eq('id', reviewData.review_plan_id);
+        if (planFetchError) throw planFetchError;
 
-          if (updateError) {
-            console.error('Error updating review plan:', updateError);
-          }
+        // Update the plan with new usage count and attach to book if not already attached
+        const updates: any = {
+          used_reviews: currentPlan.used_reviews + 1
+        };
+
+        // If plan is not already attached to a book, attach it to this book
+        if (!currentPlan.book_id) {
+          updates.book_id = reviewData.book_id;
+        }
+
+        const { error: updateError } = await supabase
+          .from('review_plans')
+          .update(updates)
+          .eq('id', reviewData.review_plan_id);
+
+        if (updateError) {
+          console.error('Error updating review plan:', updateError);
         }
       }
 
@@ -423,17 +445,33 @@ const AddReviewForm = ({ books, reviewPlans, onSubmit, onCancel }: AddReviewForm
     review_plan_id: ''
   });
 
+  // Get the selected book's author user_id
+  const selectedBook = books.find(book => book.id === formData.book_id);
+  
+  // Filter plans to show only those belonging to the selected book's author
+  const availablePlans = reviewPlans.filter(plan => {
+    if (!selectedBook) return false;
+    // Show plans that belong to the book's author and are not already attached to a book
+    return plan.user_id === selectedBook.user_id && !plan.book_id;
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.book_id || !formData.reviewer_name) return;
+    if (!formData.book_id || !formData.reviewer_name || !formData.review_plan_id) {
+      alert('Please fill in all required fields including selecting a plan.');
+      return;
+    }
     onSubmit(formData);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <Label htmlFor="bookId">Book</Label>
-        <Select value={formData.book_id} onValueChange={(value) => setFormData({...formData, book_id: value})}>
+        <Label htmlFor="bookId">Book *</Label>
+        <Select 
+          value={formData.book_id} 
+          onValueChange={(value) => setFormData({...formData, book_id: value, review_plan_id: ''})}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select a book" />
           </SelectTrigger>
@@ -448,7 +486,7 @@ const AddReviewForm = ({ books, reviewPlans, onSubmit, onCancel }: AddReviewForm
       </div>
 
       <div>
-        <Label htmlFor="reviewerName">Reviewer Name</Label>
+        <Label htmlFor="reviewerName">Reviewer Name *</Label>
         <Input
           id="reviewerName"
           value={formData.reviewer_name}
@@ -459,7 +497,7 @@ const AddReviewForm = ({ books, reviewPlans, onSubmit, onCancel }: AddReviewForm
       </div>
 
       <div>
-        <Label htmlFor="rating">Rating</Label>
+        <Label htmlFor="rating">Rating *</Label>
         <Select value={formData.rating.toString()} onValueChange={(value) => setFormData({...formData, rating: parseInt(value)})}>
           <SelectTrigger>
             <SelectValue />
@@ -475,7 +513,7 @@ const AddReviewForm = ({ books, reviewPlans, onSubmit, onCancel }: AddReviewForm
       </div>
 
       <div>
-        <Label htmlFor="reviewType">Review Type</Label>
+        <Label htmlFor="reviewType">Review Type *</Label>
         <Select value={formData.review_type} onValueChange={(value) => setFormData({...formData, review_type: value})}>
           <SelectTrigger>
             <SelectValue />
@@ -488,14 +526,23 @@ const AddReviewForm = ({ books, reviewPlans, onSubmit, onCancel }: AddReviewForm
       </div>
 
       <div>
-        <Label htmlFor="planId">Review Plan (Optional)</Label>
-        <Select value={formData.review_plan_id || 'no-plan'} onValueChange={(value) => setFormData({...formData, review_plan_id: value === 'no-plan' ? '' : value})}>
+        <Label htmlFor="planId">Select Plan * {selectedBook && availablePlans.length === 0 && "(No available plans for this book's author)"}</Label>
+        <Select 
+          value={formData.review_plan_id} 
+          onValueChange={(value) => setFormData({...formData, review_plan_id: value})}
+          disabled={!selectedBook || availablePlans.length === 0}
+        >
           <SelectTrigger>
-            <SelectValue placeholder="Select a plan to fulfill (optional)" />
+            <SelectValue placeholder={
+              !selectedBook 
+                ? "Select a book first" 
+                : availablePlans.length === 0 
+                ? "No plans available" 
+                : "Select a plan"
+            } />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="no-plan">No plan selected</SelectItem>
-            {reviewPlans.map((plan) => (
+            {availablePlans.map((plan) => (
               <SelectItem key={plan.id} value={plan.id}>
                 {plan.plan_name} ({plan.used_reviews}/{plan.total_reviews} used)
               </SelectItem>
@@ -503,7 +550,7 @@ const AddReviewForm = ({ books, reviewPlans, onSubmit, onCancel }: AddReviewForm
           </SelectContent>
         </Select>
         <p className="text-xs text-muted-foreground mt-1">
-          Select a plan to fulfill with this review. The plan's used count will be incremented.
+          This review will be assigned to the selected plan and increment its usage count.
         </p>
       </div>
 
@@ -522,7 +569,9 @@ const AddReviewForm = ({ books, reviewPlans, onSubmit, onCancel }: AddReviewForm
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">Add Review</Button>
+        <Button type="submit" disabled={!formData.book_id || !formData.reviewer_name || !formData.review_plan_id}>
+          Add Review
+        </Button>
       </div>
     </form>
   );

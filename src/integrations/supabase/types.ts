@@ -221,6 +221,7 @@ export type Database = {
       }
       review_plans: {
         Row: {
+          book_id: string | null
           created_at: string
           expires_at: string | null
           id: string
@@ -234,6 +235,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          book_id?: string | null
           created_at?: string
           expires_at?: string | null
           id?: string
@@ -247,6 +249,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          book_id?: string | null
           created_at?: string
           expires_at?: string | null
           id?: string
@@ -259,7 +262,15 @@ export type Database = {
           used_reviews?: number
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "review_plans_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: true
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reviews: {
         Row: {
