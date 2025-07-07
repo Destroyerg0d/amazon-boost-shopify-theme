@@ -287,10 +287,10 @@ export const Pricing = () => {
           </TabsList>
 
           <TabsContent value="text" className="space-y-8">
-            {/* Pricing Calculator */}
-            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-8">
+            {/* Calculators */}
+            <div className={`grid gap-6 max-w-4xl mx-auto mb-8 ${selectedType === 'verified' ? 'md:grid-cols-2' : 'justify-center'}`}>
               {/* Turnaround Calculator */}
-              <Card>
+              <Card className={selectedType === 'unverified' ? 'max-w-md mx-auto' : ''}>
                 <CardHeader className="text-center">
                   <CardTitle className="flex items-center justify-center gap-2">
                     <Calculator className="w-5 h-5 text-primary" />
@@ -321,47 +321,65 @@ export const Pricing = () => {
                 </CardContent>
               </Card>
 
-              {/* Price Calculator for Verified Reviews */}
+              {/* Cost Calculator for Verified Reviews */}
               {selectedType === 'verified' && (
                 <Card>
                   <CardHeader className="text-center">
                     <CardTitle className="flex items-center justify-center gap-2">
                       <Calculator className="w-5 h-5 text-success" />
-                      Total Cost Calculator
+                      Total Investment Calculator
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div>
-                      <Label htmlFor="bookPrice">Book Price on Amazon ($)</Label>
-                      <Input
-                        id="bookPrice"
-                        type="number"
-                        step="0.01"
-                        value={bookPrice}
-                        onChange={(e) => setBookPrice(parseFloat(e.target.value) || 0)}
-                        placeholder="Enter book price"
-                        className="mt-1"
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Required for verified purchase reviews
-                      </p>
-                    </div>
-                    <div className="bg-success/10 p-4 rounded-lg">
-                      <div className="text-success font-semibold text-sm mb-2">
-                        Final Charge Breakdown:
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="calculatorPlan">Select Plan</Label>
+                        <select 
+                          id="calculatorPlan"
+                          className="w-full mt-1 p-2 border rounded-md bg-background"
+                        >
+                          {packages[selectedType].map((pkg, index) => (
+                            <option key={index} value={index}>
+                              {pkg.name} - {pkg.reviews}
+                            </option>
+                          ))}
+                        </select>
                       </div>
-                      <div className="space-y-1 text-sm">
-                        <div className="flex justify-between">
-                          <span>Plan Cost:</span>
-                          <span>${packages[selectedType][0].discountedPrice}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Book Purchase Cost:</span>
-                          <span>${(bookPrice * parseInt(packages[selectedType][0].reviews.split(' ')[0])).toFixed(2)}</span>
-                        </div>
-                        <div className="border-t pt-1 flex justify-between font-semibold">
-                          <span>Total Charge:</span>
-                          <span>${(packages[selectedType][0].discountedPrice + (bookPrice * parseInt(packages[selectedType][0].reviews.split(' ')[0]))).toFixed(2)}</span>
+                      <div>
+                        <Label htmlFor="bookPriceCalc">Book Price on Amazon ($)</Label>
+                        <Input
+                          id="bookPriceCalc"
+                          type="number"
+                          step="0.01"
+                          value={bookPrice}
+                          onChange={(e) => setBookPrice(parseFloat(e.target.value) || 0)}
+                          placeholder="Enter your book price"
+                          className="mt-1"
+                        />
+                      </div>
+                    </div>
+                    <div className="bg-gradient-to-r from-success/10 to-primary/10 p-6 rounded-lg border border-success/20">
+                      <div className="text-center space-y-3">
+                        <h3 className="font-semibold text-lg">Investment Breakdown</h3>
+                        <div className="grid grid-cols-3 gap-4 text-sm">
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-primary">
+                              ${packages[selectedType][0].discountedPrice}
+                            </div>
+                            <div className="text-muted-foreground">Plan Cost</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-success">
+                              ${(bookPrice * parseInt(packages[selectedType][0].reviews.split(' ')[0])).toFixed(2)}
+                            </div>
+                            <div className="text-muted-foreground">Book Purchases</div>
+                          </div>
+                          <div className="text-center border-l">
+                            <div className="text-3xl font-bold text-foreground">
+                              ${(packages[selectedType][0].discountedPrice + (bookPrice * parseInt(packages[selectedType][0].reviews.split(' ')[0]))).toFixed(2)}
+                            </div>
+                            <div className="text-muted-foreground font-medium">Total Investment</div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -383,29 +401,12 @@ export const Pricing = () => {
                   )}
                   <CardHeader className="text-center">
                     <CardTitle className="text-xl font-bold">{pkg.name}</CardTitle>
-                    {selectedType === 'verified' ? (
-                      <div>
-                        <div className="text-2xl font-bold text-primary mb-2">
-                          Plan: ${pkg.discountedPrice}
-                          <div className="text-xs text-muted-foreground line-through">
-                            Was ${pkg.originalPrice}
-                          </div>
-                        </div>
-                        <div className="text-lg font-semibold text-success">
-                          + Book Cost: ${(bookPrice * parseInt(pkg.reviews.split(' ')[0])).toFixed(2)}
-                        </div>
-                        <div className="text-2xl font-bold text-foreground border-t pt-2">
-                          Total: ${(pkg.discountedPrice + (bookPrice * parseInt(pkg.reviews.split(' ')[0]))).toFixed(2)}
-                        </div>
+                    <div className="text-3xl font-bold text-primary">
+                      ${pkg.discountedPrice}
+                      <div className="text-sm text-muted-foreground line-through">
+                        ${pkg.originalPrice}
                       </div>
-                    ) : (
-                      <div className="text-3xl font-bold text-primary">
-                        ${pkg.discountedPrice}
-                        <div className="text-sm text-muted-foreground line-through">
-                          ${pkg.originalPrice}
-                        </div>
-                      </div>
-                    )}
+                    </div>
                     <Badge variant="outline" className="bg-success/10 text-success border-success/20">
                       {pkg.discount}
                     </Badge>
@@ -432,10 +433,7 @@ export const Pricing = () => {
                       size="lg"
                       onClick={() => {
                         // Redirect to payment or login
-                        const totalCost = selectedType === 'verified' 
-                          ? pkg.discountedPrice + (bookPrice * parseInt(pkg.reviews.split(' ')[0]))
-                          : pkg.discountedPrice;
-                        console.log('Purchase plan:', pkg.name, 'Total:', totalCost);
+                        console.log('Purchase plan:', pkg.name, 'Cost:', pkg.discountedPrice);
                       }}
                     >
                       Purchase Plan
