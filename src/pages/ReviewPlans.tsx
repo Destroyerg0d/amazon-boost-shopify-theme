@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -39,6 +41,8 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
   const { toast } = useToast();
   const [plans, setPlans] = useState<ReviewPlan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [bookPrice, setBookPrice] = useState<number>(0);
+  const [selectedType, setSelectedType] = useState<'verified' | 'unverified'>('verified');
 
   useEffect(() => {
     if (user) {
@@ -108,8 +112,6 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
         return <Star className="w-5 h-5" />;
     }
   };
-
-  const [selectedType, setSelectedType] = useState<'verified' | 'unverified'>('verified');
 
   const availablePlans = {
     verified: [
@@ -324,8 +326,34 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
             </div>
           )}
 
-          {/* Review Type Selection */}
+          {/* Review Type Selection with Book Price Calculator */}
           <div className="mb-8">
+            {/* Book Price Input for Verified Reviews */}
+            {selectedType === 'verified' && (
+              <Card className="max-w-md mx-auto mb-6">
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Book Price Calculator</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Enter your book price on Amazon to calculate total cost (Plan Cost + Book Purchase Cost)
+                      </p>
+                      <Label htmlFor="bookPrice">Book Price on Amazon ($)</Label>
+                      <Input
+                        id="bookPrice"
+                        type="number"
+                        step="0.01"
+                        value={bookPrice}
+                        onChange={(e) => setBookPrice(parseFloat(e.target.value) || 0)}
+                        placeholder="Enter your book price"
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-8">
               {/* Verified Reviews Card */}
               <Card 
@@ -414,18 +442,39 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-primary">
-                          ${plan.discountedPrice}
-                        </div>
-                        <div className="text-sm text-muted-foreground line-through">
-                          ${plan.originalPrice}
-                        </div>
-                        <Badge variant="outline" className="bg-success/10 text-success border-success/20 mt-1">
-                          {plan.discount}
-                        </Badge>
-                        <p className="text-sm text-muted-foreground mt-2 font-semibold">{plan.reviews}</p>
-                      </div>
+            <div className="text-center">
+              <p className="font-semibold text-lg">{plan.reviews}</p>
+            </div>
+            <div className="space-y-4">
+              {selectedType === 'verified' ? (
+                <div className="text-center space-y-2">
+                  <div className="text-2xl font-bold text-primary">
+                    Plan: ${plan.discountedPrice}
+                    <div className="text-xs text-muted-foreground line-through">
+                      Was ${plan.originalPrice}
+                    </div>
+                  </div>
+                  <div className="text-lg font-semibold text-success">
+                    + Book Cost: ${(bookPrice * parseInt(plan.reviews.split(' ')[0])).toFixed(2)}
+                  </div>
+                  <div className="text-2xl font-bold text-foreground border-t pt-2">
+                    Total: ${(plan.discountedPrice + (bookPrice * parseInt(plan.reviews.split(' ')[0]))).toFixed(2)}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-primary">
+                    ${plan.discountedPrice}
+                  </div>
+                  <div className="text-sm text-muted-foreground line-through">
+                    ${plan.originalPrice}
+                  </div>
+                </div>
+              )}
+              <Badge variant="outline" className="bg-success/10 text-success border-success/20 mx-auto block w-fit">
+                {plan.discount}
+              </Badge>
+            </div>
                       <ul className="space-y-2">
                         {plan.features.map((feature, idx) => (
                           <li key={idx} className="flex items-start gap-2 text-sm">
@@ -438,9 +487,17 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
                         className="w-full" 
                         size="lg"
                         variant={plan.popular ? "default" : "outline"}
+                        onClick={() => {
+                          const totalCost = selectedType === 'verified' 
+                            ? plan.discountedPrice + (bookPrice * parseInt(plan.reviews.split(' ')[0]))
+                            : plan.discountedPrice;
+                          console.log('Purchase plan:', plan.name, 'Total:', totalCost);
+                        }}
                       >
                         <Plus className="w-4 h-4 mr-2" />
-                        Purchase Plan
+                        Purchase Plan - ${selectedType === 'verified' 
+                          ? (plan.discountedPrice + (bookPrice * parseInt(plan.reviews.split(' ')[0]))).toFixed(2)
+                          : plan.discountedPrice}
                       </Button>
                     </div>
                   </CardContent>

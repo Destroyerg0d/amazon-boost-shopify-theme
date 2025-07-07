@@ -9,6 +9,7 @@ import { Calculator, Clock, CheckCircle, Star, Video, Camera, Shield, Zap } from
 
 export const Pricing = () => {
   const [wordCount, setWordCount] = useState<number>(50000);
+  const [bookPrice, setBookPrice] = useState<number>(0);
   const [selectedType, setSelectedType] = useState<'verified' | 'unverified'>('verified');
   
   const calculateTurnaroundTime = (baseTime: number, words: number) => {
@@ -286,37 +287,88 @@ export const Pricing = () => {
           </TabsList>
 
           <TabsContent value="text" className="space-y-8">
-            {/* Turnaround Calculator */}
-            <Card className="max-w-md mx-auto">
-              <CardHeader className="text-center">
-                <CardTitle className="flex items-center justify-center gap-2">
-                  <Calculator className="w-5 h-5 text-primary" />
-                  Turnaround Time Calculator
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="wordCount">Book Word Count</Label>
-                  <Input
-                    id="wordCount"
-                    type="number"
-                    value={wordCount}
-                    onChange={(e) => setWordCount(parseInt(e.target.value) || 0)}
-                    placeholder="Enter word count"
-                    className="mt-1"
-                  />
-                </div>
-                <div className="bg-primary/10 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 text-primary font-semibold">
-                    <Clock className="w-4 h-4" />
-                    Estimated Turnaround: {calculateTurnaroundTime(packages[selectedType][0].baseTurnaround, wordCount)} days
+            {/* Pricing Calculator */}
+            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-8">
+              {/* Turnaround Calculator */}
+              <Card>
+                <CardHeader className="text-center">
+                  <CardTitle className="flex items-center justify-center gap-2">
+                    <Calculator className="w-5 h-5 text-primary" />
+                    Turnaround Time Calculator
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="wordCount">Book Word Count</Label>
+                    <Input
+                      id="wordCount"
+                      type="number"
+                      value={wordCount}
+                      onChange={(e) => setWordCount(parseInt(e.target.value) || 0)}
+                      placeholder="Enter word count"
+                      className="mt-1"
+                    />
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Base {packages[selectedType][0].baseTurnaround} days + 1 day per 5,000 words above 5,000
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+                  <div className="bg-primary/10 p-4 rounded-lg">
+                    <div className="flex items-center gap-2 text-primary font-semibold">
+                      <Clock className="w-4 h-4" />
+                      Estimated Turnaround: {calculateTurnaroundTime(packages[selectedType][0].baseTurnaround, wordCount)} days
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Base {packages[selectedType][0].baseTurnaround} days + 1 day per 5,000 words above 5,000
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Price Calculator for Verified Reviews */}
+              {selectedType === 'verified' && (
+                <Card>
+                  <CardHeader className="text-center">
+                    <CardTitle className="flex items-center justify-center gap-2">
+                      <Calculator className="w-5 h-5 text-success" />
+                      Total Cost Calculator
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="bookPrice">Book Price on Amazon ($)</Label>
+                      <Input
+                        id="bookPrice"
+                        type="number"
+                        step="0.01"
+                        value={bookPrice}
+                        onChange={(e) => setBookPrice(parseFloat(e.target.value) || 0)}
+                        placeholder="Enter book price"
+                        className="mt-1"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Required for verified purchase reviews
+                      </p>
+                    </div>
+                    <div className="bg-success/10 p-4 rounded-lg">
+                      <div className="text-success font-semibold text-sm mb-2">
+                        Final Charge Breakdown:
+                      </div>
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span>Plan Cost:</span>
+                          <span>${packages[selectedType][0].discountedPrice}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Book Purchase Cost:</span>
+                          <span>${(bookPrice * parseInt(packages[selectedType][0].reviews.split(' ')[0])).toFixed(2)}</span>
+                        </div>
+                        <div className="border-t pt-1 flex justify-between font-semibold">
+                          <span>Total Charge:</span>
+                          <span>${(packages[selectedType][0].discountedPrice + (bookPrice * parseInt(packages[selectedType][0].reviews.split(' ')[0]))).toFixed(2)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
 
             {/* Pricing Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -331,12 +383,29 @@ export const Pricing = () => {
                   )}
                   <CardHeader className="text-center">
                     <CardTitle className="text-xl font-bold">{pkg.name}</CardTitle>
-                    <div className="text-3xl font-bold text-primary">
-                      ${pkg.discountedPrice}
-                      <div className="text-sm text-muted-foreground line-through">
-                        ${pkg.originalPrice}
+                    {selectedType === 'verified' ? (
+                      <div>
+                        <div className="text-2xl font-bold text-primary mb-2">
+                          Plan: ${pkg.discountedPrice}
+                          <div className="text-xs text-muted-foreground line-through">
+                            Was ${pkg.originalPrice}
+                          </div>
+                        </div>
+                        <div className="text-lg font-semibold text-success">
+                          + Book Cost: ${(bookPrice * parseInt(pkg.reviews.split(' ')[0])).toFixed(2)}
+                        </div>
+                        <div className="text-2xl font-bold text-foreground border-t pt-2">
+                          Total: ${(pkg.discountedPrice + (bookPrice * parseInt(pkg.reviews.split(' ')[0]))).toFixed(2)}
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="text-3xl font-bold text-primary">
+                        ${pkg.discountedPrice}
+                        <div className="text-sm text-muted-foreground line-through">
+                          ${pkg.originalPrice}
+                        </div>
+                      </div>
+                    )}
                     <Badge variant="outline" className="bg-success/10 text-success border-success/20">
                       {pkg.discount}
                     </Badge>
@@ -361,8 +430,15 @@ export const Pricing = () => {
                       variant={pkg.popular ? "accent" : "default"} 
                       className="w-full"
                       size="lg"
+                      onClick={() => {
+                        // Redirect to payment or login
+                        const totalCost = selectedType === 'verified' 
+                          ? pkg.discountedPrice + (bookPrice * parseInt(pkg.reviews.split(' ')[0]))
+                          : pkg.discountedPrice;
+                        console.log('Purchase plan:', pkg.name, 'Total:', totalCost);
+                      }}
                     >
-                      Get Started
+                      Purchase Plan
                     </Button>
                   </CardContent>
                 </Card>

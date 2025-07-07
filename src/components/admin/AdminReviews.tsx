@@ -46,11 +46,13 @@ interface NewReview {
   comment: string;
   review_type: string;
   plan_type: string;
+  review_plan_id?: string;
 }
 
 const AdminReviews = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [books, setBooks] = useState<any[]>([]);
+  const [reviewPlans, setReviewPlans] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [ratingFilter, setRatingFilter] = useState<string>('all');
@@ -60,6 +62,7 @@ const AdminReviews = () => {
   useEffect(() => {
     fetchReviews();
     fetchBooks();
+    fetchReviewPlans();
   }, []);
 
   const fetchReviews = async () => {
@@ -100,9 +103,24 @@ const AdminReviews = () => {
     }
   };
 
+  const fetchReviewPlans = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('review_plans')
+        .select('id, plan_name, plan_type, total_reviews, used_reviews, status')
+        .eq('status', 'active');
+
+      if (error) throw error;
+      setReviewPlans(data || []);
+    } catch (error) {
+      console.error('Error fetching review plans:', error);
+    }
+  };
+
   const addReview = async (reviewData: NewReview) => {
     try {
-      const { error } = await supabase
+      // Insert the review
+      const { error: reviewError } = await supabase
         .from('reviews')
         .insert({
           book_id: reviewData.book_id,
@@ -112,18 +130,42 @@ const AdminReviews = () => {
           comment: reviewData.comment,
           review_type: reviewData.review_type,
           plan_type: reviewData.plan_type,
+          review_plan_id: reviewData.review_plan_id,
           amazon_visible: true,
           reviewed_at: new Date().toISOString()
         });
 
-      if (error) throw error;
+      if (reviewError) throw reviewError;
+
+      // Update review plan usage if a plan was selected
+      if (reviewData.review_plan_id) {
+        const { data: currentPlan } = await supabase
+          .from('review_plans')
+          .select('used_reviews')
+          .eq('id', reviewData.review_plan_id)
+          .single();
+
+        if (currentPlan) {
+          const { error: updateError } = await supabase
+            .from('review_plans')
+            .update({ 
+              used_reviews: currentPlan.used_reviews + 1
+            })
+            .eq('id', reviewData.review_plan_id);
+
+          if (updateError) {
+            console.error('Error updating review plan:', updateError);
+          }
+        }
+      }
 
       toast({
         title: 'Success',
-        description: 'Review added successfully',
+        description: 'Review added successfully and plan updated',
       });
 
       fetchReviews();
+      fetchReviewPlans();
       setIsAddModalOpen(false);
     } catch (error) {
       console.error('Error adding review:', error);
@@ -341,6 +383,7 @@ const AdminReviews = () => {
           </DialogHeader>
           <AddReviewForm
             books={books}
+            reviewPlans={reviewPlans}
             onSubmit={addReview}
             onCancel={() => setIsAddModalOpen(false)}
           />
@@ -352,18 +395,20 @@ const AdminReviews = () => {
 
 interface AddReviewFormProps {
   books: any[];
+  reviewPlans: any[];
   onSubmit: (data: NewReview) => void;
   onCancel: () => void;
 }
 
-const AddReviewForm = ({ books, onSubmit, onCancel }: AddReviewFormProps) => {
+const AddReviewForm = ({ books, reviewPlans, onSubmit, onCancel }: AddReviewFormProps) => {
   const [formData, setFormData] = useState<NewReview>({
     book_id: '',
     reviewer_name: '',
     rating: 5,
     comment: '',
     review_type: 'verified',
-    plan_type: 'premium'
+    plan_type: 'premium',
+    review_plan_id: ''
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -428,6 +473,26 @@ const AddReviewForm = ({ books, onSubmit, onCancel }: AddReviewFormProps) => {
             <SelectItem value="unverified">Unverified</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+
+      <div>
+        <Label htmlFor="planId">Review Plan (Optional)</Label>
+        <Select value={formData.review_plan_id || ''} onValueChange={(value) => setFormData({...formData, review_plan_id: value})}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select a plan to fulfill (optional)" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">No plan selected</SelectItem>
+            {reviewPlans.map((plan) => (
+              <SelectItem key={plan.id} value={plan.id}>
+                {plan.plan_name} ({plan.used_reviews}/{plan.total_reviews} used)
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-xs text-muted-foreground mt-1">
+          Select a plan to fulfill with this review. The plan's used count will be incremented.
+        </p>
       </div>
 
       <div>
