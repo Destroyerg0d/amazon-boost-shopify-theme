@@ -77,17 +77,18 @@ const AdminCustomers = () => {
       // Calculate lifetime spend for each user
       const customersWithSpend = await Promise.all(
         (profiles || []).map(async (profile) => {
-          // Check if user has review plans
-          const { data: plans } = await supabase
-            .from('review_plans')
-            .select('*')
+          // Get actual orders to calculate real lifetime spend
+          const { data: orders } = await supabase
+            .from('orders')
+            .select('total_amount, payment_status')
             .eq('user_id', profile.user_id);
 
-          // Calculate total spend from plans
-          const lifetimeSpend = (plans || []).reduce((total, plan) => {
-            // Estimate plan cost based on plan type and reviews
-            const planCost = getPlanCost(plan.plan_type, plan.total_reviews);
-            return total + planCost;
+          // Calculate total spend from actual paid orders
+          const lifetimeSpend = (orders || []).reduce((total, order) => {
+            if (order.payment_status === 'paid') {
+              return total + Number(order.total_amount);
+            }
+            return total;
           }, 0);
 
           // Check if this user exists in customers table
