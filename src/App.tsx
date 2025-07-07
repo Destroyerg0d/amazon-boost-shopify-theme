@@ -13,6 +13,10 @@ import Admin from "./pages/Admin";
 import Pricing from "./pages/Pricing";
 import Testimonials from "./pages/Testimonials";
 import Contact from "./pages/Contact";
+import TermsOfService from "./pages/TermsOfService";
+import ShippingPolicy from "./pages/ShippingPolicy";
+import RefundPolicy from "./pages/RefundPolicy";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +34,10 @@ const App = () => (
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/testimonials" element={<Testimonials />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/shipping-policy" element={<ShippingPolicy />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route 
               path="/dashboard" 
               element={
