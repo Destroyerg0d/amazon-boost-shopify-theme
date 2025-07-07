@@ -63,6 +63,18 @@ const AdminReviews = () => {
     fetchReviews();
     fetchBooks();
     fetchReviewPlans();
+    
+    // Set up real-time subscription
+    const reviewsChannel = supabase
+      .channel('reviews-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'reviews' }, fetchReviews)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'books' }, fetchBooks)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'review_plans' }, fetchReviewPlans)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(reviewsChannel);
+    };
   }, []);
 
   const fetchReviews = async () => {
@@ -477,12 +489,12 @@ const AddReviewForm = ({ books, reviewPlans, onSubmit, onCancel }: AddReviewForm
 
       <div>
         <Label htmlFor="planId">Review Plan (Optional)</Label>
-        <Select value={formData.review_plan_id || ''} onValueChange={(value) => setFormData({...formData, review_plan_id: value})}>
+        <Select value={formData.review_plan_id || 'no-plan'} onValueChange={(value) => setFormData({...formData, review_plan_id: value === 'no-plan' ? '' : value})}>
           <SelectTrigger>
             <SelectValue placeholder="Select a plan to fulfill (optional)" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">No plan selected</SelectItem>
+            <SelectItem value="no-plan">No plan selected</SelectItem>
             {reviewPlans.map((plan) => (
               <SelectItem key={plan.id} value={plan.id}>
                 {plan.plan_name} ({plan.used_reviews}/{plan.total_reviews} used)

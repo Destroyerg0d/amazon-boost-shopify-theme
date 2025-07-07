@@ -43,6 +43,18 @@ const AdminCustomers = () => {
 
   useEffect(() => {
     fetchCustomers();
+    
+    // Set up real-time subscriptions
+    const customersChannel = supabase
+      .channel('customers-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'customers' }, fetchCustomers)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, fetchCustomers)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'review_plans' }, fetchCustomers)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(customersChannel);
+    };
   }, []);
 
   const fetchCustomers = async () => {
@@ -137,9 +149,17 @@ const AdminCustomers = () => {
   };
 
   const getPlanCost = (planType: string, totalReviews: number) => {
-    // Estimate cost based on plan type and review count
-    const baseCostPerReview = planType === 'premium' ? 15 : planType === 'gold' ? 12 : planType === 'silver' ? 10 : 8;
-    return totalReviews * baseCostPerReview;
+    // Use actual pricing based on plan names and review counts
+    const planCosts: { [key: string]: number } = {
+      'starter': 170,
+      'bronze': 350, 
+      'silver': 700,
+      'gold': 1050
+    };
+    
+    // Return the actual plan cost, not per-review calculation
+    const normalizedType = planType.toLowerCase();
+    return planCosts[normalizedType] || 0;
   };
 
   const updateCustomer = async (customer: Customer) => {

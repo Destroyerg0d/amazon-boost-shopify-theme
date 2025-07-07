@@ -53,6 +53,16 @@ const AdminOrders = () => {
 
   useEffect(() => {
     fetchOrders();
+    
+    // Set up real-time subscription
+    const ordersChannel = supabase
+      .channel('orders-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, fetchOrders)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(ordersChannel);
+    };
   }, []);
 
   const fetchOrders = async () => {
@@ -230,7 +240,7 @@ const AdminOrders = () => {
                     </TableCell>
                     <TableCell>
                       <div>
-                        <div className="font-medium">User ID</div>
+                        <div className="font-medium">Customer</div>
                         <div className="text-sm text-muted-foreground font-mono">{order.user_id.slice(0, 8)}...</div>
                       </div>
                     </TableCell>
