@@ -17,7 +17,8 @@ import {
   Eye,
   Edit,
   Trash2,
-  ExternalLink
+  ExternalLink,
+  AlertCircle
 } from 'lucide-react';
 
 interface Book {
@@ -88,6 +89,15 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
   };
 
   const handleEditBook = (book: Book) => {
+    if (book.approval_status === 'approved') {
+      toast({
+        title: "Cannot Edit Book",
+        description: "This book has been approved and cannot be modified. Approved books are locked to maintain review integrity.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     // You can implement edit functionality or navigate to edit page
     toast({
       title: "Edit Book",
@@ -97,6 +107,15 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
   };
 
   const handleDeleteBook = async (book: Book) => {
+    if (book.approval_status === 'approved') {
+      toast({
+        title: "Cannot Delete Book",
+        description: "Approved books cannot be deleted as they may be part of active review campaigns.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     if (!confirm(`Are you sure you want to delete "${book.title}"? This action cannot be undone.`)) {
       return;
     }
@@ -238,23 +257,53 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
                         <Eye className="w-4 h-4 mr-2" />
                         View Details
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleEditBook(book)}>
+                      
+                      <DropdownMenuItem 
+                        onClick={() => handleEditBook(book)}
+                        disabled={book.approval_status === 'approved'}
+                        className={book.approval_status === 'approved' ? 'opacity-50 cursor-not-allowed' : ''}
+                      >
                         <Edit className="w-4 h-4 mr-2" />
-                        Edit Book
+                        {book.approval_status === 'approved' ? (
+                          <div className="flex items-center gap-2">
+                            Edit Book
+                            <AlertCircle className="w-3 h-3" />
+                          </div>
+                        ) : (
+                          'Edit Book'
+                        )}
                       </DropdownMenuItem>
+                      
                       {book.asin && (
                         <DropdownMenuItem onClick={() => window.open(`https://amazon.com/dp/${book.asin}`, '_blank')}>
                           <ExternalLink className="w-4 h-4 mr-2" />
                           View on Amazon
                         </DropdownMenuItem>
                       )}
-                      <DropdownMenuItem 
-                        className="text-destructive" 
-                        onClick={() => handleDeleteBook(book)}
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Delete Book
-                      </DropdownMenuItem>
+                      
+                      {book.approval_status !== 'approved' && (
+                        <DropdownMenuItem 
+                          className="text-destructive focus:text-destructive" 
+                          onClick={() => handleDeleteBook(book)}
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete Book
+                        </DropdownMenuItem>
+                      )}
+                      
+                      {book.approval_status === 'approved' && (
+                        <DropdownMenuItem 
+                          disabled
+                          className="opacity-50 cursor-not-allowed"
+                          title="Approved books cannot be deleted"
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          <div className="flex items-center gap-2">
+                            Delete Disabled
+                            <AlertCircle className="w-3 h-3" />
+                          </div>
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
