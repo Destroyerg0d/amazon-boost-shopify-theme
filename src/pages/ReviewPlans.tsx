@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { PayPalButton } from '@/components/PayPalButton';
 import { 
   Star,
   Plus,
@@ -19,7 +20,8 @@ import {
   Zap,
   Crown,
   Gem,
-  Calculator
+  Calculator,
+  Info
 } from 'lucide-react';
 
 interface ReviewPlan {
@@ -124,6 +126,7 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
         originalPrice: 230,
         discountedPrice: 170,
         discount: "26% OFF",
+        baseTurnaround: 3,
         features: [
           "Written reviews only",
           "Verified purchase reviews",
@@ -138,6 +141,7 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
         originalPrice: 450,
         discountedPrice: 350,
         discount: "22% OFF",
+        baseTurnaround: 5,
         features: [
           "Written reviews only",
           "Verified purchase reviews",
@@ -153,6 +157,7 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
         originalPrice: 870,
         discountedPrice: 700,
         discount: "20% OFF",
+        baseTurnaround: 8,
         features: [
           "Written reviews only",
           "Verified purchase reviews",
@@ -170,6 +175,7 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
         originalPrice: 1290,
         discountedPrice: 1050,
         discount: "19% OFF",
+        baseTurnaround: 15,
         features: [
           "Written reviews only",
           "Verified purchase reviews",
@@ -189,6 +195,7 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
         originalPrice: 170,
         discountedPrice: 130,
         discount: "24% OFF",
+        baseTurnaround: 2,
         features: [
           "Text reviews only",
           "Fast delivery",
@@ -203,6 +210,7 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
         originalPrice: 280,
         discountedPrice: 230,
         discount: "18% OFF",
+        baseTurnaround: 3,
         features: [
           "Text reviews only",
           "Fast delivery",
@@ -218,6 +226,7 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
         originalPrice: 560,
         discountedPrice: 450,
         discount: "20% OFF",
+        baseTurnaround: 5,
         features: [
           "Text reviews only",
           "Fast delivery",
@@ -235,6 +244,7 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
         originalPrice: 980,
         discountedPrice: 790,
         discount: "19% OFF",
+        baseTurnaround: 8,
         features: [
           "Text reviews only",
           "Fast delivery",
@@ -522,17 +532,29 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
                           </li>
                         ))}
                       </ul>
-                      <Button 
-                        className="w-full" 
-                        size="lg"
-                        variant={plan.popular ? "default" : "outline"}
-                        onClick={() => {
-                          console.log('Purchase plan:', plan.name, 'Price:', plan.discountedPrice);
-                        }}
-                      >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Purchase Plan - ${plan.discountedPrice}
-                      </Button>
+                      {selectedType === 'verified' && bookPrice <= 0 ? (
+                        <div className="text-center p-4 border border-dashed rounded-lg bg-amber-50 dark:bg-amber-950/20">
+                          <div className="flex items-center gap-2 justify-center mb-2">
+                            <Info className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                            <p className="text-sm text-amber-700 dark:text-amber-300 font-medium">
+                              Set Book Price First
+                            </p>
+                          </div>
+                          <p className="text-xs text-amber-600 dark:text-amber-400">
+                            Use the Investment Calculator above to set your book price before purchasing
+                          </p>
+                        </div>
+                      ) : (
+                        <PayPalButton
+                          planType={selectedType}
+                          planName={plan.name}
+                          amount={selectedType === 'verified' ? 
+                            plan.discountedPrice + (bookPrice * (parseInt(plan.reviews.split('–')[0] || '0') || parseInt(plan.reviews.split(' ')[0] || '0'))) : 
+                            plan.discountedPrice
+                          }
+                          bookPrice={selectedType === 'verified' ? bookPrice : 0}
+                        />
+                      )}
                     </div>
                   </CardContent>
                 </Card>
