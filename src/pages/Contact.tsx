@@ -235,13 +235,13 @@ export default function Contact() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Button className="w-full justify-start gap-3 h-14" variant="outline">
+                <Button className="w-full justify-start gap-3 h-14" variant="outline" disabled>
                   <MessageCircle className="w-5 h-5" />
                   <div className="text-left">
                     <div className="font-medium">Live Chat</div>
-                    <div className="text-sm text-muted-foreground">Chat with our support team</div>
+                    <div className="text-sm text-muted-foreground">Temporarily unavailable</div>
                   </div>
-                  <Badge className="ml-auto bg-green-500">Online</Badge>
+                  <Badge className="ml-auto bg-gray-500">Offline</Badge>
                 </Button>
 
                 <Button 
