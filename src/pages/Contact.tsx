@@ -18,6 +18,7 @@ import {
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { AIChatbot } from "@/components/AIChatbot";
 
 export default function Contact() {
   const { toast } = useToast();
@@ -28,6 +29,7 @@ export default function Contact() {
     message: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -242,7 +244,11 @@ export default function Contact() {
                   <Badge className="ml-auto bg-green-500">Online</Badge>
                 </Button>
 
-                <Button className="w-full justify-start gap-3 h-14" variant="outline">
+                <Button 
+                  className="w-full justify-start gap-3 h-14" 
+                  variant="outline"
+                  onClick={() => setIsChatbotOpen(true)}
+                >
                   <MessageSquare className="w-5 h-5" />
                   <div className="text-left">
                     <div className="font-medium">AI Chatbot</div>
@@ -353,6 +359,12 @@ export default function Contact() {
           </Card>
         </div>
       </div>
+      
+      {/* AI Chatbot */}
+      <AIChatbot 
+        isOpen={isChatbotOpen} 
+        onClose={() => setIsChatbotOpen(false)} 
+      />
     </div>
   );
 }
