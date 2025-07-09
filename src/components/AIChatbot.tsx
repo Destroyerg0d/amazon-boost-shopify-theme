@@ -130,10 +130,10 @@ export const AIChatbot = ({ isOpen, onClose }: AIChatbotProps) => {
           </Button>
         </CardHeader>
         
-        <CardContent className="flex-1 flex flex-col p-0">
+        <CardContent className="flex-1 flex flex-col p-0 min-h-0">
           <ScrollArea 
             ref={scrollAreaRef}
-            className="flex-1 p-4"
+            className="flex-1 p-4 overflow-y-auto"
           >
             <div className="space-y-4">
               {messages.map((message) => (
@@ -185,7 +185,7 @@ export const AIChatbot = ({ isOpen, onClose }: AIChatbotProps) => {
             </div>
           </ScrollArea>
           
-          <div className="border-t p-4">
+          <div className="border-t p-4 flex-shrink-0">
             <div className="flex gap-2">
               <Input
                 ref={inputRef}
