@@ -189,6 +189,51 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount: number
+          book_price: number | null
+          created_at: string
+          id: string
+          payment_data: Json | null
+          paypal_payer_id: string | null
+          paypal_payment_id: string | null
+          plan_name: string
+          plan_type: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          book_price?: number | null
+          created_at?: string
+          id?: string
+          payment_data?: Json | null
+          paypal_payer_id?: string | null
+          paypal_payment_id?: string | null
+          plan_name: string
+          plan_type: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          book_price?: number | null
+          created_at?: string
+          id?: string
+          payment_data?: Json | null
+          paypal_payer_id?: string | null
+          paypal_payment_id?: string | null
+          plan_name?: string
+          plan_type?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -221,10 +266,12 @@ export type Database = {
       }
       review_plans: {
         Row: {
+          amount_paid: number | null
           book_id: string | null
           created_at: string
           expires_at: string | null
           id: string
+          payment_id: string | null
           plan_name: string
           plan_type: string
           purchased_at: string
@@ -235,10 +282,12 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          amount_paid?: number | null
           book_id?: string | null
           created_at?: string
           expires_at?: string | null
           id?: string
+          payment_id?: string | null
           plan_name: string
           plan_type: string
           purchased_at?: string
@@ -249,10 +298,12 @@ export type Database = {
           user_id: string
         }
         Update: {
+          amount_paid?: number | null
           book_id?: string | null
           created_at?: string
           expires_at?: string | null
           id?: string
+          payment_id?: string | null
           plan_name?: string
           plan_type?: string
           purchased_at?: string
@@ -268,6 +319,13 @@ export type Database = {
             columns: ["book_id"]
             isOneToOne: true
             referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_plans_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
             referencedColumns: ["id"]
           },
         ]
@@ -387,6 +445,17 @@ export type Database = {
       add_user_role: {
         Args: { p_user_id: string; p_role: string }
         Returns: undefined
+      }
+      handle_successful_payment: {
+        Args: {
+          p_payment_id: string
+          p_user_id: string
+          p_plan_type: string
+          p_plan_name: string
+          p_amount: number
+          p_total_reviews: number
+        }
+        Returns: string
       }
       has_role: {
         Args: {
