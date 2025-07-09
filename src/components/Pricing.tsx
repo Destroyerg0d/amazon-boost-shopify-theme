@@ -6,8 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { Calculator, Clock, CheckCircle, Star, Video, Camera, Shield, Zap } from "lucide-react";
+import { PayPalButton } from "./PayPalButton";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Pricing = () => {
+  const { user } = useAuth();
   const [wordCount, setWordCount] = useState<number>(50000);
   const [bookPrice, setBookPrice] = useState<number>(0);
   const [selectedType, setSelectedType] = useState<'verified' | 'unverified'>('verified');
@@ -444,17 +447,24 @@ export const Pricing = () => {
                         </li>
                       ))}
                     </ul>
-                    <Button 
-                      variant={pkg.popular ? "accent" : "default"} 
-                      className="w-full"
-                      size="lg"
-                      onClick={() => {
-                        // Redirect to payment or login
-                        console.log('Purchase plan:', pkg.name, 'Cost:', pkg.discountedPrice);
-                      }}
-                    >
-                      Purchase Plan
-                    </Button>
+                    
+                    {user ? (
+                      <PayPalButton
+                        planType={selectedType}
+                        planName={pkg.name}
+                        amount={selectedType === 'verified' ? pkg.discountedPrice + (bookPrice || 0) : pkg.discountedPrice}
+                        bookPrice={selectedType === 'verified' ? bookPrice : 0}
+                      />
+                    ) : (
+                      <Button 
+                        variant={pkg.popular ? "accent" : "default"} 
+                        className="w-full"
+                        size="lg"
+                        onClick={() => window.location.href = '/auth'}
+                      >
+                        Sign In to Purchase
+                      </Button>
+                    )}
                   </CardContent>
                 </Card>
               ))}
