@@ -18,11 +18,19 @@ export const Pricing = () => {
   const [selectedType, setSelectedType] = useState<'verified' | 'unverified'>('verified');
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number>(0);
   const [showBookPriceDialog, setShowBookPriceDialog] = useState<boolean>(false);
+  const [hasShownPriceDialog, setHasShownPriceDialog] = useState<boolean>(false);
   
   const calculateTurnaroundTime = (baseTime: number, words: number) => {
     const extraWords = Math.max(0, words - 5000);
     const extraDays = Math.ceil(extraWords / 5000);
     return baseTime + extraDays;
+  };
+
+  const handleBookPriceDialogOpen = () => {
+    if (!hasShownPriceDialog) {
+      setShowBookPriceDialog(true);
+      setHasShownPriceDialog(true);
+    }
   };
 
   const packages = {
@@ -405,7 +413,7 @@ export const Pricing = () => {
                             min="0"
                             value={bookPrice}
                             onChange={(e) => setBookPrice(parseFloat(e.target.value) || 0)}
-                            onFocus={() => setShowBookPriceDialog(true)}
+                            onFocus={handleBookPriceDialogOpen}
                             placeholder="e.g., 12.99"
                             className="p-3 bg-background/50 backdrop-blur-sm border-input hover:border-primary/50 transition-colors"
                           />
