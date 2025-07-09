@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Star, Users } from "lucide-react";
+import { ArrowRight, BookOpen, Star, Users, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -23,26 +23,29 @@ export const Hero = () => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", handleScroll);
     
-    // Animate texts on load
-    heroTexts.forEach((text, index) => {
-      setTimeout(() => {
-        setAnimatedTexts(prev => [...prev, text]);
-      }, index * 300);
-    });
+    // Animate texts on load - only once
+    if (animatedTexts.length === 0) {
+      heroTexts.forEach((text, index) => {
+        setTimeout(() => {
+          setAnimatedTexts(prev => [...prev, text]);
+        }, index * 300);
+      });
+    }
     
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [animatedTexts.length]);
 
   return (
     <section className="relative min-h-screen flex items-center bg-gradient-hero overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-hero opacity-95"></div>
+        
         {/* Floating Books Animation */}
         <div className="absolute inset-0">
           {[...Array(6)].map((_, i) => (
             <div
-              key={i}
+              key={`book-${i}`}
               className="absolute opacity-10 animate-float"
               style={{
                 left: `${10 + i * 15}%`,
@@ -52,6 +55,40 @@ export const Hero = () => {
               }}
             >
               <BookOpen className="w-8 h-8 text-primary-foreground" />
+            </div>
+          ))}
+        </div>
+
+        {/* Floating Stars Animation */}
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(12)].map((_, i) => (
+            <div
+              key={`star-${i}`}
+              className="absolute animate-star-twinkle"
+              style={{
+                left: `${5 + i * 8}%`,
+                top: `${10 + (i % 3) * 25}%`,
+                animationDelay: `${i * 0.3}s`,
+              }}
+            >
+              <Star className="w-3 h-3 text-accent fill-accent opacity-60" />
+            </div>
+          ))}
+        </div>
+
+        {/* Sparkle Effects */}
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={`sparkle-${i}`}
+              className="absolute animate-sparkle"
+              style={{
+                left: `${15 + i * 12}%`,
+                top: `${15 + (i % 4) * 20}%`,
+                animationDelay: `${i * 0.8}s`,
+              }}
+            >
+              <Sparkles className="w-4 h-4 text-accent opacity-40" />
             </div>
           ))}
         </div>
@@ -136,7 +173,11 @@ export const Hero = () => {
             <div className="flex items-center gap-2">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-accent text-accent" />
+                  <Star 
+                    key={i} 
+                    className="w-5 h-5 fill-accent text-accent animate-star-twinkle" 
+                    style={{ animationDelay: `${i * 0.2}s` }}
+                  />
                 ))}
               </div>
               <span className="font-semibold">10,000+ Books Reviewed</span>
