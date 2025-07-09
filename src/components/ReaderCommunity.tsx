@@ -89,13 +89,31 @@ export const ReaderCommunity = () => {
   };
 
   return (
-    <section className="py-24 bg-background">
-      <div className="container mx-auto px-6">
+    <section className="py-24 bg-gradient-hero relative overflow-hidden">
+      {/* Floating Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float opacity-20"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${3 + Math.random() * 4}s`
+            }}
+          >
+            <div className={`w-2 h-2 rounded-full ${i % 3 === 0 ? 'bg-accent' : i % 3 === 1 ? 'bg-primary' : 'bg-secondary'}`} />
+          </div>
+        ))}
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-6">
-            <Users className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Our Reader Community</span>
+          <div className="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm border border-accent/30 rounded-full px-4 py-2 mb-6">
+            <Users className="w-4 h-4 text-accent" />
+            <span className="text-sm font-medium text-accent">Our Reader Community</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             1 Million+ Verified ARC Readers
@@ -107,27 +125,27 @@ export const ReaderCommunity = () => {
 
         {/* Stats Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-16">
-          <Card className="text-center p-6 border-primary/20 hover:shadow-soft transition-all">
+          <Card className="glass-card text-center p-6 border-primary/30 hover:shadow-glow transition-all">
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center shadow-glow">
                 <BookOpen className="w-6 h-6 text-primary-foreground" />
               </div>
             </div>
             <h3 className="text-2xl font-bold text-foreground mb-2">10,000+</h3>
             <p className="text-muted-foreground">Books Successfully Reviewed</p>
           </Card>
-          <Card className="text-center p-6 border-accent/20 hover:shadow-soft transition-all">
+          <Card className="glass-card text-center p-6 border-accent/30 hover:shadow-glow transition-all">
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 bg-gradient-accent rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-accent rounded-lg flex items-center justify-center shadow-glow">
                 <Users className="w-6 h-6 text-accent-foreground" />
               </div>
             </div>
             <h3 className="text-2xl font-bold text-foreground mb-2">1M+</h3>
             <p className="text-muted-foreground">Active Reader Community</p>
           </Card>
-          <Card className="text-center p-6 border-success/20 hover:shadow-soft transition-all">
+          <Card className="glass-card text-center p-6 border-success/30 hover:shadow-glow transition-all">
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 bg-gradient-success rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-success rounded-lg flex items-center justify-center shadow-glow">
                 <TrendingUp className="w-6 h-6 text-success-foreground" />
               </div>
             </div>
@@ -137,19 +155,19 @@ export const ReaderCommunity = () => {
         </div>
 
         {/* Reader Demographics Accordion */}
-        <Card className="overflow-hidden">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-center">Reader Demographics by Category</CardTitle>
+        <Card className="glass-card border-primary/30 shadow-glow overflow-hidden">
+          <CardHeader className="bg-gradient-card">
+            <CardTitle className="text-2xl font-bold text-center text-foreground">Reader Demographics by Category</CardTitle>
           </CardHeader>
           <CardContent className="p-6">
             <Accordion type="multiple" className="space-y-4">
               {Object.entries(categoryData).map(([category, subcategories]) => (
-                <AccordionItem key={category} value={category} className="border rounded-lg">
-                  <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                <AccordionItem key={category} value={category} className="border border-primary/20 rounded-lg glass-card mb-2">
+                  <AccordionTrigger className="px-4 py-3 hover:no-underline glass-hover">
                     <div className="flex items-center justify-between w-full">
-                      <span className="text-lg font-semibold">{category}</span>
+                      <span className="text-lg font-semibold text-foreground">{category}</span>
                       <div className="flex items-center gap-4 mr-4">
-                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                        <Badge variant="outline" className="bg-accent/20 text-accent border-accent/30 backdrop-blur-sm">
                           {subcategories.reduce((sum, sub) => sum + sub.percentage, 0)}%
                         </Badge>
                         <span className="font-bold text-accent">
@@ -163,14 +181,14 @@ export const ReaderCommunity = () => {
                       {subcategories.map((subcategory, index) => (
                         <div 
                           key={subcategory.name}
-                          className="flex items-center justify-between p-3 bg-muted/30 rounded-lg"
+                          className="flex items-center justify-between p-3 bg-gradient-card rounded-lg border border-primary/10"
                         >
-                          <span className="font-medium">{subcategory.name}</span>
+                          <span className="font-medium text-foreground">{subcategory.name}</span>
                           <div className="flex items-center gap-4">
-                            <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                            <Badge variant="outline" className="bg-primary/20 text-primary border-primary/30 backdrop-blur-sm">
                               {subcategory.percentage}%
                             </Badge>
-                            <span className="font-semibold text-foreground min-w-[80px] text-right">
+                            <span className="font-semibold text-accent min-w-[80px] text-right">
                               {countsVisible 
                                 ? formatNumber(animatedCounts[`${category}-${subcategory.name}`] || 0)
                                 : "0"
@@ -186,12 +204,12 @@ export const ReaderCommunity = () => {
             </Accordion>
             
             {/* Total Summary */}
-            <div className="mt-6 p-4 bg-accent/10 rounded-lg border border-accent/20">
+            <div className="mt-6 p-4 bg-gradient-accent rounded-lg border border-accent/30 shadow-glow">
               <div className="flex items-center justify-between">
-                <span className="text-xl font-bold">Total Community</span>
+                <span className="text-xl font-bold text-accent-foreground">Total Community</span>
                 <div className="flex items-center gap-4">
-                  <Badge className="bg-accent text-accent-foreground">100%</Badge>
-                  <span className="text-2xl font-bold text-accent">1,000,000</span>
+                  <Badge className="bg-accent text-accent-foreground shadow-glow">100%</Badge>
+                  <span className="text-2xl font-bold text-accent-foreground">1,000,000</span>
                 </div>
               </div>
             </div>

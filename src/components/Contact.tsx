@@ -70,12 +70,22 @@ export const Contact = () => {
 
   return (
     <section className="py-24 bg-gradient-primary relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }}></div>
+      {/* Enhanced Background Pattern */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(30)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float opacity-20"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${3 + Math.random() * 4}s`
+            }}
+          >
+            <div className={`w-1 h-1 rounded-full ${i % 3 === 0 ? 'bg-accent' : i % 3 === 1 ? 'bg-secondary' : 'bg-primary-foreground'}`} />
+          </div>
+        ))}
       </div>
       
       <div className="container mx-auto px-6 relative z-10">
@@ -92,7 +102,7 @@ export const Contact = () => {
           
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Contact Form */}
-            <Card className="shadow-strong bg-background/95 backdrop-blur-sm">
+            <Card className="glass-card shadow-glow border-primary/30">
               <CardHeader>
                 <CardTitle className="text-2xl text-foreground flex items-center gap-2">
                   <CalendarDays className="w-6 h-6 text-primary" />
@@ -192,7 +202,7 @@ export const Contact = () => {
               </div>
               
               {/* Direct Contact */}
-              <div className="bg-background/10 backdrop-blur-sm rounded-lg p-6 border border-primary-foreground/20">
+              <div className="glass-card rounded-lg p-6 border-accent/30">
                 <h4 className="text-xl font-semibold mb-4">Need Immediate Assistance?</h4>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">

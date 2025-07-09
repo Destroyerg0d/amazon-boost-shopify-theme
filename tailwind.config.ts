@@ -57,18 +57,23 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
-				}
+				},
+				'glass-bg': 'var(--glass-bg)',
+				'glass-border': 'var(--glass-border)'
 			},
 			backgroundImage: {
 				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-secondary': 'var(--gradient-secondary)',
 				'gradient-success': 'var(--gradient-success)',
 				'gradient-accent': 'var(--gradient-accent)',
-				'gradient-hero': 'var(--gradient-hero)'
+				'gradient-hero': 'var(--gradient-hero)',
+				'gradient-card': 'var(--gradient-card)'
 			},
 			boxShadow: {
 				'soft': 'var(--shadow-soft)',
 				'medium': 'var(--shadow-medium)',
-				'strong': 'var(--shadow-strong)'
+				'strong': 'var(--shadow-strong)',
+				'glow': 'var(--shadow-glow)'
 			},
 			transitionTimingFunction: {
 				'smooth': 'var(--transition-smooth)',

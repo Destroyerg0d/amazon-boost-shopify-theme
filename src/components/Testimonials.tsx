@@ -66,8 +66,26 @@ export const Testimonials = () => {
   ];
 
   return (
-    <section className="py-24 bg-muted/30">
-      <div className="container mx-auto px-6">
+    <section className="py-24 bg-gradient-hero relative overflow-hidden">
+      {/* Floating Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float opacity-20"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${3 + Math.random() * 4}s`
+            }}
+          >
+            <div className={`w-1 h-1 rounded-full ${i % 3 === 0 ? 'bg-accent' : i % 3 === 1 ? 'bg-primary' : 'bg-secondary'}`} />
+          </div>
+        ))}
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
@@ -81,7 +99,7 @@ export const Testimonials = () => {
         {/* Testimonials Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className="relative group hover:shadow-soft transition-all duration-300 bg-card">
+            <Card key={index} className="glass-card relative group hover:shadow-glow transition-all duration-300 border-primary/30">
               <CardContent className="p-6">
                 {/* Quote Icon */}
                 <Quote className="w-8 h-8 text-accent mb-4 opacity-50" />

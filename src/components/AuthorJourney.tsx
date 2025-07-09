@@ -93,11 +93,29 @@ export const AuthorJourney = () => {
   }, []);
 
   return (
-    <section className="py-24 bg-gradient-to-br from-background to-muted/30 overflow-hidden">
-      <div className="container mx-auto px-6">
+    <section className="py-24 bg-gradient-hero relative overflow-hidden">
+      {/* Floating Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(25)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float opacity-20"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${3 + Math.random() * 4}s`
+            }}
+          >
+            <div className={`w-1 h-1 rounded-full ${i % 3 === 0 ? 'bg-accent' : i % 3 === 1 ? 'bg-primary' : 'bg-secondary'}`} />
+          </div>
+        ))}
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-6">
+          <div className="inline-flex items-center gap-2 bg-primary/20 backdrop-blur-sm border border-primary/30 rounded-full px-4 py-2 mb-6">
             <BarChart3 className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-primary">Author Journey</span>
           </div>
@@ -150,18 +168,18 @@ export const AuthorJourney = () => {
                 >
                   {/* Content Card */}
                   <Card
-                    className={`w-80 transform transition-all duration-700 ease-out ${
+                    className={`glass-card w-80 transform transition-all duration-700 ease-out border-primary/30 ${
                       isVisible
                         ? 'translate-x-0 opacity-100'
                         : isLeft
                         ? '-translate-x-full opacity-0'
                         : 'translate-x-full opacity-0'
-                    } hover:shadow-medium hover:scale-105`}
+                    } hover:shadow-glow hover:scale-105`}
                   >
                     <CardContent className="p-6">
                       <div className="flex items-start gap-4">
                         <div className="flex-shrink-0">
-                          <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center">
+                          <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center shadow-glow">
                             <StepIcon className="w-6 h-6 text-primary-foreground" />
                           </div>
                         </div>
@@ -201,7 +219,7 @@ export const AuthorJourney = () => {
 
         {/* Bottom CTA */}
         <div className="text-center mt-16">
-          <div className="inline-flex items-center gap-2 bg-success/10 rounded-full px-4 py-2 mb-4">
+          <div className="inline-flex items-center gap-2 bg-success/20 backdrop-blur-sm border border-success/30 rounded-full px-4 py-2 mb-4">
             <Star className="w-4 h-4 text-success" />
             <span className="text-sm font-medium text-success">Ready to Start?</span>
           </div>

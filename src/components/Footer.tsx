@@ -3,8 +3,26 @@ import { Mail, Phone, MapPin } from "lucide-react";
 
 export const Footer = () => {
   return (
-    <footer className="bg-gradient-to-br from-background via-background to-secondary/10 border-t border-border">
-      <div className="container mx-auto px-6 py-12">
+    <footer className="bg-gradient-card border-t border-primary/20 relative overflow-hidden">
+      {/* Subtle background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(10)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float opacity-10"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${4 + Math.random() * 4}s`
+            }}
+          >
+            <div className={`w-2 h-2 rounded-full ${i % 2 === 0 ? 'bg-accent' : 'bg-primary'}`} />
+          </div>
+        ))}
+      </div>
+      
+      <div className="container mx-auto px-6 py-12 relative z-10">
         <div className="grid md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">

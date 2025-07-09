@@ -167,11 +167,29 @@ export const Pricing = () => {
   };
 
   return (
-    <section className="py-24 bg-muted/30">
-      <div className="container mx-auto px-6">
+    <section className="py-24 bg-gradient-hero relative overflow-hidden">
+      {/* Floating Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float opacity-30"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${3 + Math.random() * 4}s`
+            }}
+          >
+            <div className={`w-1 h-1 rounded-full ${i % 3 === 0 ? 'bg-accent' : i % 3 === 1 ? 'bg-primary' : 'bg-secondary'}`} />
+          </div>
+        ))}
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-accent/10 rounded-full px-4 py-2 mb-6">
+          <div className="inline-flex items-center gap-2 bg-accent/20 backdrop-blur-sm border border-accent/30 rounded-full px-4 py-2 mb-6">
             <Star className="w-4 h-4 text-accent" />
             <span className="text-sm font-medium text-accent">Advanced Review Packages</span>
           </div>
@@ -184,17 +202,17 @@ export const Pricing = () => {
           
           {/* Important Cost Notice for Verified Reviews */}
           {selectedType === 'verified' && (
-            <Alert className="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/50 dark:to-purple-950/50 border-blue-200 dark:border-blue-800">
-              <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <Alert className="max-w-4xl mx-auto glass-card border-primary/30 backdrop-blur-sm">
+              <Info className="h-4 w-4 text-primary" />
               <AlertDescription className="text-left">
                 <div className="space-y-2">
-                  <p className="font-semibold text-blue-900 dark:text-blue-100">
+                  <p className="font-semibold text-foreground">
                     💡 Important: Total Cost for Verified Reviews
                   </p>
-                  <p className="text-blue-700 dark:text-blue-300">
+                  <p className="text-muted-foreground">
                     <strong>Your total payment = Plan Cost + Book Purchase Cost</strong>
                   </p>
-                  <p className="text-sm text-blue-600 dark:text-blue-400">
+                  <p className="text-sm text-muted-foreground">
                     📊 <strong>Use the Investment Calculator below first</strong> to determine your total cost before purchasing. This helps you budget for both the service fee and book copies our reviewers will purchase.
                   </p>
                 </div>
@@ -208,14 +226,14 @@ export const Pricing = () => {
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-8">
             {/* Verified Reviews Card */}
             <Card 
-              className={`cursor-pointer transition-all hover:shadow-medium ${
-                selectedType === 'verified' ? 'border-success shadow-soft bg-success/5' : ''
+              className={`glass-card cursor-pointer transition-all hover:shadow-glow ${
+                selectedType === 'verified' ? 'border-success/50 shadow-glow bg-success/10' : 'border-primary/30'
               }`}
               onClick={() => setSelectedType('verified')}
             >
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-gradient-success rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-success rounded-lg flex items-center justify-center shadow-glow">
                     <Shield className="w-6 h-6 text-success-foreground" />
                   </div>
                   <div>
@@ -256,14 +274,14 @@ export const Pricing = () => {
 
             {/* Unverified Reviews Card */}
             <Card 
-              className={`cursor-pointer transition-all hover:shadow-medium ${
-                selectedType === 'unverified' ? 'border-primary shadow-soft bg-primary/5' : ''
+              className={`glass-card cursor-pointer transition-all hover:shadow-glow ${
+                selectedType === 'unverified' ? 'border-primary/50 shadow-glow bg-primary/10' : 'border-secondary/30'
               }`}
               onClick={() => setSelectedType('unverified')}
             >
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center shadow-glow">
                     <Zap className="w-6 h-6 text-primary-foreground" />
                   </div>
                   <div>

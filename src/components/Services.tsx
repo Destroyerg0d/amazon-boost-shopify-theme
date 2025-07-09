@@ -43,8 +43,26 @@ export const Services = () => {
   ];
 
   return (
-    <section className="py-24 bg-background">
-      <div className="container mx-auto px-6">
+    <section className="py-24 bg-gradient-hero relative overflow-hidden">
+      {/* Floating Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float opacity-15"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${3 + Math.random() * 4}s`
+            }}
+          >
+            <div className={`w-1 h-1 rounded-full ${i % 3 === 0 ? 'bg-accent' : i % 3 === 1 ? 'bg-primary' : 'bg-secondary'}`} />
+          </div>
+        ))}
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
@@ -58,9 +76,9 @@ export const Services = () => {
         {/* Services Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {services.map((service, index) => (
-            <Card key={index} className="relative group hover:shadow-medium transition-all duration-300 border-border/50 hover:border-primary/20">
+            <Card key={index} className="glass-card relative group hover:shadow-glow transition-all duration-300 border-primary/30">
               <CardHeader>
-                <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
                   <service.icon className="w-6 h-6 text-primary-foreground" />
                 </div>
                 <CardTitle className="text-xl font-semibold text-foreground">{service.title}</CardTitle>
