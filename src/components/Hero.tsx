@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Star, Users } from "lucide-react";
+import { ArrowRight, BookOpen, Star, Users, Sparkles, TrendingUp, Award, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -8,231 +8,287 @@ export const Hero = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [scrollY, setScrollY] = useState(0);
-  const [animatedTexts, setAnimatedTexts] = useState<string[]>([]);
-  const [showMainContent, setShowMainContent] = useState(false);
-  const [goldStars, setGoldStars] = useState<Array<{id: number, x: number, y: number, delay: number}>>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [currentSlogan, setCurrentSlogan] = useState(0);
   
-  const heroTexts = [
-    "Dominate Amazon Search Results",
-    "Beat Competition", 
-    "Reach Audience",
-    "Get Reviews Dominance",
-    "Create a Best Seller",
-    "Become a Success Story"
+  const slogans = [
+    { text: "Dominate Amazon Search Results", icon: TrendingUp },
+    { text: "Beat Your Competition", icon: Award },
+    { text: "Reach Million+ Readers", icon: Users },
+    { text: "Get Reviews Dominance", icon: Star },
+    { text: "Create a Best Seller", icon: BookOpen },
+    { text: "Become a Success Story", icon: Sparkles }
   ];
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", handleScroll);
     
-    // Generate gold stars positions
-    const stars = Array.from({ length: 12 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      delay: Math.random() * 3
-    }));
-    setGoldStars(stars);
+    // Initial load animation
+    setTimeout(() => setIsLoaded(true), 300);
     
-    // Animate texts sequentially without duplication
-    let textIndex = 0;
-    const textInterval = setInterval(() => {
-      if (textIndex < heroTexts.length) {
-        setAnimatedTexts(prev => [...prev, heroTexts[textIndex]]);
-        textIndex++;
-      } else {
-        clearInterval(textInterval);
-        // Show main content after text animation
-        setTimeout(() => setShowMainContent(true), 500);
-      }
-    }, 400);
+    // Cycle through slogans
+    const sloganInterval = setInterval(() => {
+      setCurrentSlogan(prev => (prev + 1) % slogans.length);
+    }, 3000);
     
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      clearInterval(textInterval);
+      clearInterval(sloganInterval);
     };
   }, []);
 
+  const CurrentIcon = slogans[currentSlogan].icon;
+
   return (
-    <section className="relative min-h-screen flex items-center bg-gradient-hero overflow-hidden">
-      {/* Premium Gold Stars Animation */}
-      <div className="absolute inset-0 z-5">
-        {goldStars.map((star) => (
+    <section className="relative min-h-screen flex items-center overflow-hidden">
+      {/* Dynamic Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 animate-pulse" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-purple-900/50 to-transparent" />
+      </div>
+
+      {/* Animated Particles */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(50)].map((_, i) => (
           <div
-            key={star.id}
-            className="absolute animate-pulse"
+            key={i}
+            className="absolute animate-float opacity-20"
             style={{
-              left: `${star.x}%`,
-              top: `${star.y}%`,
-              animationDelay: `${star.delay}s`,
-              animationDuration: '3s'
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${3 + Math.random() * 4}s`
             }}
           >
-            <Star 
-              className="w-3 h-3 text-yellow-400 fill-yellow-400 animate-sparkle" 
-              style={{ animationDelay: `${star.delay}s` }}
-            />
+            <div className={`w-1 h-1 rounded-full ${i % 3 === 0 ? 'bg-yellow-400' : i % 3 === 1 ? 'bg-blue-400' : 'bg-purple-400'}`} />
           </div>
         ))}
       </div>
 
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-hero opacity-95"></div>
+      {/* Premium Floating Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Floating Books */}
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={`book-${i}`}
+            className="absolute opacity-10 animate-float"
+            style={{
+              left: `${5 + i * 12}%`,
+              top: `${15 + (i % 3) * 25}%`,
+              animationDelay: `${i * 0.8}s`,
+              animationDuration: `${4 + i}s`,
+              transform: `translateY(${scrollY * 0.05 * (i + 1)}px) rotate(${i * 15}deg)`,
+            }}
+          >
+            <BookOpen className="w-6 h-6 text-white/30" />
+          </div>
+        ))}
         
-        {/* Premium Floating Elements */}
-        <div className="absolute inset-0">
-          {/* Floating Books with Enhanced Animation */}
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={`book-${i}`}
-              className="absolute opacity-10 animate-float"
-              style={{
-                left: `${10 + i * 15}%`,
-                top: `${20 + (i % 2) * 30}%`,
-                animationDelay: `${i * 0.5}s`,
-                transform: `translateY(${scrollY * 0.1 * (i + 1)}px)`,
-              }}
-            >
-              <BookOpen className="w-8 h-8 text-primary-foreground" />
-            </div>
-          ))}
-          
-          {/* Premium Review Stars Animation */}
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={`star-${i}`}
-              className="absolute opacity-20 animate-bounce"
-              style={{
-                left: `${5 + i * 12}%`,
-                top: `${10 + (i % 3) * 25}%`,
-                animationDelay: `${i * 0.3}s`,
-                animationDuration: '2s'
-              }}
-            >
-              <Star className="w-4 h-4 text-yellow-300 fill-yellow-300" />
-            </div>
-          ))}
-          
-          {/* Floating Orbs for Premium Feel */}
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={`orb-${i}`}
-              className="absolute rounded-full bg-gradient-to-r from-yellow-400/20 to-orange-400/20 animate-pulse"
-              style={{
-                width: `${20 + i * 10}px`,
-                height: `${20 + i * 10}px`,
-                left: `${80 - i * 20}%`,
-                top: `${15 + i * 20}%`,
-                animationDelay: `${i * 0.7}s`,
-                animationDuration: '4s'
-              }}
-            />
-          ))}
-        </div>
+        {/* Glowing Orbs */}
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={`orb-${i}`}
+            className="absolute rounded-full animate-pulse"
+            style={{
+              width: `${30 + i * 15}px`,
+              height: `${30 + i * 15}px`,
+              left: `${80 - i * 15}%`,
+              top: `${10 + i * 15}%`,
+              background: `radial-gradient(circle, ${i % 2 === 0 ? 'rgba(59, 130, 246, 0.3)' : 'rgba(147, 51, 234, 0.3)'} 0%, transparent 70%)`,
+              animationDelay: `${i * 1.2}s`,
+              animationDuration: '6s'
+            }}
+          />
+        ))}
       </div>
-      
-      {/* Content */}
+
+      {/* Main Content */}
       <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-5xl mx-auto text-center text-primary-foreground">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-accent/10 backdrop-blur-sm border border-accent/20 rounded-full px-4 py-2 mb-6 animate-fade-in">
-            <Users className="w-4 h-4 text-accent" />
-            <span className="text-sm font-medium">1M+ Active ARC Readers Community</span>
-          </div>
-          
-          {/* Animated Text Lines */}
-          <div className="mb-8 space-y-2">
-            {animatedTexts.map((text, index) => (
-              <div
-                key={text}
-                className="text-2xl md:text-4xl font-bold animate-slide-in-right opacity-0"
-                style={{
-                  animationDelay: `${index * 0.3}s`,
-                  animationFillMode: 'forwards'
-                }}
-              >
-                {index === 4 ? (
-                  <span className="bg-gradient-accent bg-clip-text text-transparent">{text}</span>
-                ) : (
-                  text
-                )}
+        <div className="max-w-6xl mx-auto">
+          {/* Split Layout */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            
+            {/* Left Content */}
+            <div className={`text-white transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+              
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
+                <Users className="w-4 h-4 text-blue-400" />
+                <span className="text-sm font-medium text-white/90">1M+ Active ARC Readers</span>
+                <Sparkles className="w-4 h-4 text-yellow-400" />
               </div>
-            ))}
-          </div>
-          
-          {/* Main Headline - Show after text animation */}
-          {showMainContent && (
-            <>
-              <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-6 animate-fade-in">
-                Get Authentic Book Reviews from Our 
-                <span className="bg-gradient-success bg-clip-text text-transparent"> Million+ Reader</span> Community
+
+              {/* Dynamic Slogan */}
+              <div className="mb-6 h-20 flex items-center">
+                <div className="flex items-center gap-4 text-4xl md:text-5xl font-bold">
+                  <CurrentIcon className="w-12 h-12 text-yellow-400 animate-pulse" />
+                  <span 
+                    key={currentSlogan}
+                    className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-slide-in-right"
+                  >
+                    {slogans[currentSlogan].text}
+                  </span>
+                </div>
+              </div>
+
+              {/* Main Headline */}
+              <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                Get Authentic
+                <span className="block bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent animate-pulse">
+                  Book Reviews
+                </span>
+                <span className="block text-4xl md:text-5xl text-white/90">
+                  from Our Million+ Reader Community
+                </span>
               </h1>
-              
+
               {/* Subheadline */}
-              <p className="text-lg md:text-xl opacity-90 mb-8 max-w-4xl mx-auto animate-fade-in" style={{ animationDelay: '0.3s' }}>
-                Built through Facebook and Google advertising, our verified ARC community delivers honest, authentic reviews to help your book succeed on Amazon.
+              <p className="text-xl text-white/80 mb-8 leading-relaxed max-w-lg">
+                Built through Facebook and Google advertising, our verified ARC community delivers 
+                <span className="text-yellow-400 font-semibold"> honest, authentic reviews</span> to help your book succeed on Amazon.
               </p>
-              
+
               {/* Auth Section */}
-              <div className="flex justify-center mb-8 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+              <div className="mb-8">
                 {user ? (
-                  <div className="flex items-center gap-4 bg-background/10 backdrop-blur-sm rounded-full px-6 py-3">
-                    <span className="text-sm text-primary-foreground/80">
-                      Welcome, {user.email}
+                  <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-4 border border-white/20">
+                    <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
+                    <span className="text-white/90 font-medium">
+                      Welcome back, {user.email?.split('@')[0]}
                     </span>
-                    <Button variant="outline" size="sm" onClick={signOut} className="bg-background/20 border-primary-foreground/20 text-primary-foreground hover:bg-background/30">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={signOut} 
+                      className="text-white/70 hover:text-white hover:bg-white/10"
+                    >
                       Sign Out
                     </Button>
                   </div>
                 ) : (
-                  <Button variant="outline" size="sm" onClick={() => navigate('/auth')} className="bg-background/10 backdrop-blur-sm border-primary-foreground/20 text-primary-foreground hover:bg-background/20">
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => navigate('/auth')} 
+                    className="bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 rounded-2xl px-6 py-3"
+                  >
+                    <Zap className="w-4 h-4 mr-2" />
                     Sign In / Sign Up
                   </Button>
                 )}
               </div>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-fade-in" style={{ animationDelay: '0.9s' }}>
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Button 
-                  variant="accent" 
                   size="lg" 
-                  className="text-lg px-8 py-4 hover:scale-105 transition-transform duration-200"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 rounded-2xl px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-blue-500/25 hover:scale-105 transition-all duration-300"
                   onClick={() => user ? navigate('/dashboard') : navigate('/auth')}
                 >
+                  <Sparkles className="w-5 h-5 mr-2" />
                   {user ? 'Go to Dashboard' : 'Get Reviews Now'}
-                  <ArrowRight className="ml-2" />
+                  <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
+                
                 <Button 
-                  variant="outline" 
+                  variant="outline"
                   size="lg" 
-                  className="text-lg px-8 py-4 bg-background/10 backdrop-blur-sm border-primary-foreground/20 text-primary-foreground hover:bg-background/20 hover:scale-105 transition-transform duration-200"
+                  className="bg-transparent border-2 border-white/30 text-white hover:bg-white/10 rounded-2xl px-8 py-4 text-lg font-semibold hover:scale-105 transition-all duration-300"
                   onClick={() => navigate('/community-signup')}
                 >
+                  <Users className="w-5 h-5 mr-2" />
                   View Our Community
                 </Button>
               </div>
-              
-              {/* Social Proof with Premium Animation */}
-              <div className="flex flex-col md:flex-row items-center justify-center gap-8 text-primary-foreground/80 animate-fade-in" style={{ animationDelay: '1.2s' }}>
-                <div className="flex items-center gap-2 hover:scale-105 transition-transform duration-200">
+
+              {/* Social Proof */}
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-6 text-white/80">
+                <div className="flex items-center gap-2">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
                       <Star 
                         key={i} 
-                        className="w-5 h-5 fill-yellow-400 text-yellow-400 animate-pulse" 
-                        style={{ animationDelay: `${i * 0.1}s` }}
+                        className="w-5 h-5 fill-yellow-400 text-yellow-400" 
                       />
                     ))}
                   </div>
-                  <span className="font-semibold">10,000+ Books Reviewed</span>
+                  <span className="font-semibold text-white">10,000+ Books Reviewed</span>
                 </div>
-                <div className="text-2xl font-bold hover:scale-105 transition-transform duration-200">
-                  1M+ <span className="text-lg font-normal opacity-80">Active ARC Readers</span>
+                
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                  <span className="text-lg font-bold text-white">1M+ Active Readers</span>
                 </div>
               </div>
-            </>
-          )}
+            </div>
+
+            {/* Right Visual Section */}
+            <div className={`relative transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
+              
+              {/* Central Glowing Card */}
+              <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+                
+                {/* Glowing Effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-xl" />
+                
+                <div className="relative z-10">
+                  {/* Statistics */}
+                  <div className="grid grid-cols-2 gap-6 mb-6">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-yellow-400 mb-1">1M+</div>
+                      <div className="text-sm text-white/70">ARC Readers</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-blue-400 mb-1">10K+</div>
+                      <div className="text-sm text-white/70">Books Reviewed</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-purple-400 mb-1">4.9</div>
+                      <div className="text-sm text-white/70">Avg Rating</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-green-400 mb-1">24h</div>
+                      <div className="text-sm text-white/70">Response Time</div>
+                    </div>
+                  </div>
+
+                  {/* Sample Review Card */}
+                  <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        ))}
+                      </div>
+                      <span className="text-white/90 text-sm font-medium">Verified Reader</span>
+                    </div>
+                    <p className="text-white/80 text-sm italic">
+                      "Absolutely loved this book! The characters were so well-developed and the plot kept me hooked until the very end. Highly recommend!"
+                    </p>
+                    <div className="mt-3 text-white/60 text-xs">
+                      - Sarah M., Verified ARC Reader
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating Elements around the card */}
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={`float-${i}`}
+                  className="absolute animate-bounce"
+                  style={{
+                    left: `${10 + i * 15}%`,
+                    top: `${5 + (i % 2) * 80}%`,
+                    animationDelay: `${i * 0.5}s`,
+                    animationDuration: '3s'
+                  }}
+                >
+                  <Star className="w-6 h-6 text-yellow-400 fill-yellow-400 opacity-60" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
