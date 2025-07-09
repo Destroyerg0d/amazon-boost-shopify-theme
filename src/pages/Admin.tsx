@@ -9,6 +9,7 @@ import AdminBooks from '@/components/admin/AdminBooks';
 import AdminUsers from '@/components/admin/AdminUsers';
 import AdminReviews from '@/components/admin/AdminReviews';
 import AdminCustomers from '@/components/admin/AdminCustomers';
+import { AdminReaders } from '@/components/admin/AdminReaders';
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -16,7 +17,8 @@ import {
   Users,
   Settings,
   LogOut,
-  UserCheck
+  UserCheck,
+  UsersRound
 } from 'lucide-react';
 
 const Admin = () => {
@@ -38,7 +40,7 @@ const Admin = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7 lg:w-auto lg:grid-cols-7">
             <TabsTrigger value="dashboard" className="gap-2">
               <LayoutDashboard className="h-4 w-4" />
               Dashboard
@@ -54,6 +56,10 @@ const Admin = () => {
             <TabsTrigger value="customers" className="gap-2">
               <UserCheck className="h-4 w-4" />
               Customers
+            </TabsTrigger>
+            <TabsTrigger value="readers" className="gap-2">
+              <UsersRound className="h-4 w-4" />
+              Readers
             </TabsTrigger>
             <TabsTrigger value="users" className="gap-2">
               <Users className="h-4 w-4" />
@@ -79,6 +85,10 @@ const Admin = () => {
 
           <TabsContent value="customers" className="space-y-6">
             <AdminCustomers />
+          </TabsContent>
+
+          <TabsContent value="readers" className="space-y-6">
+            <AdminReaders />
           </TabsContent>
 
           <TabsContent value="users" className="space-y-6">

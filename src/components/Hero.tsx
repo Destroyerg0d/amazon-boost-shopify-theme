@@ -126,7 +126,12 @@ export const Hero = () => {
               {user ? 'Go to Dashboard' : 'Get Reviews Now'}
               <ArrowRight className="ml-2" />
             </Button>
-            <Button variant="outline" size="lg" className="text-lg px-8 py-4 bg-background/10 backdrop-blur-sm border-primary-foreground/20 text-primary-foreground hover:bg-background/20">
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="text-lg px-8 py-4 bg-background/10 backdrop-blur-sm border-primary-foreground/20 text-primary-foreground hover:bg-background/20"
+              onClick={() => navigate('/community-signup')}
+            >
               View Our Community
             </Button>
           </div>

@@ -82,6 +82,75 @@ export type Database = {
           },
         ]
       }
+      community_readers: {
+        Row: {
+          admin_notes: string | null
+          age: number | null
+          created_at: string
+          email: string
+          favorite_genres: string[] | null
+          full_name: string
+          id: string
+          location: string | null
+          monthly_book_budget: string | null
+          occupation: string | null
+          preferred_book_formats: string[] | null
+          reading_experience: string | null
+          reading_frequency: string | null
+          recent_book_purchases: string | null
+          review_writing_experience: string | null
+          reviews_given: number
+          social_media_handles: Json | null
+          status: string
+          updated_at: string
+          why_join_community: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          age?: number | null
+          created_at?: string
+          email: string
+          favorite_genres?: string[] | null
+          full_name: string
+          id?: string
+          location?: string | null
+          monthly_book_budget?: string | null
+          occupation?: string | null
+          preferred_book_formats?: string[] | null
+          reading_experience?: string | null
+          reading_frequency?: string | null
+          recent_book_purchases?: string | null
+          review_writing_experience?: string | null
+          reviews_given?: number
+          social_media_handles?: Json | null
+          status?: string
+          updated_at?: string
+          why_join_community?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          age?: number | null
+          created_at?: string
+          email?: string
+          favorite_genres?: string[] | null
+          full_name?: string
+          id?: string
+          location?: string | null
+          monthly_book_budget?: string | null
+          occupation?: string | null
+          preferred_book_formats?: string[] | null
+          reading_experience?: string | null
+          reading_frequency?: string | null
+          recent_book_purchases?: string | null
+          review_writing_experience?: string | null
+          reviews_given?: number
+          social_media_handles?: Json | null
+          status?: string
+          updated_at?: string
+          why_join_community?: string | null
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           admin_notes: string | null
