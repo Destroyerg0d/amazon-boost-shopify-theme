@@ -130,19 +130,26 @@ const CommunitySignup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
-      <div className="container mx-auto px-6 py-8">
+    <div className="min-h-screen bg-gradient-hero relative overflow-hidden">
+      {/* Premium floating elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-20 w-96 h-96 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl animate-float"></div>
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-accent/10 rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '3s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-secondary/10 rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '6s' }}></div>
+      </div>
+      
+      <div className="container mx-auto px-6 py-8 relative z-10">
         <Button 
           variant="outline" 
           onClick={() => navigate('/')}
-          className="mb-6 bg-background/10 backdrop-blur-sm border-primary-foreground/20 text-primary-foreground hover:bg-background/20"
+          className="mb-6 glass-card border-primary/30 text-primary-foreground hover:bg-primary/20 backdrop-blur-xl"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Home
         </Button>
 
         <div className="max-w-4xl mx-auto">
-          <Card className="bg-background/95 backdrop-blur-sm border-primary/20">
+          <Card className="glass-card border-primary/20 backdrop-blur-xl shadow-strong">
             <CardHeader className="text-center">
               <div className="flex justify-center mb-4">
                 <div className="flex items-center space-x-2">

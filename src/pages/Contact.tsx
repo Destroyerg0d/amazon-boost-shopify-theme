@@ -80,9 +80,16 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/20">
+    <div className="min-h-screen bg-gradient-hero relative overflow-hidden">
+      {/* Premium floating elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-40 left-20 w-96 h-96 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl animate-float"></div>
+        <div className="absolute bottom-40 right-20 w-96 h-96 bg-accent/10 rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '3s' }}></div>
+        <div className="absolute top-1/3 right-1/3 w-96 h-96 bg-secondary/10 rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '6s' }}></div>
+      </div>
+      
       {/* Hero Section */}
-      <section className="pt-20 pb-16 bg-gradient-primary text-primary-foreground relative overflow-hidden">
+      <section className="pt-20 pb-16 bg-gradient-primary text-primary-foreground relative overflow-hidden z-10">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
@@ -102,10 +109,10 @@ export default function Contact() {
         </div>
       </section>
 
-      <div className="container mx-auto px-6 py-16">
+      <div className="container mx-auto px-6 py-16 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
           {/* Contact Form */}
-          <Card className="shadow-strong">
+          <Card className="glass-card shadow-strong border-primary/20 backdrop-blur-xl">
             <CardHeader>
               <CardTitle className="text-2xl flex items-center gap-2">
                 <Send className="w-6 h-6 text-primary" />
@@ -174,7 +181,7 @@ export default function Contact() {
           {/* Contact Information */}
           <div className="space-y-8">
             {/* Quick Contact */}
-            <Card className="shadow-strong">
+            <Card className="glass-card shadow-strong border-primary/20 backdrop-blur-xl">
               <CardHeader>
                 <CardTitle className="text-2xl flex items-center gap-2">
                   <Phone className="w-6 h-6 text-primary" />
@@ -215,7 +222,7 @@ export default function Contact() {
             </Card>
 
             {/* Live Support Options */}
-            <Card className="shadow-strong">
+            <Card className="glass-card shadow-strong border-primary/20 backdrop-blur-xl">
               <CardHeader>
                 <CardTitle className="text-2xl flex items-center gap-2">
                   <Headphones className="w-6 h-6 text-primary" />
@@ -263,7 +270,7 @@ export default function Contact() {
             </Card>
 
             {/* Why Choose Us */}
-            <Card className="shadow-strong">
+            <Card className="glass-card shadow-strong border-primary/20 backdrop-blur-xl">
               <CardHeader>
                 <CardTitle className="text-2xl flex items-center gap-2">
                   <Star className="w-6 h-6 text-primary" />
@@ -292,7 +299,7 @@ export default function Contact() {
 
         {/* FAQ Section */}
         <div className="mt-20">
-          <Card className="shadow-strong">
+          <Card className="glass-card shadow-strong border-primary/20 backdrop-blur-xl">
             <CardHeader className="text-center">
               <CardTitle className="text-3xl">Frequently Asked Questions</CardTitle>
               <CardDescription>

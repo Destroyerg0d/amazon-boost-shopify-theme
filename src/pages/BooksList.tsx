@@ -176,7 +176,12 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Premium background effects */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+        <div className="absolute top-10 right-10 w-96 h-96 bg-primary/5 rounded-full mix-blend-multiply filter blur-3xl animate-float"></div>
+        <div className="absolute bottom-10 left-10 w-96 h-96 bg-accent/5 rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
+      </div>
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button variant="ghost" onClick={onBack} size="sm">
@@ -212,7 +217,7 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
       ) : filteredBooks.length === 0 ? (
-        <Card>
+        <Card className="glass-card border-primary/20 backdrop-blur-xl">
           <CardContent className="py-12 text-center">
             <BookOpen className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
             {searchQuery ? (
@@ -235,7 +240,7 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredBooks.map((book) => (
-            <Card key={book.id} className="hover:shadow-medium transition-all hover:scale-105 group">
+            <Card key={book.id} className="glass-card hover:shadow-strong transition-all hover:scale-105 group border-primary/20 backdrop-blur-xl hover:border-primary/40">
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div className="flex-1">

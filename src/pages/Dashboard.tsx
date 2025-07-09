@@ -258,33 +258,39 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
-      <div className="flex">
+    <div className="min-h-screen bg-gradient-hero relative overflow-hidden">
+      {/* Premium background effects */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl animate-float"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/10 rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '3s' }}></div>
+      </div>
+      
+      <div className="flex relative z-10">
         <DashboardSidebar activeTab={activeTab} setActiveTab={handleTabChange} />
 
         {/* Main Content */}
         <div className="flex-1">
           {/* Top Bar - Mobile */}
-          <div className="md:hidden bg-card border-b border-border p-4">
+          <div className="md:hidden glass-card border-b border-primary/20 p-4 backdrop-blur-xl">
             <div className="flex items-center justify-between">
-              <h1 className="text-xl font-bold">Dashboard</h1>
-              <Button variant="outline" size="sm" onClick={signOut}>
+              <h1 className="text-xl font-bold text-primary-foreground">Dashboard</h1>
+              <Button variant="outline" size="sm" onClick={signOut} className="border-primary/30 text-primary-foreground hover:bg-primary/20">
                 <LogOut className="w-4 h-4" />
               </Button>
             </div>
           </div>
 
           {/* Mobile Navigation */}
-          <div className="md:hidden bg-card border-b border-border p-2">
+          <div className="md:hidden glass-card border-b border-primary/20 p-2 backdrop-blur-xl">
             <div className="flex gap-1 overflow-x-auto">
               {['overview', 'books', 'reviews', 'settings'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => handleTabChange(tab)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap text-sm transition-colors ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg whitespace-nowrap text-sm transition-all ${
                     activeTab === tab
-                      ? 'bg-primary text-primary-foreground'
-                      : 'hover:bg-muted text-muted-foreground'
+                      ? 'bg-gradient-primary text-primary-foreground shadow-soft'
+                      : 'hover:bg-primary/20 text-primary-foreground/70 hover:text-primary-foreground'
                   }`}
                 >
                   <span className="capitalize">{tab}</span>
@@ -295,7 +301,9 @@ const Dashboard = () => {
 
           {/* Page Content */}
           <div className="p-6">
-            {renderContent()}
+            <div className="glass-card rounded-2xl p-6 backdrop-blur-xl border-primary/20">
+              {renderContent()}
+            </div>
           </div>
         </div>
       </div>

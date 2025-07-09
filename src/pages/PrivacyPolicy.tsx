@@ -5,8 +5,15 @@ import { Button } from "@/components/ui/button";
 
 const PrivacyPolicy = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
-      <div className="container mx-auto px-6 py-12">
+    <div className="min-h-screen bg-gradient-hero relative overflow-hidden">
+      {/* Premium floating elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-40 left-20 w-96 h-96 bg-primary/5 rounded-full mix-blend-multiply filter blur-3xl animate-float"></div>
+        <div className="absolute bottom-40 right-20 w-96 h-96 bg-accent/5 rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '3s' }}></div>
+        <div className="absolute top-1/2 right-1/4 w-96 h-96 bg-secondary/5 rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '6s' }}></div>
+      </div>
+      
+      <div className="container mx-auto px-6 py-12 relative z-10">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="mb-8">
@@ -16,25 +23,25 @@ const PrivacyPolicy = () => {
                 Back to Home
               </Button>
             </Link>
-            <h1 className="text-4xl font-bold text-foreground mb-4">Privacy Policy</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4">Privacy Policy</h1>
+            <p className="text-primary-foreground/80 text-lg">
               How we collect, use, and protect your personal information
             </p>
-            <p className="text-muted-foreground text-sm mt-2">
+            <p className="text-primary-foreground/60 text-sm mt-2">
               Last updated: {new Date().toLocaleDateString()}
             </p>
           </div>
 
           <div className="space-y-6">
             {/* Privacy Commitment */}
-            <Card className="border-blue-200 bg-blue-50/50">
+            <Card className="glass-card border-primary/20 backdrop-blur-xl shadow-soft bg-gradient-primary/10">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-blue-800">
+                <CardTitle className="flex items-center gap-2 text-primary-foreground">
                   <Shield className="w-5 h-5" />
                   Our Privacy Commitment
                 </CardTitle>
               </CardHeader>
-              <CardContent className="text-blue-800">
+              <CardContent className="text-primary-foreground/80">
                 <p>
                   At ReviewProMax, we take your privacy seriously. This policy explains how we collect, 
                   use, and protect your personal information when you use our professional book review services.
@@ -43,7 +50,7 @@ const PrivacyPolicy = () => {
             </Card>
 
             {/* Information Collection */}
-            <Card>
+            <Card className="glass-card border-primary/20 backdrop-blur-xl shadow-soft">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Database className="w-5 h-5 text-primary" />
@@ -52,11 +59,11 @@ const PrivacyPolicy = () => {
               </CardHeader>
               <CardContent className="space-y-6 text-foreground">
                 <section>
-                  <h2 className="text-xl font-semibold mb-3">Personal Information</h2>
-                  <p className="text-muted-foreground mb-3">
+                  <h2 className="text-xl font-semibold mb-3 text-primary-foreground">Personal Information</h2>
+                  <p className="text-primary-foreground/70 mb-3">
                     We collect information you provide directly to us when you:
                   </p>
-                  <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-4">
+                  <ul className="list-disc list-inside space-y-1 text-primary-foreground/60 ml-4">
                     <li>Create an account or register for our services</li>
                     <li>Submit contact forms or request consultations</li>
                     <li>Upload books for review services</li>
@@ -66,38 +73,38 @@ const PrivacyPolicy = () => {
                 </section>
 
                 <section>
-                  <h2 className="text-xl font-semibold mb-3">Types of Data Collected</h2>
+                  <h2 className="text-xl font-semibold mb-3 text-primary-foreground">Types of Data Collected</h2>
                   <div className="grid md:grid-cols-2 gap-4">
-                    <div className="bg-secondary/20 p-4 rounded-lg">
-                      <h3 className="font-medium mb-2">Contact Information</h3>
-                      <ul className="text-sm text-muted-foreground space-y-1">
+                    <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+                      <h3 className="font-medium mb-2 text-primary-foreground">Contact Information</h3>
+                      <ul className="text-sm text-primary-foreground/60 space-y-1">
                         <li>• Full name</li>
                         <li>• Email address</li>
                         <li>• Phone number</li>
                         <li>• Business information</li>
                       </ul>
                     </div>
-                    <div className="bg-secondary/20 p-4 rounded-lg">
-                      <h3 className="font-medium mb-2">Book Information</h3>
-                      <ul className="text-sm text-muted-foreground space-y-1">
+                    <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+                      <h3 className="font-medium mb-2 text-primary-foreground">Book Information</h3>
+                      <ul className="text-sm text-primary-foreground/60 space-y-1">
                         <li>• Book titles and descriptions</li>
                         <li>• Author information</li>
                         <li>• Genre and category data</li>
                         <li>• Manuscript files</li>
                       </ul>
                     </div>
-                    <div className="bg-secondary/20 p-4 rounded-lg">
-                      <h3 className="font-medium mb-2">Payment Information</h3>
-                      <ul className="text-sm text-muted-foreground space-y-1">
+                    <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+                      <h3 className="font-medium mb-2 text-primary-foreground">Payment Information</h3>
+                      <ul className="text-sm text-primary-foreground/60 space-y-1">
                         <li>• Billing address</li>
                         <li>• Payment method details</li>
                         <li>• Transaction history</li>
                         <li>• Invoice information</li>
                       </ul>
                     </div>
-                    <div className="bg-secondary/20 p-4 rounded-lg">
-                      <h3 className="font-medium mb-2">Usage Data</h3>
-                      <ul className="text-sm text-muted-foreground space-y-1">
+                    <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+                      <h3 className="font-medium mb-2 text-primary-foreground">Usage Data</h3>
+                      <ul className="text-sm text-primary-foreground/60 space-y-1">
                         <li>• Platform activity</li>
                         <li>• Service preferences</li>
                         <li>• Communication logs</li>

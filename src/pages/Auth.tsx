@@ -115,18 +115,32 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary/20 px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-hero px-4 relative overflow-hidden">
+      {/* Floating particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-4 -left-4 w-72 h-72 bg-primary/20 rounded-full mix-blend-multiply filter blur-xl animate-float"></div>
+        <div className="absolute -bottom-8 -right-4 w-72 h-72 bg-accent/20 rounded-full mix-blend-multiply filter blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-secondary/20 rounded-full mix-blend-multiply filter blur-xl animate-float" style={{ animationDelay: '4s' }}></div>
+      </div>
+      
+      <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
             ReviewProMax
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-primary-foreground/80 text-lg">
             Boost your Amazon book success with authentic reviews
           </p>
+          <div className="flex justify-center mt-4">
+            <div className="flex space-x-1">
+              <div className="w-2 h-2 bg-accent rounded-full animate-sparkle"></div>
+              <div className="w-2 h-2 bg-primary rounded-full animate-sparkle" style={{ animationDelay: '1s' }}></div>
+              <div className="w-2 h-2 bg-secondary rounded-full animate-sparkle" style={{ animationDelay: '2s' }}></div>
+            </div>
+          </div>
         </div>
 
-        <Card className="shadow-strong">
+        <Card className="glass-card shadow-strong border-primary/20 backdrop-blur-xl">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl text-center">Welcome</CardTitle>
             <CardDescription className="text-center">

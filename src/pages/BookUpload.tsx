@@ -250,7 +250,12 @@ const BookUpload = ({ onBack, onBookAdded }: BookUploadProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Premium background effects */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+        <div className="absolute top-20 right-20 w-72 h-72 bg-primary/5 rounded-full mix-blend-multiply filter blur-3xl animate-float"></div>
+        <div className="absolute bottom-20 left-20 w-72 h-72 bg-accent/5 rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
+      </div>
       <div className="flex items-center gap-4">
         <Button variant="ghost" onClick={onBack} size="sm">
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -262,7 +267,7 @@ const BookUpload = ({ onBack, onBookAdded }: BookUploadProps) => {
         </div>
       </div>
 
-      <Card className="max-w-4xl mx-auto">
+      <Card className="max-w-4xl mx-auto glass-card shadow-strong border-primary/20 backdrop-blur-xl">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
