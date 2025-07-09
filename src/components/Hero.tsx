@@ -41,7 +41,7 @@ export const Hero = () => {
   const CurrentIcon = slogans[currentSlogan].icon;
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+    <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-slate-900">
       {/* Dynamic Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 animate-pulse" />
@@ -104,8 +104,8 @@ export const Hero = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-6xl mx-auto">
+      <div className="w-full container mx-auto px-6 relative z-10">
+        <div className="w-full max-w-6xl mx-auto">
           {/* Split Layout */}
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             
