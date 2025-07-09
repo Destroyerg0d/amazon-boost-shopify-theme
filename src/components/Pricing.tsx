@@ -4,8 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useState } from "react";
-import { Calculator, Clock, CheckCircle, Star, Video, Camera, Shield, Zap } from "lucide-react";
+import { Calculator, Clock, CheckCircle, Star, Video, Camera, Shield, Zap, Info, AlertTriangle } from "lucide-react";
 import { PayPalButton } from "./PayPalButton";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -15,6 +17,7 @@ export const Pricing = () => {
   const [bookPrice, setBookPrice] = useState<number>(0);
   const [selectedType, setSelectedType] = useState<'verified' | 'unverified'>('verified');
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number>(0);
+  const [showBookPriceDialog, setShowBookPriceDialog] = useState<boolean>(false);
   
   const calculateTurnaroundTime = (baseTime: number, words: number) => {
     const extraWords = Math.max(0, words - 5000);
@@ -167,9 +170,29 @@ export const Pricing = () => {
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             Choose Your Review Package
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
             Get authentic, honest reviews from our verified ARC community. All packages include quality guarantee and genre-matched readers.
           </p>
+          
+          {/* Important Cost Notice for Verified Reviews */}
+          {selectedType === 'verified' && (
+            <Alert className="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/50 dark:to-purple-950/50 border-blue-200 dark:border-blue-800">
+              <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <AlertDescription className="text-left">
+                <div className="space-y-2">
+                  <p className="font-semibold text-blue-900 dark:text-blue-100">
+                    💡 Important: Total Cost for Verified Reviews
+                  </p>
+                  <p className="text-blue-700 dark:text-blue-300">
+                    <strong>Your total payment = Plan Cost + Book Purchase Cost</strong>
+                  </p>
+                  <p className="text-sm text-blue-600 dark:text-blue-400">
+                    📊 <strong>Use the Investment Calculator below first</strong> to determine your total cost before purchasing. This helps you budget for both the service fee and book copies our reviewers will purchase.
+                  </p>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
         </div>
 
         {/* Review Type Selection */}
@@ -363,7 +386,18 @@ export const Pricing = () => {
                           </div>
                         </div>
                         <div className="space-y-3">
-                          <Label htmlFor="bookPriceCalc" className="text-sm font-medium">Your Book Price ($)</Label>
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor="bookPriceCalc" className="text-sm font-medium">Your Book Price ($)</Label>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setShowBookPriceDialog(true)}
+                              className="h-auto p-1 text-muted-foreground hover:text-foreground"
+                            >
+                              <Info className="w-4 h-4" />
+                            </Button>
+                          </div>
                           <Input
                             id="bookPriceCalc"
                             type="number"
@@ -371,6 +405,7 @@ export const Pricing = () => {
                             min="0"
                             value={bookPrice}
                             onChange={(e) => setBookPrice(parseFloat(e.target.value) || 0)}
+                            onFocus={() => setShowBookPriceDialog(true)}
                             placeholder="e.g., 12.99"
                             className="p-3 bg-background/50 backdrop-blur-sm border-input hover:border-primary/50 transition-colors"
                           />
@@ -449,12 +484,23 @@ export const Pricing = () => {
                     </ul>
                     
                     {user ? (
-                      <PayPalButton
-                        planType={selectedType}
-                        planName={pkg.name}
-                        amount={selectedType === 'verified' ? pkg.discountedPrice + (bookPrice || 0) : pkg.discountedPrice}
-                        bookPrice={selectedType === 'verified' ? bookPrice : 0}
-                      />
+                      selectedType === 'verified' && bookPrice <= 0 ? (
+                        <div className="text-center p-4 border border-dashed rounded-lg bg-amber-50 dark:bg-amber-950/20">
+                          <p className="text-sm text-amber-700 dark:text-amber-300 font-medium">
+                            📊 Please use the Investment Calculator above to set your book price first
+                          </p>
+                        </div>
+                      ) : (
+                        <PayPalButton
+                          planType={selectedType}
+                          planName={pkg.name}
+                          amount={selectedType === 'verified' ? 
+                            pkg.discountedPrice + (bookPrice * (parseInt(pkg.reviews.split('–')[0] || '0') || parseInt(pkg.reviews.split(' ')[0] || '0'))) : 
+                            pkg.discountedPrice
+                          }
+                          bookPrice={selectedType === 'verified' ? bookPrice : 0}
+                        />
+                      )
                     ) : (
                       <Button 
                         variant={pkg.popular ? "accent" : "default"} 
@@ -518,6 +564,59 @@ export const Pricing = () => {
           </div>
         </div>
       </div>
+
+      {/* Book Price Information Dialog */}
+      <Dialog open={showBookPriceDialog} onOpenChange={setShowBookPriceDialog}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-500" />
+              Book Price Information
+            </DialogTitle>
+            <DialogDescription asChild>
+              <div className="space-y-4 text-left">
+                <p className="text-base">
+                  <strong>Notice:</strong> You can set any price you want for your book purchase calculation.
+                </p>
+                
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
+                    📖 Example Book Formats:
+                  </p>
+                  <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                    <li>• <strong>Kindle Edition:</strong> $0.99</li>
+                    <li>• <strong>Paperback:</strong> $12.99</li>
+                    <li>• <strong>Hardcover:</strong> $24.99</li>
+                  </ul>
+                </div>
+
+                <Alert className="border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/30">
+                  <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                  <AlertDescription className="text-amber-800 dark:text-amber-200">
+                    <p className="font-medium mb-1">Important:</p>
+                    <p className="text-sm">
+                      If you set your book price at <strong>$12.99</strong> and select that price in the calculator, 
+                      our reviewers will specifically purchase and review the <strong>Paperback version</strong> of your book. 
+                      The review format will match the price point you specify.
+                    </p>
+                  </AlertDescription>
+                </Alert>
+
+                <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                  <p className="text-sm text-green-800 dark:text-green-200">
+                    💡 <strong>Pro Tip:</strong> Choose the format that best aligns with your marketing goals and target audience preferences.
+                  </p>
+                </div>
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end">
+            <Button onClick={() => setShowBookPriceDialog(false)}>
+              Got it!
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
