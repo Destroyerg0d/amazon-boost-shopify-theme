@@ -28,25 +28,18 @@ export const PayPalButton = ({ planType, planName, amount, bookPrice = 0, disabl
 
   const createOrder = async () => {
     try {
-      const response = await fetch('/functions/v1/create-paypal-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token}`,
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('create-paypal-order', {
+        body: {
           planType,
           planName,
           amount,
           bookPrice,
           totalReviews: getReviewCount(planName)
-        }),
+        },
       });
-
-      const data = await response.json();
       
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create order');
+      if (error) {
+        throw new Error(error.message || 'Failed to create order');
       }
 
       return data.orderID;
@@ -62,22 +55,15 @@ export const PayPalButton = ({ planType, planName, amount, bookPrice = 0, disabl
 
   const onApprove = async (data: any) => {
     try {
-      const response = await fetch('/functions/v1/capture-paypal-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token}`,
-        },
-        body: JSON.stringify({
+      const { data: result, error } = await supabase.functions.invoke('capture-paypal-order', {
+        body: {
           orderID: data.orderID,
           paymentId: data.paymentId
-        }),
+        },
       });
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Payment capture failed');
+      if (error) {
+        throw new Error(error.message || 'Payment capture failed');
       }
 
       toast({
