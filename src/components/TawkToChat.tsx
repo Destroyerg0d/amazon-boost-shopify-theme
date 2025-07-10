@@ -27,30 +27,52 @@ export const TawkToChat = ({ isVisible, onClose }: TawkToChatProps) => {
       script.onload = () => {
         setIsLoaded(true);
         
-        // Initialize Tawk API
-        window.Tawk_API = window.Tawk_API || {};
-        window.Tawk_LoadStart = new Date();
-        
-        // Show the chat when loaded
-        if (window.Tawk_API) {
-          window.Tawk_API.onLoad = function() {
-            window.Tawk_API.showWidget();
-            window.Tawk_API.maximize();
-          };
+        // Initialize Tawk API with a slight delay to prevent blocking
+        setTimeout(() => {
+          window.Tawk_API = window.Tawk_API || {};
+          window.Tawk_LoadStart = new Date();
           
-          // Handle chat close
-          window.Tawk_API.onChatEnded = function() {
-            if (onClose) {
-              onClose();
-            }
-          };
-        }
+          // Show the chat when loaded
+          if (window.Tawk_API) {
+            window.Tawk_API.onLoad = function() {
+              window.Tawk_API.showWidget();
+              window.Tawk_API.maximize();
+            };
+            
+            // Handle chat close
+            window.Tawk_API.onChatEnded = function() {
+              if (onClose) {
+                onClose();
+              }
+            };
+            
+            // Hide widget when minimized to prevent background interference
+            window.Tawk_API.onChatMinimized = function() {
+              window.Tawk_API.hideWidget();
+              if (onClose) {
+                onClose();
+              }
+            };
+          }
+        }, 100);
       };
       
-      // Add script to head
-      const firstScript = document.getElementsByTagName('script')[0];
-      if (firstScript && firstScript.parentNode) {
-        firstScript.parentNode.insertBefore(script, firstScript);
+      // Add script to head with requestIdleCallback for better performance
+      if (window.requestIdleCallback) {
+        window.requestIdleCallback(() => {
+          const firstScript = document.getElementsByTagName('script')[0];
+          if (firstScript && firstScript.parentNode) {
+            firstScript.parentNode.insertBefore(script, firstScript);
+          }
+        });
+      } else {
+        // Fallback for browsers without requestIdleCallback
+        setTimeout(() => {
+          const firstScript = document.getElementsByTagName('script')[0];
+          if (firstScript && firstScript.parentNode) {
+            firstScript.parentNode.insertBefore(script, firstScript);
+          }
+        }, 100);
       }
     } else if (!isVisible && isLoaded && window.Tawk_API) {
       // Hide the chat widget when not visible

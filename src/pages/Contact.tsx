@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { 
   Phone, 
   Mail, 
@@ -13,7 +14,9 @@ import {
   Headphones,
   MessageCircle,
   Calendar,
-  Star
+  Star,
+  User,
+  X
 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -28,8 +31,16 @@ export default function Contact() {
     subject: "",
     message: ""
   });
+  const [scheduleCallData, setScheduleCallData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: ""
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isScheduleCallSubmitting, setIsScheduleCallSubmitting] = useState(false);
   const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
+  const [isScheduleCallOpen, setIsScheduleCallOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,8 +88,59 @@ export default function Contact() {
     }
   };
 
+  const handleScheduleCall = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsScheduleCallSubmitting(true);
+    
+    try {
+      const { error } = await supabase
+        .from('customers')
+        .insert([
+          {
+            name: scheduleCallData.name,
+            email: scheduleCallData.email,
+            phone: scheduleCallData.phone,
+            business_type: null,
+            monthly_revenue: null,
+            message: `SCHEDULE CALL REQUEST\n\n${scheduleCallData.message}`,
+            lead_source: 'schedule_call',
+            status: 'new'
+          }
+        ]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Call Scheduled Successfully!",
+        description: "Thank you! Our team will contact you within 24 hours to schedule your consultation call.",
+      });
+
+      // Reset form and close modal
+      setScheduleCallData({
+        name: "",
+        email: "",
+        phone: "",
+        message: ""
+      });
+      setIsScheduleCallOpen(false);
+    } catch (error) {
+      console.error('Error scheduling call:', error);
+      toast({
+        title: "Failed to Schedule Call",
+        description: "There was an error processing your request. Please try calling us directly.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsScheduleCallSubmitting(false);
+    }
+  };
+
   const updateFormData = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const updateScheduleCallData = (field: string, value: string) => {
+    setScheduleCallData(prev => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -264,11 +326,7 @@ export default function Contact() {
                 <Button 
                   className="w-full justify-start gap-3 h-14" 
                   variant="outline"
-                  onClick={() => {
-                    // Scroll to contact form
-                    const form = document.querySelector('form');
-                    form?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  }}
+                  onClick={() => setIsScheduleCallOpen(true)}
                 >
                   <Calendar className="w-5 h-5" />
                   <div className="text-left">
@@ -363,6 +421,83 @@ export default function Contact() {
           </Card>
         </div>
       </div>
+      
+      {/* Schedule Call Modal */}
+      <Dialog open={isScheduleCallOpen} onOpenChange={setIsScheduleCallOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-primary" />
+              Schedule a Call
+            </DialogTitle>
+            <DialogDescription>
+              Fill out your details and we'll contact you within 24 hours to schedule your consultation.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={handleScheduleCall} className="space-y-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Your Name *</label>
+              <Input
+                placeholder="Enter your full name"
+                value={scheduleCallData.name}
+                onChange={(e) => updateScheduleCallData("name", e.target.value)}
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium mb-2 block">Email Address *</label>
+              <Input
+                type="email"
+                placeholder="your.email@example.com"
+                value={scheduleCallData.email}
+                onChange={(e) => updateScheduleCallData("email", e.target.value)}
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium mb-2 block">Phone Number *</label>
+              <Input
+                type="tel"
+                placeholder="+1 (555) 123-4567"
+                value={scheduleCallData.phone}
+                onChange={(e) => updateScheduleCallData("phone", e.target.value)}
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium mb-2 block">Tell us about your project (optional)</label>
+              <Textarea
+                placeholder="Brief description of your book or what you'd like to discuss..."
+                value={scheduleCallData.message}
+                onChange={(e) => updateScheduleCallData("message", e.target.value)}
+                rows={3}
+              />
+            </div>
+            
+            <div className="flex gap-3 pt-4">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setIsScheduleCallOpen(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                disabled={isScheduleCallSubmitting}
+                className="flex-1"
+              >
+                {isScheduleCallSubmitting ? "Scheduling..." : "Schedule Call"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
       
       {/* Tawk.to Live Chat */}
       <TawkToChat 
