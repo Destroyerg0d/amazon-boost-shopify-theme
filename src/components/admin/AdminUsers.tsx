@@ -168,12 +168,16 @@ const AdminUsers = () => {
 
       if (roleError) throw roleError;
 
+      // Immediately update local state to remove the user from the UI
+      setUsers(prevUsers => prevUsers.filter(user => user.user_id !== userId));
+
       toast({
         title: 'Success',
         description: 'User account deleted successfully. Order history and reviews preserved.',
       });
 
-      fetchUsers();
+      // Also refetch to ensure consistency
+      await fetchUsers();
     } catch (error) {
       console.error('Error deleting user:', error);
       toast({
