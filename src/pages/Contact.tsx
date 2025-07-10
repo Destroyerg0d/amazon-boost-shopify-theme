@@ -18,7 +18,6 @@ import {
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { AIChatbot } from "@/components/AIChatbot";
 import { TawkToChat } from "@/components/TawkToChat";
 
 export default function Contact() {
@@ -30,7 +29,6 @@ export default function Contact() {
     message: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -253,14 +251,14 @@ export default function Contact() {
                 <Button 
                   className="w-full justify-start gap-3 h-14" 
                   variant="outline"
-                  onClick={() => setIsChatbotOpen(true)}
+                  onClick={() => setIsLiveChatOpen(true)}
                 >
                   <MessageSquare className="w-5 h-5" />
                   <div className="text-left">
-                    <div className="font-medium">AI Chatbot</div>
+                    <div className="font-medium">Live Chat Support</div>
                     <div className="text-sm text-muted-foreground">Get instant answers 24/7</div>
                   </div>
-                  <Badge className="ml-auto bg-blue-500">24/7</Badge>
+                  <Badge className="ml-auto bg-green-500">Online</Badge>
                 </Button>
 
                 <Button 
@@ -365,12 +363,6 @@ export default function Contact() {
           </Card>
         </div>
       </div>
-      
-      {/* AI Chatbot */}
-      <AIChatbot 
-        isOpen={isChatbotOpen} 
-        onClose={() => setIsChatbotOpen(false)} 
-      />
       
       {/* Tawk.to Live Chat */}
       <TawkToChat 
