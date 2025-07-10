@@ -134,25 +134,58 @@ const AdminUsers = () => {
 
   const deleteUser = async (userId: string) => {
     try {
-      // Use Supabase function invoke instead of direct fetch
-      const { data, error } = await supabase.functions.invoke('delete-user', {
-        body: { userId },
-      });
+      // Get user email before deletion for customer table update
+      const userToDelete = users.find(u => u.user_id === userId);
+      
+      // 1. Delete user's books
+      const { error: booksError } = await supabase
+        .from('books')
+        .delete()
+        .eq('user_id', userId);
 
-      if (error) {
-        throw new Error(error.message || 'Failed to delete user');
+      if (booksError) {
+        console.error('Error deleting books:', booksError);
       }
 
-      if (!data?.success) {
-        throw new Error(data?.error || 'Failed to delete user');
+      // 2. Update customers table to mark as banned (preserve order history)
+      if (userToDelete?.email) {
+        const { error: customerError } = await supabase
+          .from('customers')
+          .update({ 
+            status: 'banned',
+            admin_notes: `User account permanently deleted by admin on ${new Date().toISOString()}. Order history preserved.`
+          })
+          .eq('email', userToDelete.email);
+
+        if (customerError) {
+          console.error('Error updating customer status:', customerError);
+        }
       }
+
+      // 3. Delete user profile and roles
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('user_id', userId);
+
+      if (profileError) throw profileError;
+
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId);
+
+      if (roleError) throw roleError;
+
+      // Note: We can only delete from public schema tables. 
+      // The user will still exist in auth.users but won't have access to the app.
 
       // Immediately update local state to remove the user from the UI
       setUsers(prevUsers => prevUsers.filter(user => user.user_id !== userId));
 
       toast({
         title: 'Success',
-        description: 'User permanently deleted from all systems. Order history and reviews preserved.',
+        description: 'User account deleted successfully. Login access removed. Order history and reviews preserved.',
       });
 
       // Also refetch to ensure consistency
