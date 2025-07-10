@@ -134,7 +134,26 @@ const AdminUsers = () => {
 
   const deleteUser = async (userId: string) => {
     try {
-      // Delete user from profiles table (cascading will handle related data)
+      // 1. Delete user's books
+      const { error: booksError } = await supabase
+        .from('books')
+        .delete()
+        .eq('user_id', userId);
+
+      if (booksError) throw booksError;
+
+      // 2. Update customers table to mark as banned (preserve order history)
+      const { error: customerError } = await supabase
+        .from('customers')
+        .update({ 
+          status: 'banned',
+          admin_notes: `User account deleted by admin on ${new Date().toISOString()}. Order history preserved.`
+        })
+        .eq('email', users.find(u => u.user_id === userId)?.email);
+
+      // Note: customerError is not critical as the user might not exist in customers table
+
+      // 3. Delete user profile and roles (this removes account access)
       const { error: profileError } = await supabase
         .from('profiles')
         .delete()
@@ -142,7 +161,6 @@ const AdminUsers = () => {
 
       if (profileError) throw profileError;
 
-      // Delete user roles
       const { error: roleError } = await supabase
         .from('user_roles')
         .delete()
@@ -152,7 +170,7 @@ const AdminUsers = () => {
 
       toast({
         title: 'Success',
-        description: 'User deleted successfully',
+        description: 'User account deleted successfully. Order history and reviews preserved.',
       });
 
       fetchUsers();
@@ -160,7 +178,7 @@ const AdminUsers = () => {
       console.error('Error deleting user:', error);
       toast({
         title: 'Error',
-        description: 'Failed to delete user',
+        description: 'Failed to delete user account',
         variant: 'destructive',
       });
     }
@@ -355,17 +373,37 @@ const AdminUsers = () => {
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             </AlertDialogTrigger>
-                            <AlertDialogContent>
+                            <AlertDialogContent className="max-w-md">
                               <AlertDialogHeader>
-                                <AlertDialogTitle>Delete User</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Are you sure you want to delete this user? This action cannot be undone and will permanently remove:
-                                  <br />
-                                  <br />
-                                  <strong>{user.full_name || 'Unknown User'}</strong> ({user.email})
-                                  <br />
-                                  <br />
-                                  This will delete their profile, roles, and all associated data.
+                                <AlertDialogTitle className="text-destructive">Ban User Account</AlertDialogTitle>
+                                <AlertDialogDescription className="space-y-3">
+                                  <div className="font-medium">
+                                    Banning: <strong>{user.full_name || 'Unknown User'}</strong> ({user.email})
+                                  </div>
+                                  
+                                  <div className="space-y-2 text-sm">
+                                    <div className="font-medium text-destructive">Will be DELETED:</div>
+                                    <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                                      <li>User account & login access</li>
+                                      <li>User profile information</li>
+                                      <li>All uploaded books</li>
+                                      <li>Account permissions & roles</li>
+                                    </ul>
+                                  </div>
+
+                                  <div className="space-y-2 text-sm">
+                                    <div className="font-medium text-green-600">Will be PRESERVED:</div>
+                                    <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                                      <li>Order history & purchase records</li>
+                                      <li>Written reviews (marked as banned user)</li>
+                                      <li>Customer data (marked as banned)</li>
+                                      <li>Payment transaction history</li>
+                                    </ul>
+                                  </div>
+
+                                  <div className="p-2 bg-destructive/10 rounded text-xs">
+                                    <strong>Note:</strong> This action cannot be undone. The user will lose all access but their transaction history remains for records.
+                                  </div>
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
