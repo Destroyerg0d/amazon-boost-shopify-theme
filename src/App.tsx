@@ -18,6 +18,7 @@ import ShippingPolicy from "./pages/ShippingPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CommunitySignup from "./pages/CommunitySignup";
+import ThankYou from "./pages/ThankYou";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/refund-policy" element={<RefundPolicy />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/community-signup" element={<CommunitySignup />} />
+            <Route path="/thank-you" element={<ThankYou />} />
             <Route 
               path="/dashboard" 
               element={

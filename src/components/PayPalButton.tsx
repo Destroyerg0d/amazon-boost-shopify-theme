@@ -71,8 +71,8 @@ export const PayPalButton = ({ planType, planName, amount, bookPrice = 0, disabl
         description: `Your ${planName} plan has been activated successfully.`
       });
 
-      // Redirect to dashboard
-      navigate('/dashboard');
+      // Redirect to thank you page
+      navigate('/thank-you');
     } catch (error: any) {
       toast({
         variant: "destructive",
