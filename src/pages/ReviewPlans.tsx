@@ -124,8 +124,8 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
         type: "starter",
         reviews: "10 reviews",
         originalPrice: 230,
-        discountedPrice: 170,
-        discount: "26% OFF",
+        discountedPrice: 1,
+        discount: "99% OFF - TEST",
         baseTurnaround: 3,
         features: [
           "Written reviews only",
@@ -193,8 +193,8 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
         type: "starter",
         reviews: "10 reviews",
         originalPrice: 170,
-        discountedPrice: 130,
-        discount: "24% OFF",
+        discountedPrice: 1,
+        discount: "99% OFF - TEST",
         baseTurnaround: 2,
         features: [
           "Text reviews only",
