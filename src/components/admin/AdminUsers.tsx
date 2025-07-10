@@ -134,46 +134,34 @@ const AdminUsers = () => {
 
   const deleteUser = async (userId: string) => {
     try {
-      // 1. Delete user's books
-      const { error: booksError } = await supabase
-        .from('books')
-        .delete()
-        .eq('user_id', userId);
+      // Call the edge function to permanently delete the user
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session) {
+        throw new Error('No authentication session')
+      }
 
-      if (booksError) throw booksError;
+      const response = await fetch('https://swbeqefyudjryxwmhuvt.supabase.co/functions/v1/delete-user', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      })
 
-      // 2. Update customers table to mark as banned (preserve order history)
-      const { error: customerError } = await supabase
-        .from('customers')
-        .update({ 
-          status: 'banned',
-          admin_notes: `User account deleted by admin on ${new Date().toISOString()}. Order history preserved.`
-        })
-        .eq('email', users.find(u => u.user_id === userId)?.email);
+      const result = await response.json()
 
-      // Note: customerError is not critical as the user might not exist in customers table
-
-      // 3. Delete user profile and roles (this removes account access)
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('user_id', userId);
-
-      if (profileError) throw profileError;
-
-      const { error: roleError } = await supabase
-        .from('user_roles')
-        .delete()
-        .eq('user_id', userId);
-
-      if (roleError) throw roleError;
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to delete user')
+      }
 
       // Immediately update local state to remove the user from the UI
-      setUsers(prevUsers => prevUsers.filter(user => user.user_id !== userId));
+      setUsers(prevUsers => prevUsers.filter(user => user.user_id !== userId))
 
       toast({
         title: 'Success',
-        description: 'User account deleted successfully. Order history and reviews preserved.',
+        description: 'User permanently deleted from all systems. Order history and reviews preserved.',
       });
 
       // Also refetch to ensure consistency
@@ -182,7 +170,7 @@ const AdminUsers = () => {
       console.error('Error deleting user:', error);
       toast({
         title: 'Error',
-        description: 'Failed to delete user account',
+        description: error instanceof Error ? error.message : 'Failed to delete user account',
         variant: 'destructive',
       });
     }
