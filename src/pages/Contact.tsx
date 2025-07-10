@@ -19,6 +19,7 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { AIChatbot } from "@/components/AIChatbot";
+import { TawkToChat } from "@/components/TawkToChat";
 
 export default function Contact() {
   const { toast } = useToast();
@@ -30,6 +31,7 @@ export default function Contact() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -235,13 +237,17 @@ export default function Contact() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Button className="w-full justify-start gap-3 h-14" variant="outline" disabled>
+                <Button 
+                  className="w-full justify-start gap-3 h-14" 
+                  variant="outline"
+                  onClick={() => setIsLiveChatOpen(true)}
+                >
                   <MessageCircle className="w-5 h-5" />
                   <div className="text-left">
                     <div className="font-medium">Live Chat</div>
-                    <div className="text-sm text-muted-foreground">Temporarily unavailable</div>
+                    <div className="text-sm text-muted-foreground">Chat with our support team</div>
                   </div>
-                  <Badge className="ml-auto bg-gray-500">Offline</Badge>
+                  <Badge className="ml-auto bg-green-500">Online</Badge>
                 </Button>
 
                 <Button 
@@ -364,6 +370,12 @@ export default function Contact() {
       <AIChatbot 
         isOpen={isChatbotOpen} 
         onClose={() => setIsChatbotOpen(false)} 
+      />
+      
+      {/* Tawk.to Live Chat */}
+      <TawkToChat 
+        isVisible={isLiveChatOpen} 
+        onClose={() => setIsLiveChatOpen(false)} 
       />
     </div>
   );
