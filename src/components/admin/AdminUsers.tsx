@@ -134,30 +134,21 @@ const AdminUsers = () => {
 
   const deleteUser = async (userId: string) => {
     try {
-      // Call the edge function to permanently delete the user
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (!session) {
-        throw new Error('No authentication session')
+      // Use Supabase function invoke instead of direct fetch
+      const { data, error } = await supabase.functions.invoke('delete-user', {
+        body: { userId },
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Failed to delete user');
       }
 
-      const response = await fetch('https://swbeqefyudjryxwmhuvt.supabase.co/functions/v1/delete-user', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId }),
-      })
-
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to delete user')
+      if (!data?.success) {
+        throw new Error(data?.error || 'Failed to delete user');
       }
 
       // Immediately update local state to remove the user from the UI
-      setUsers(prevUsers => prevUsers.filter(user => user.user_id !== userId))
+      setUsers(prevUsers => prevUsers.filter(user => user.user_id !== userId));
 
       toast({
         title: 'Success',
