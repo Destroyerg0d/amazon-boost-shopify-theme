@@ -45,7 +45,7 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
   const [plans, setPlans] = useState<ReviewPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [bookPrice, setBookPrice] = useState<number>(0);
-  const [selectedType, setSelectedType] = useState<'verified' | 'unverified'>('verified');
+  const [selectedType, setSelectedType] = useState<'verified' | 'unverified'>('unverified');
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number>(0);
 
   useEffect(() => {

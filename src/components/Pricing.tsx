@@ -15,7 +15,7 @@ export const Pricing = () => {
   const { user } = useAuth();
   const [wordCount, setWordCount] = useState<number>(50000);
   const [bookPrice, setBookPrice] = useState<number>(0);
-  const [selectedType, setSelectedType] = useState<'verified' | 'unverified'>('verified');
+  const [selectedType, setSelectedType] = useState<'verified' | 'unverified'>('unverified');
   const [selectedPlanIndex, setSelectedPlanIndex] = useState<number>(0);
   const [showBookPriceDialog, setShowBookPriceDialog] = useState<boolean>(false);
   const [hasShownPriceDialog, setHasShownPriceDialog] = useState<boolean>(false);
