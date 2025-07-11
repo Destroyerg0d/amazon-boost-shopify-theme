@@ -8,20 +8,24 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
+import { UserSurvey } from '@/components/UserSurvey';
+import { supabase } from '@/integrations/supabase/client';
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
+  const [showSurvey, setShowSurvey] = useState(false);
+  const [newUserId, setNewUserId] = useState<string | null>(null);
   const { signIn, signUp, signInWithGoogle, signInWithFacebook, signInWithApple, user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   // Redirect authenticated users
   useEffect(() => {
-    if (!loading && user) {
-      navigate('/', { replace: true });
+    if (!loading && user && !showSurvey) {
+      navigate('/dashboard', { replace: true });
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, showSurvey]);
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,7 +48,7 @@ const Auth = () => {
         title: "Welcome back!",
         description: "You have successfully signed in."
       });
-      navigate('/');
+      navigate('/dashboard');
     }
     
     setIsLoading(false);
@@ -68,13 +72,35 @@ const Auth = () => {
         description: error.message
       });
     } else {
+      // Check if survey already exists for this user
+      const { data: session } = await supabase.auth.getSession();
+      if (session.session?.user) {
+        const { data: existingSurvey } = await supabase
+          .from('user_surveys')
+          .select('id')
+          .eq('user_id', session.session.user.id)
+          .single();
+
+        if (!existingSurvey) {
+          setNewUserId(session.session.user.id);
+          setShowSurvey(true);
+        } else {
+          navigate('/dashboard');
+        }
+      }
+      
       toast({
         title: "Account created!",
-        description: "Please check your email to verify your account."
+        description: "Welcome to ReviewProMax! Please complete the survey to continue."
       });
     }
     
     setIsLoading(false);
+  };
+
+  const handleSurveyComplete = () => {
+    setShowSurvey(false);
+    navigate('/dashboard');
   };
 
   const handleSocialSignIn = async (provider: 'google' | 'facebook' | 'apple') => {
@@ -113,6 +139,10 @@ const Auth = () => {
       setSocialLoading(null);
     }
   };
+
+  if (showSurvey && newUserId) {
+    return <UserSurvey onComplete={handleSurveyComplete} />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero px-4 relative overflow-hidden">

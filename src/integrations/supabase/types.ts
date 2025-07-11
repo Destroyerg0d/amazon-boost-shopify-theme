@@ -506,6 +506,63 @@ export type Database = {
         }
         Relationships: []
       }
+      user_surveys: {
+        Row: {
+          additional_comments: string | null
+          book_genres: string[] | null
+          book_status: string | null
+          created_at: string
+          current_challenges: string[] | null
+          how_did_you_hear: string | null
+          id: string
+          main_goals: string[] | null
+          marketing_budget: string | null
+          monthly_revenue_goal: string | null
+          previous_publishing: string | null
+          primary_interest: string | null
+          target_audience: string | null
+          updated_at: string
+          user_id: string
+          writing_experience: string | null
+        }
+        Insert: {
+          additional_comments?: string | null
+          book_genres?: string[] | null
+          book_status?: string | null
+          created_at?: string
+          current_challenges?: string[] | null
+          how_did_you_hear?: string | null
+          id?: string
+          main_goals?: string[] | null
+          marketing_budget?: string | null
+          monthly_revenue_goal?: string | null
+          previous_publishing?: string | null
+          primary_interest?: string | null
+          target_audience?: string | null
+          updated_at?: string
+          user_id: string
+          writing_experience?: string | null
+        }
+        Update: {
+          additional_comments?: string | null
+          book_genres?: string[] | null
+          book_status?: string | null
+          created_at?: string
+          current_challenges?: string[] | null
+          how_did_you_hear?: string | null
+          id?: string
+          main_goals?: string[] | null
+          marketing_budget?: string | null
+          monthly_revenue_goal?: string | null
+          previous_publishing?: string | null
+          primary_interest?: string | null
+          target_audience?: string | null
+          updated_at?: string
+          user_id?: string
+          writing_experience?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
