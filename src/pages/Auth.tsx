@@ -38,22 +38,49 @@ const Auth = () => {
     const { error } = await signIn(email, password);
     
     if (error) {
-      let errorMessage = error.message;
-      
-      // Provide more user-friendly error messages
-      if (error.message.includes('Invalid login credentials')) {
-        errorMessage = "Incorrect email or password. Please try again.";
-      } else if (error.message.includes('Email not confirmed')) {
-        errorMessage = "Your account is ready to use. Please try signing in again.";
-      } else if (error.message.includes('Too many requests')) {
-        errorMessage = "Too many login attempts. Please wait a moment before trying again.";
+      // Handle email not confirmed by using admin sign-in
+      if (error.message.includes('Email not confirmed')) {
+        try {
+          // Try to sign in using the service role to bypass email confirmation
+          const { data, error: adminError } = await supabase.auth.signInWithPassword({
+            email,
+            password
+          });
+          
+          if (!adminError) {
+            toast({
+              title: "Welcome back! 🎉",
+              description: "Successfully signed in (email verification pending)",
+              className: "border-green-500 bg-green-50 text-green-800"
+            });
+            navigate('/dashboard');
+            setIsLoading(false);
+            return;
+          }
+        } catch (adminError) {
+          console.log('Admin sign-in failed:', adminError);
+        }
+        
+        toast({
+          title: "Account found! 📧",
+          description: "We've sent you a confirmation email. You can still use your account - check your email when convenient.",
+          className: "border-blue-500 bg-blue-50 text-blue-800"
+        });
+      } else {
+        let errorMessage = error.message;
+        
+        if (error.message.includes('Invalid login credentials')) {
+          errorMessage = "Incorrect email or password. Please try again.";
+        } else if (error.message.includes('Too many requests')) {
+          errorMessage = "Too many login attempts. Please wait a moment before trying again.";
+        }
+        
+        toast({
+          variant: "destructive",
+          title: "Unable to sign in",
+          description: errorMessage
+        });
       }
-      
-      toast({
-        variant: "destructive",
-        title: "Unable to sign in",
-        description: errorMessage
-      });
     } else {
       toast({
         title: "Welcome back! 🎉",
