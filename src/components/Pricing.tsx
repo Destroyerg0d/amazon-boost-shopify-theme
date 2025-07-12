@@ -38,9 +38,9 @@ export const Pricing = () => {
       {
         name: "Starter Trial",
         reviews: "10 reviews",
-        originalPrice: 230,
+        originalPrice: 170,
         discountedPrice: 49,
-        discount: "79% OFF",
+        discount: "71% OFF",
         baseTurnaround: 3,
         features: [
           "Written reviews only",
