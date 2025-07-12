@@ -448,11 +448,11 @@ const AddReviewForm = ({ books, reviewPlans, onSubmit, onCancel }: AddReviewForm
   // Get the selected book's author user_id
   const selectedBook = books.find(book => book.id === formData.book_id);
   
-  // Filter plans to show only those belonging to the selected book's author
+  // Filter plans to show only those attached to the selected book
   const availablePlans = reviewPlans.filter(plan => {
     if (!selectedBook) return false;
-    // Show plans that belong to the book's author and are not already attached to a book
-    return plan.user_id === selectedBook.user_id && !plan.book_id;
+    // Show plans that are specifically attached to this book and have remaining reviews
+    return plan.book_id === selectedBook.id && plan.used_reviews < plan.total_reviews;
   });
 
   const handleSubmit = (e: React.FormEvent) => {
