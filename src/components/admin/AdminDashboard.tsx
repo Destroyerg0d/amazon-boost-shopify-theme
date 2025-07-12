@@ -48,14 +48,14 @@ const AdminDashboard = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      // Fetch all stats in parallel
+      // Fetch all stats in parallel - using payments table for better data accuracy
       const [
         usersCount,
         booksCount,
-        ordersCount,
+        paymentsCount,
         reviewsCount,
-        pendingOrdersCount,
-        completedOrdersCount,
+        pendingPaymentsCount,
+        completedPaymentsCount,
         pendingBooksCount,
         approvedBooksCount,
         revenueData,
@@ -63,26 +63,26 @@ const AdminDashboard = () => {
       ] = await Promise.all([
         supabase.from('profiles').select('*', { count: 'exact', head: true }),
         supabase.from('books').select('*', { count: 'exact', head: true }),
-        supabase.from('orders').select('*', { count: 'exact', head: true }),
+        supabase.from('payments').select('*', { count: 'exact', head: true }),
         supabase.from('reviews').select('*', { count: 'exact', head: true }),
-        supabase.from('orders').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
-        supabase.from('orders').select('*', { count: 'exact', head: true }).eq('status', 'completed'),
+        supabase.from('payments').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+        supabase.from('payments').select('*', { count: 'exact', head: true }).eq('status', 'completed'),
         supabase.from('books').select('*', { count: 'exact', head: true }).eq('approval_status', 'under_review'),
         supabase.from('books').select('*', { count: 'exact', head: true }).eq('approval_status', 'approved'),
-        supabase.from('orders').select('total_amount'),
-        supabase.from('orders').select('total_amount').gte('created_at', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()),
+        supabase.from('payments').select('amount').eq('status', 'completed'),
+        supabase.from('payments').select('amount').eq('status', 'completed').gte('created_at', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()),
       ]);
 
-      const totalRevenue = revenueData.data?.reduce((sum, order) => sum + (Number(order.total_amount) || 0), 0) || 0;
-      const monthlyRevenue = monthlyRevenueData.data?.reduce((sum, order) => sum + (Number(order.total_amount) || 0), 0) || 0;
+      const totalRevenue = revenueData.data?.reduce((sum, payment) => sum + (Number(payment.amount) || 0), 0) || 0;
+      const monthlyRevenue = monthlyRevenueData.data?.reduce((sum, payment) => sum + (Number(payment.amount) || 0), 0) || 0;
 
       setStats({
         totalUsers: usersCount.count || 0,
         totalBooks: booksCount.count || 0,
-        totalOrders: ordersCount.count || 0,
+        totalOrders: paymentsCount.count || 0,
         totalReviews: reviewsCount.count || 0,
-        pendingOrders: pendingOrdersCount.count || 0,
-        completedOrders: completedOrdersCount.count || 0,
+        pendingOrders: pendingPaymentsCount.count || 0,
+        completedOrders: completedPaymentsCount.count || 0,
         pendingBooks: pendingBooksCount.count || 0,
         approvedBooks: approvedBooksCount.count || 0,
         totalRevenue,
@@ -113,7 +113,7 @@ const AdminDashboard = () => {
       bgColor: 'bg-green-50',
     },
     {
-      title: 'Total Orders',
+      title: 'Total Payments',
       value: stats.totalOrders,
       icon: ShoppingCart,
       description: `${stats.pendingOrders} pending`,
@@ -195,24 +195,24 @@ const AdminDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Clock className="h-5 w-5" />
-              Order Status Overview
+              Payment Status Overview
             </CardTitle>
-            <CardDescription>Current order distribution</CardDescription>
+            <CardDescription>Current payment distribution</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>Pending Orders</span>
+                <span>Pending Payments</span>
                 <Badge variant="secondary">{stats.pendingOrders}</Badge>
               </div>
-              <Progress value={(stats.pendingOrders / stats.totalOrders) * 100} className="h-2" />
+              <Progress value={stats.totalOrders > 0 ? (stats.pendingOrders / stats.totalOrders) * 100 : 0} className="h-2" />
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>Completed Orders</span>
+                <span>Completed Payments</span>
                 <Badge variant="default">{stats.completedOrders}</Badge>
               </div>
-              <Progress value={(stats.completedOrders / stats.totalOrders) * 100} className="h-2" />
+              <Progress value={stats.totalOrders > 0 ? (stats.completedOrders / stats.totalOrders) * 100 : 0} className="h-2" />
             </div>
           </CardContent>
         </Card>

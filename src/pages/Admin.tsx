@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminDashboard from '@/components/admin/AdminDashboard';
 import AdminOrders from '@/components/admin/AdminOrders';
+import AdminPayments from '@/components/admin/AdminPayments';
 import AdminBooks from '@/components/admin/AdminBooks';
 import AdminUsers from '@/components/admin/AdminUsers';
 import AdminReviews from '@/components/admin/AdminReviews';
@@ -20,7 +21,8 @@ import {
   LogOut,
   UserCheck,
   UsersRound,
-  ClipboardList
+  ClipboardList,
+  CreditCard
 } from 'lucide-react';
 
 const Admin = () => {
@@ -42,10 +44,14 @@ const Admin = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8 lg:w-auto lg:grid-cols-8">
+          <TabsList className="grid w-full grid-cols-9 lg:w-auto lg:grid-cols-9">
             <TabsTrigger value="dashboard" className="gap-2">
               <LayoutDashboard className="h-4 w-4" />
               Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="payments" className="gap-2">
+              <CreditCard className="h-4 w-4" />
+              Payments
             </TabsTrigger>
             <TabsTrigger value="orders" className="gap-2">
               <ShoppingCart className="h-4 w-4" />
@@ -79,6 +85,10 @@ const Admin = () => {
 
           <TabsContent value="dashboard" className="space-y-6">
             <AdminDashboard />
+          </TabsContent>
+
+          <TabsContent value="payments" className="space-y-6">
+            <AdminPayments />
           </TabsContent>
 
           <TabsContent value="orders" className="space-y-6">
