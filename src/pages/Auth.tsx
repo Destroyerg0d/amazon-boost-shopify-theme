@@ -44,7 +44,7 @@ const Auth = () => {
       if (error.message.includes('Invalid login credentials')) {
         errorMessage = "Incorrect email or password. Please try again.";
       } else if (error.message.includes('Email not confirmed')) {
-        errorMessage = "Please check your email and click the confirmation link before signing in.";
+        errorMessage = "Your account is ready to use. Please try signing in again.";
       } else if (error.message.includes('Too many requests')) {
         errorMessage = "Too many login attempts. Please wait a moment before trying again.";
       }
@@ -84,21 +84,14 @@ const Auth = () => {
         description: error.message
       });
     } else {
-      toast({
-        title: "Account created successfully! 🎉",
-        description: "You can now sign in with your credentials",
-        className: "border-green-500 bg-green-50 text-green-800"
-      });
-      
-      // Try to sign in directly since email confirmation is disabled
+      // Automatically sign in the user since email confirmation is disabled
       const { error: signInError } = await signIn(email, password);
       
       if (!signInError) {
-        // Successful auto sign-in
         toast({
           title: "Welcome to ReviewProMax! 🚀",
-          description: "Let's get you started with your book review journey",
-          className: "border-blue-500 bg-blue-50 text-blue-800"
+          description: "Your account is ready to go!",
+          className: "border-green-500 bg-green-50 text-green-800"
         });
         
         // Check for existing survey and show if needed
@@ -118,11 +111,10 @@ const Auth = () => {
           }
         }
       } else {
-        // Show friendly message for manual sign-in
         toast({
-          title: "Almost there! 📧",
-          description: "Please check your email and click the confirmation link, then sign in",
-          className: "border-yellow-500 bg-yellow-50 text-yellow-800"
+          title: "Account created! 🎉",
+          description: "Please sign in with your new credentials",
+          className: "border-blue-500 bg-blue-50 text-blue-800"
         });
       }
     }
