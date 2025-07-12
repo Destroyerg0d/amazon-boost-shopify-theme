@@ -383,7 +383,15 @@ export const UserSurvey = ({ onComplete }: UserSurveyProps) => {
                 />
               </div>
 
-              <div className="flex justify-end">
+              <div className="flex gap-4 justify-end">
+                <Button 
+                  type="button" 
+                  variant="outline"
+                  onClick={() => onComplete()}
+                  className="flex items-center gap-2"
+                >
+                  Skip for Later
+                </Button>
                 <Button 
                   type="submit" 
                   className="flex items-center gap-2" 

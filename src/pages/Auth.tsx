@@ -72,6 +72,11 @@ const Auth = () => {
         description: error.message
       });
     } else {
+      toast({
+        title: "Account created!",
+        description: "Welcome to ReviewProMax!"
+      });
+      
       // Check if survey already exists for this user
       const { data: session } = await supabase.auth.getSession();
       if (session.session?.user) {
@@ -88,11 +93,6 @@ const Auth = () => {
           navigate('/dashboard');
         }
       }
-      
-      toast({
-        title: "Account created!",
-        description: "Welcome to ReviewProMax! Please complete the survey to continue."
-      });
     }
     
     setIsLoading(false);
