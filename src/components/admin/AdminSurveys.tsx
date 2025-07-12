@@ -48,7 +48,7 @@ export const AdminSurveys = () => {
         .from('user_surveys')
         .select(`
           *,
-          profiles!user_surveys_user_id_fkey (
+          profiles (
             full_name,
             email
           )
