@@ -117,6 +117,9 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
     }
   };
 
+  // Check if user has already purchased a starter plan
+  const hasStarterPlan = plans.some(plan => plan.plan_name === "Starter Trial");
+
   const availablePlans = {
     verified: [
       {
@@ -124,8 +127,8 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
         type: "starter",
         reviews: "10 reviews",
         originalPrice: 230,
-        discountedPrice: 1,
-        discount: "99% OFF - TEST",
+        discountedPrice: 49,
+        discount: "79% OFF",
         baseTurnaround: 3,
         features: [
           "Written reviews only",
@@ -193,8 +196,8 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
         type: "starter",
         reviews: "10 reviews",
         originalPrice: 170,
-        discountedPrice: 1,
-        discount: "99% OFF - TEST",
+        discountedPrice: 49,
+        discount: "71% OFF",
         baseTurnaround: 2,
         features: [
           "Text reviews only",
@@ -493,7 +496,9 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
               {selectedType === 'verified' ? 'Verified' : 'Unverified'} Review Packages
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {availablePlans[selectedType].map((plan, index) => (
+              {availablePlans[selectedType]
+                .filter(plan => !(plan.type === "starter" && hasStarterPlan))
+                .map((plan, index) => (
                 <Card key={plan.type} className={`hover:shadow-medium transition-all relative ${plan.popular ? 'border-accent shadow-medium' : ''}`}>
                   {plan.popular && (
                     <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">

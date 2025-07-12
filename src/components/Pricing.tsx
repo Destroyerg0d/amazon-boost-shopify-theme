@@ -39,8 +39,8 @@ export const Pricing = () => {
         name: "Starter Trial",
         reviews: "10 reviews",
         originalPrice: 230,
-        discountedPrice: 1,
-        discount: "99% OFF - TEST",
+        discountedPrice: 49,
+        discount: "79% OFF",
         baseTurnaround: 3,
         features: [
           "Written reviews only",
@@ -104,8 +104,8 @@ export const Pricing = () => {
         name: "Starter Trial",
         reviews: "10 reviews",
         originalPrice: 170,
-        discountedPrice: 1,
-        discount: "99% OFF - TEST",
+        discountedPrice: 49,
+        discount: "71% OFF",
         baseTurnaround: 2,
         features: [
           "Text reviews only",
