@@ -44,22 +44,49 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchDashboardStats();
+
+    // Set up real-time subscriptions for all relevant tables
+    const channel = supabase
+      .channel('dashboard-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'payments' }, () => {
+        console.log('Payment data changed, refreshing dashboard...');
+        fetchDashboardStats();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
+        console.log('Profile data changed, refreshing dashboard...');
+        fetchDashboardStats();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'books' }, () => {
+        console.log('Book data changed, refreshing dashboard...');
+        fetchDashboardStats();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'reviews' }, () => {
+        console.log('Review data changed, refreshing dashboard...');
+        fetchDashboardStats();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchDashboardStats = async () => {
     try {
-      // Fetch all stats in parallel - using payments table for better data accuracy
+      console.log('Fetching real-time dashboard stats...');
+      
+      // Fetch all stats in parallel from actual Supabase data
       const [
-        usersCount,
-        booksCount,
-        paymentsCount,
-        reviewsCount,
-        pendingPaymentsCount,
-        completedPaymentsCount,
-        pendingBooksCount,
-        approvedBooksCount,
-        revenueData,
-        monthlyRevenueData,
+        usersResult,
+        booksResult,
+        paymentsResult,
+        reviewsResult,
+        pendingPaymentsResult,
+        completedPaymentsResult,
+        pendingBooksResult,
+        approvedBooksResult,
+        completedPaymentsData,
+        thisMonthPaymentsData,
       ] = await Promise.all([
         supabase.from('profiles').select('*', { count: 'exact', head: true }),
         supabase.from('books').select('*', { count: 'exact', head: true }),
@@ -73,20 +100,43 @@ const AdminDashboard = () => {
         supabase.from('payments').select('amount').eq('status', 'completed').gte('created_at', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()),
       ]);
 
-      const totalRevenue = revenueData.data?.reduce((sum, payment) => sum + (Number(payment.amount) || 0), 0) || 0;
-      const monthlyRevenue = monthlyRevenueData.data?.reduce((sum, payment) => sum + (Number(payment.amount) || 0), 0) || 0;
+      console.log('Raw data from Supabase:', {
+        users: usersResult.count,
+        totalPayments: paymentsResult.count,
+        completedPayments: completedPaymentsResult.count,
+        pendingPayments: pendingPaymentsResult.count,
+        completedPaymentsData: completedPaymentsData.data
+      });
+
+      // Calculate revenue from actual completed payments only
+      const totalRevenue = completedPaymentsData.data?.reduce((sum, payment) => {
+        return sum + (Number(payment.amount) || 0);
+      }, 0) || 0;
+
+      const monthlyRevenue = thisMonthPaymentsData.data?.reduce((sum, payment) => {
+        return sum + (Number(payment.amount) || 0);
+      }, 0) || 0;
+
+      console.log('Calculated revenue:', { totalRevenue, monthlyRevenue });
 
       setStats({
-        totalUsers: usersCount.count || 0,
-        totalBooks: booksCount.count || 0,
-        totalOrders: paymentsCount.count || 0,
-        totalReviews: reviewsCount.count || 0,
-        pendingOrders: pendingPaymentsCount.count || 0,
-        completedOrders: completedPaymentsCount.count || 0,
-        pendingBooks: pendingBooksCount.count || 0,
-        approvedBooks: approvedBooksCount.count || 0,
-        totalRevenue,
-        monthlyRevenue,
+        totalUsers: usersResult.count || 0,
+        totalBooks: booksResult.count || 0,
+        totalOrders: paymentsResult.count || 0, // Total payments
+        totalReviews: reviewsResult.count || 0,
+        pendingOrders: pendingPaymentsResult.count || 0, // Pending payments
+        completedOrders: completedPaymentsResult.count || 0, // Completed payments
+        pendingBooks: pendingBooksResult.count || 0,
+        approvedBooks: approvedBooksResult.count || 0,
+        totalRevenue: Number(totalRevenue.toFixed(2)),
+        monthlyRevenue: Number(monthlyRevenue.toFixed(2)),
+      });
+
+      console.log('Updated stats state:', {
+        totalOrders: paymentsResult.count,
+        completedOrders: completedPaymentsResult.count,
+        pendingOrders: pendingPaymentsResult.count,
+        totalRevenue: Number(totalRevenue.toFixed(2))
       });
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
