@@ -51,6 +51,27 @@ const BookPlanAttachment = () => {
     if (user) {
       fetchBooks();
       fetchReviewPlans();
+
+      // Set up real-time subscriptions for better user experience
+      const channel = supabase
+        .channel('book-plan-changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'books' }, () => {
+          console.log('Books changed, refreshing...');
+          fetchBooks();
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'review_plans' }, () => {
+          console.log('Review plans changed, refreshing...');
+          fetchReviewPlans();
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'reviews' }, () => {
+          console.log('Reviews changed, refreshing plans...');
+          fetchReviewPlans(); // Refresh plans when reviews are added to update usage counts
+        })
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [user]);
 
@@ -97,7 +118,7 @@ const BookPlanAttachment = () => {
           )
         `)
         .eq('user_id', user.id)
-        .eq('status', 'active')
+        .in('status', ['active', 'completed'])
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -227,9 +248,12 @@ const BookPlanAttachment = () => {
                         </TableCell>
                         <TableCell>
                           {attachedPlan ? (
-                            <Badge variant="success" className="gap-1">
+                            <Badge 
+                              variant={attachedPlan.status === 'completed' ? 'destructive' : 'success'} 
+                              className="gap-1"
+                            >
                               <CheckCircle className="h-3 w-3" />
-                              Active ({attachedPlan.used_reviews}/{attachedPlan.total_reviews} used)
+                              {attachedPlan.status === 'completed' ? 'Completed' : 'Active'} ({attachedPlan.used_reviews}/{attachedPlan.total_reviews} used)
                             </Badge>
                           ) : (
                             <Badge variant="secondary">Inactive</Badge>
@@ -282,9 +306,19 @@ const BookPlanAttachment = () => {
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {reviewPlans.map((plan) => (
-                <Card key={plan.id} className={plan.book_id ? 'border-green-200' : 'border-orange-200'}>
+                <Card key={plan.id} className={
+                  plan.status === 'completed' ? 'border-red-200 bg-red-50/50' : 
+                  plan.book_id ? 'border-green-200' : 'border-orange-200'
+                }>
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-lg">{plan.plan_name}</CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg">{plan.plan_name}</CardTitle>
+                      {plan.status === 'completed' && (
+                        <Badge variant="destructive" className="text-xs">
+                          Completed
+                        </Badge>
+                      )}
+                    </div>
                     <CardDescription className="capitalize">{plan.plan_type} Plan</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-3">
@@ -294,7 +328,9 @@ const BookPlanAttachment = () => {
                     </div>
                     <div className="w-full bg-secondary rounded-full h-2">
                       <div
-                        className="bg-primary h-2 rounded-full transition-all"
+                        className={`h-2 rounded-full transition-all ${
+                          plan.status === 'completed' ? 'bg-red-500' : 'bg-primary'
+                        }`}
                         style={{ width: `${(plan.used_reviews / plan.total_reviews) * 100}%` }}
                       />
                     </div>

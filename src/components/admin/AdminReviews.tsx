@@ -134,7 +134,7 @@ const AdminReviews = () => {
             user_id
           )
         `)
-        .eq('status', 'active');
+        .in('status', ['active', 'completed']);
 
       if (error) throw error;
       setReviewPlans(data || []);
@@ -167,20 +167,27 @@ const AdminReviews = () => {
       if (reviewData.review_plan_id) {
         const { data: currentPlan, error: planFetchError } = await supabase
           .from('review_plans')
-          .select('used_reviews, book_id')
+          .select('used_reviews, book_id, total_reviews, status')
           .eq('id', reviewData.review_plan_id)
           .single();
 
         if (planFetchError) throw planFetchError;
 
+        const newUsedReviews = currentPlan.used_reviews + 1;
+        
         // Update the plan with new usage count and attach to book if not already attached
         const updates: any = {
-          used_reviews: currentPlan.used_reviews + 1
+          used_reviews: newUsedReviews
         };
 
         // If plan is not already attached to a book, attach it to this book
         if (!currentPlan.book_id) {
           updates.book_id = reviewData.book_id;
+        }
+
+        // Mark plan as completed if all reviews are used
+        if (newUsedReviews >= currentPlan.total_reviews) {
+          updates.status = 'completed';
         }
 
         const { error: updateError } = await supabase
@@ -190,6 +197,15 @@ const AdminReviews = () => {
 
         if (updateError) {
           console.error('Error updating review plan:', updateError);
+          throw updateError;
+        }
+
+        // Show completion message if plan is now completed
+        if (newUsedReviews >= currentPlan.total_reviews) {
+          toast({
+            title: 'Plan Completed!',
+            description: `Review plan has been completed (${newUsedReviews}/${currentPlan.total_reviews} reviews)`,
+          });
         }
       }
 
