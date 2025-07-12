@@ -59,7 +59,7 @@ export const AIChatbot = ({ isOpen, onClose }: AIChatbotProps) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`https://8015bbac-d1c2-43be-95c7-6821d8a3b411.supabase.co/functions/v1/ai-chatbot`, {
+      const response = await fetch(`https://swbeqefyudjryxwmhuvt.supabase.co/functions/v1/ai-chatbot`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

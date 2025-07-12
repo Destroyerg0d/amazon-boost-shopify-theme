@@ -74,8 +74,8 @@ serve(async (req) => {
           description: `ReviewProMax ${planName} - ${planType === 'verified' ? 'Verified' : 'Unverified'} Reviews`
         }],
         application_context: {
-          return_url: `${req.headers.get('origin')}/dashboard`,
-          cancel_url: `${req.headers.get('origin')}/pricing`
+          return_url: 'https://reviewpromax.com/dashboard',
+          cancel_url: 'https://reviewpromax.com/pricing'
         }
       })
     })
