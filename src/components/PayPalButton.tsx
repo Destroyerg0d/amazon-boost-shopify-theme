@@ -70,8 +70,8 @@ export const PayPalButton = ({ planType, planName, amount, bookPrice = 0, disabl
         },
       });
 
-      if (error) {
-        throw new Error(error.message || 'Payment capture failed');
+      if (error || !result?.success) {
+        throw new Error(error?.message || result?.error || 'Payment capture failed');
       }
 
       toast({
@@ -79,8 +79,10 @@ export const PayPalButton = ({ planType, planName, amount, bookPrice = 0, disabl
         description: `Your ${planName} plan has been activated successfully.`
       });
 
-      // Redirect to thank you page
-      navigate('/thank-you');
+      // Small delay to ensure database is updated, then redirect
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
     } catch (error: any) {
       toast({
         variant: "destructive",

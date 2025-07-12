@@ -116,11 +116,22 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error capturing PayPal order:', error)
+    
+    // Log detailed error information for debugging
+    console.error('Full error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    })
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message || 'Payment processing failed',
+        success: false 
+      }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400 
+        status: 200 // Return 200 to avoid "non-2xx status code" error
       }
     )
   }
