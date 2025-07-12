@@ -183,6 +183,54 @@ const Dashboard = () => {
     setActiveView(null);
   };
 
+  const handleFixPendingPayments = async () => {
+    try {
+      toast({
+        title: "Processing payments...",
+        description: "Checking and fixing any pending payments..."
+      });
+
+      const { data, error } = await supabase.functions.invoke('fix-pending-payments');
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.processedPayments && data.processedPayments.length > 0) {
+        const completedCount = data.processedPayments.filter((p: any) => 
+          p.status === 'completed' || p.status === 'captured_and_completed'
+        ).length;
+
+        if (completedCount > 0) {
+          toast({
+            title: "Payments Fixed!",
+            description: `Successfully processed ${completedCount} pending payment(s). Your review plans should now be available.`
+          });
+          
+          // Refresh the page to show updated plans
+          window.location.reload();
+        } else {
+          toast({
+            title: "No pending payments found",
+            description: "All your payments are already processed or there were no valid completed payments to fix."
+          });
+        }
+      } else {
+        toast({
+          title: "No pending payments",
+          description: "You don't have any pending payments to fix."
+        });
+      }
+    } catch (error: any) {
+      console.error('Error fixing pending payments:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to fix pending payments. Please try again."
+      });
+    }
+  };
+
   const renderOverview = () => (
     <div className="space-y-6">
       <StatsCards stats={stats} />
@@ -242,6 +290,13 @@ const Dashboard = () => {
             onClick={() => setActiveView('received')}
           >
             Reviews Received
+          </Button>
+          <Button 
+            variant="outline"
+            onClick={handleFixPendingPayments}
+            className="border-orange-200 text-orange-600 hover:bg-orange-50"
+          >
+            Fix Pending Payments
           </Button>
         </div>
         

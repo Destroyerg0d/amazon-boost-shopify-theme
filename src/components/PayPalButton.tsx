@@ -42,6 +42,8 @@ export const PayPalButton = ({ planType, planName, amount, bookPrice = 0, disabl
         throw new Error(error.message || 'Failed to create order');
       }
 
+      // Store paymentId for later use in onApprove
+      (window as any).currentPaymentId = data.paymentId;
       return data.orderID;
     } catch (error: any) {
       toast({
@@ -55,10 +57,16 @@ export const PayPalButton = ({ planType, planName, amount, bookPrice = 0, disabl
 
   const onApprove = async (data: any) => {
     try {
+      const paymentId = (window as any).currentPaymentId;
+      
+      if (!paymentId) {
+        throw new Error('Payment ID not found');
+      }
+
       const { data: result, error } = await supabase.functions.invoke('capture-paypal-order', {
         body: {
           orderID: data.orderID,
-          paymentId: data.paymentId
+          paymentId: paymentId
         },
       });
 
