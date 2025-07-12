@@ -3,6 +3,7 @@ import { ArrowRight, BookOpen, Star, Users, Sparkles, TrendingUp, Award, Zap } f
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { Card } from "@/components/ui/card";
 
 export const Hero = () => {
   const { user, signOut } = useAuth();
