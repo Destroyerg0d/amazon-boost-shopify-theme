@@ -38,34 +38,48 @@ const Auth = () => {
     const { error } = await signIn(email, password);
     
     if (error) {
-      // Handle email not confirmed by using admin sign-in
+      // Handle email not confirmed by using our edge function
       if (error.message.includes('Email not confirmed')) {
         try {
-          // Try to sign in using the service role to bypass email confirmation
-          const { data, error: adminError } = await supabase.auth.signInWithPassword({
-            email,
-            password
+          const response = await fetch(`https://swbeqefyudjryxwmhuvt.supabase.co/functions/v1/signin-unconfirmed`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3YmVxZWZ5dWRqcnl4d21odXZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE3MTU5OTMsImV4cCI6MjA2NzI5MTk5M30.o6wcq1C7YJH6k2Uc0rGIxEwpUe8wYLUZXx0h7Ott-yo`
+            },
+            body: JSON.stringify({ email, password })
           });
-          
-          if (!adminError) {
+
+          const result = await response.json();
+
+          if (result.success) {
+            // Force a fresh session check
+            await supabase.auth.getSession();
+            
             toast({
               title: "Welcome back! 🎉",
-              description: "Successfully signed in (email verification pending)",
+              description: "Successfully signed in. Please check your email to verify your account when convenient.",
               className: "border-green-500 bg-green-50 text-green-800"
             });
-            navigate('/dashboard');
+            
+            // Small delay to ensure auth state updates
+            setTimeout(() => {
+              navigate('/dashboard', { replace: true });
+            }, 500);
+            
             setIsLoading(false);
             return;
+          } else {
+            throw new Error(result.message || 'Failed to sign in');
           }
-        } catch (adminError) {
-          console.log('Admin sign-in failed:', adminError);
+        } catch (edgeError) {
+          console.error('Edge function error:', edgeError);
+          toast({
+            title: "Account Found! 📧",
+            description: "Please check your email and click the confirmation link to complete sign-in.",
+            className: "border-yellow-500 bg-yellow-50 text-yellow-800"
+          });
         }
-        
-        toast({
-          title: "Account found! 📧",
-          description: "We've sent you a confirmation email. You can still use your account - check your email when convenient.",
-          className: "border-blue-500 bg-blue-50 text-blue-800"
-        });
       } else {
         let errorMessage = error.message;
         
