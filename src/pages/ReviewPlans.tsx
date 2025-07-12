@@ -54,6 +54,42 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
     }
   }, [user]);
 
+  // Real-time updates for review plans
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('review-plans-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'review_plans',
+          filter: `user_id=eq.${user.id}`
+        },
+        () => {
+          fetchPlans();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'reviews'
+        },
+        () => {
+          fetchPlans();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
   const fetchPlans = async () => {
     try {
       const { data, error } = await supabase
