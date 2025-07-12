@@ -183,8 +183,9 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
     }
   };
 
-  // Check if user has already purchased a starter plan
-  const hasStarterPlan = plans.some(plan => plan.plan_name === "Starter Trial");
+  // Check if user has already purchased 3 starter plans (max allowed)
+  const starterPlanCount = plans.filter(plan => plan.plan_name === "Starter Trial").length;
+  const hasMaxStarterPlans = starterPlanCount >= 3;
 
   const availablePlans = {
     verified: [
@@ -563,7 +564,7 @@ const ReviewPlans = ({ onBack }: ReviewPlansProps) => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {availablePlans[selectedType]
-                .filter(plan => !(plan.type === "starter" && hasStarterPlan))
+                .filter(plan => !(plan.type === "starter" && hasMaxStarterPlans))
                 .map((plan, index) => (
                 <Card key={plan.type} className={`hover:shadow-medium transition-all relative ${plan.popular ? 'border-accent shadow-medium' : ''}`}>
                   {plan.popular && (
