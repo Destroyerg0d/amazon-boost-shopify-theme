@@ -30,6 +30,10 @@ interface Review {
   plan_type: string | null;
   book_id: string;
   review_link: string | null;
+  review_plans?: {
+    plan_name: string;
+    plan_type: string;
+  } | null;
 }
 
 interface Book {
@@ -76,7 +80,7 @@ const ReviewsReceived = ({ onBack }: ReviewsReceivedProps) => {
 
       const bookIds = userBooks.map(book => book.id);
 
-      // Then get reviews for those books
+      // Get reviews for those books
       const { data: reviewsData, error } = await supabase
         .from('reviews')
         .select('*, review_link')
@@ -85,11 +89,26 @@ const ReviewsReceived = ({ onBack }: ReviewsReceivedProps) => {
 
       if (error) throw error;
       
+      // Get plan information for reviews that have review_plan_id
+      const reviewPlanIds = reviewsData?.filter(r => r.review_plan_id).map(r => r.review_plan_id) || [];
+      
+      let planData: any[] = [];
+      if (reviewPlanIds.length > 0) {
+        const { data: plans } = await supabase
+          .from('review_plans')
+          .select('id, plan_name, plan_type')
+          .in('id', reviewPlanIds);
+        planData = plans || [];
+      }
+      
       const reviewsWithBooks = reviewsData?.map(review => {
         const book = userBooks.find(b => b.id === review.book_id);
+        const plan = planData.find(p => p.id === review.review_plan_id);
+        
         return {
           ...review,
-          book: book || { id: review.book_id, title: 'Unknown Book', author: null }
+          book: book || { id: review.book_id, title: 'Unknown Book', author: null },
+          review_plans: plan ? { plan_name: plan.plan_name, plan_type: plan.plan_type } : null
         };
       }) || [];
       
@@ -239,10 +258,12 @@ const ReviewsReceived = ({ onBack }: ReviewsReceivedProps) => {
                     </div>
                   </div>
                   <div className="flex flex-col gap-2">
-                    {review.plan_type && (
-                      <Badge className={getPlanColor(review.plan_type)}>
-                        {getPlanIcon(review.plan_type)}
-                        <span className="ml-1 capitalize">{review.plan_type} Plan</span>
+                    {(review.review_plans?.plan_name || review.plan_type) && (
+                      <Badge className={getPlanColor(review.review_plans?.plan_type || review.plan_type)}>
+                        {getPlanIcon(review.review_plans?.plan_type || review.plan_type)}
+                        <span className="ml-1">
+                          {review.review_plans?.plan_name || `${review.plan_type} Plan`}
+                        </span>
                       </Badge>
                     )}
                     <Badge 
