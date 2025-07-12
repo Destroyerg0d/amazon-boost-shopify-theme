@@ -60,16 +60,31 @@ const AdminPayments = () => {
 
   const fetchPayments = async () => {
     try {
-      const { data, error } = await supabase
+      // First get all payments
+      const { data: paymentsData, error: paymentsError } = await supabase
         .from('payments')
-        .select(`
-          *,
-          profiles (full_name, email)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setPayments((data as any) || []);
+      if (paymentsError) throw paymentsError;
+
+      // Then get profiles for each payment
+      const paymentsWithProfiles = await Promise.all(
+        (paymentsData || []).map(async (payment) => {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('full_name, email')
+            .eq('user_id', payment.user_id)
+            .single();
+
+          return {
+            ...payment,
+            profiles: profileData
+          };
+        })
+      );
+
+      setPayments(paymentsWithProfiles);
     } catch (error) {
       console.error('Error fetching payments:', error);
       toast({
