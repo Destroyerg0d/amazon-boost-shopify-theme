@@ -122,7 +122,37 @@ const BookPlanAttachment = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setReviewPlans(data || []);
+      
+      // Update used_reviews count by counting actual reviews from the reviews table
+      const plansWithActualCounts = await Promise.all(
+        (data || []).map(async (plan) => {
+          if (plan.book_id) {
+            const { count } = await supabase
+              .from('reviews')
+              .select('*', { count: 'exact', head: true })
+              .eq('review_plan_id', plan.id);
+            
+            const actualUsedReviews = count || 0;
+            
+            // Update the plan with correct used_reviews count if it differs
+            if (actualUsedReviews !== plan.used_reviews) {
+              const newStatus = actualUsedReviews >= plan.total_reviews ? 'completed' : 'active';
+              await supabase
+                .from('review_plans')
+                .update({ 
+                  used_reviews: actualUsedReviews,
+                  status: newStatus
+                })
+                .eq('id', plan.id);
+              
+              return { ...plan, used_reviews: actualUsedReviews, status: newStatus };
+            }
+          }
+          return plan;
+        })
+      );
+      
+      setReviewPlans(plansWithActualCounts || []);
     } catch (error) {
       console.error('Error fetching review plans:', error);
       toast({
