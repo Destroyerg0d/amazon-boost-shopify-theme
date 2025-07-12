@@ -408,6 +408,7 @@ export type Database = {
           masked_reviewer_name: string | null
           plan_type: string | null
           rating: number
+          review_link: string | null
           review_plan_id: string | null
           review_type: string | null
           reviewed_at: string
@@ -421,6 +422,7 @@ export type Database = {
           masked_reviewer_name?: string | null
           plan_type?: string | null
           rating: number
+          review_link?: string | null
           review_plan_id?: string | null
           review_type?: string | null
           reviewed_at?: string
@@ -434,6 +436,7 @@ export type Database = {
           masked_reviewer_name?: string | null
           plan_type?: string | null
           rating?: number
+          review_link?: string | null
           review_plan_id?: string | null
           review_type?: string | null
           reviewed_at?: string

@@ -47,6 +47,7 @@ interface NewReview {
   review_type: string;
   plan_type: string;
   review_plan_id?: string;
+  review_link?: string;
 }
 
 const AdminReviews = () => {
@@ -145,6 +146,20 @@ const AdminReviews = () => {
 
   const addReview = async (reviewData: NewReview) => {
     try {
+      // Get the plan type from the selected review plan
+      let actualPlanType = reviewData.plan_type;
+      if (reviewData.review_plan_id) {
+        const { data: planData } = await supabase
+          .from('review_plans')
+          .select('plan_type')
+          .eq('id', reviewData.review_plan_id)
+          .single();
+        
+        if (planData) {
+          actualPlanType = planData.plan_type;
+        }
+      }
+
       // Insert the review
       const { error: reviewError } = await supabase
         .from('reviews')
@@ -155,9 +170,10 @@ const AdminReviews = () => {
           rating: reviewData.rating,
           comment: reviewData.comment,
           review_type: reviewData.review_type,
-          plan_type: reviewData.plan_type,
+          plan_type: actualPlanType,
           review_plan_id: reviewData.review_plan_id,
-          amazon_visible: true,
+          amazon_visible: reviewData.review_link ? true : false,
+          review_link: reviewData.review_link || null,
           reviewed_at: new Date().toISOString()
         });
 
@@ -457,8 +473,9 @@ const AddReviewForm = ({ books, reviewPlans, onSubmit, onCancel }: AddReviewForm
     rating: 5,
     comment: '',
     review_type: 'verified',
-    plan_type: 'premium',
-    review_plan_id: ''
+    plan_type: 'starter',
+    review_plan_id: '',
+    review_link: ''
   });
 
   // Get the selected book's author user_id
@@ -579,6 +596,20 @@ const AddReviewForm = ({ books, reviewPlans, onSubmit, onCancel }: AddReviewForm
           placeholder="Enter review comment..."
           rows={3}
         />
+      </div>
+
+      <div>
+        <Label htmlFor="reviewLink">Amazon Review Link (Optional)</Label>
+        <Input
+          id="reviewLink"
+          type="url"
+          value={formData.review_link}
+          onChange={(e) => setFormData({...formData, review_link: e.target.value})}
+          placeholder="https://amazon.com/review/..."
+        />
+        <p className="text-xs text-muted-foreground mt-1">
+          If provided, the review will be marked as "Live on Amazon". Leave empty for "Under Review".
+        </p>
       </div>
 
       <div className="flex gap-2 justify-end">

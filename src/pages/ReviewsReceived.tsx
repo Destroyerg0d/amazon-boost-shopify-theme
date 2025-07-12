@@ -29,6 +29,7 @@ interface Review {
   review_type: string | null;
   plan_type: string | null;
   book_id: string;
+  review_link: string | null;
 }
 
 interface Book {
@@ -78,7 +79,7 @@ const ReviewsReceived = ({ onBack }: ReviewsReceivedProps) => {
       // Then get reviews for those books
       const { data: reviewsData, error } = await supabase
         .from('reviews')
-        .select('*')
+        .select('*, review_link')
         .in('book_id', bookIds)
         .order('reviewed_at', { ascending: false });
 
@@ -113,11 +114,11 @@ const ReviewsReceived = ({ onBack }: ReviewsReceivedProps) => {
 
   const getPlanIcon = (planType: string | null) => {
     switch (planType?.toLowerCase()) {
-      case 'basic':
+      case 'starter':
         return <Zap className="w-4 h-4" />;
-      case 'silver':
+      case 'basic':
         return <Star className="w-4 h-4" />;
-      case 'gold':
+      case 'standard':
         return <Crown className="w-4 h-4" />;
       case 'premium':
         return <Gem className="w-4 h-4" />;
@@ -128,12 +129,12 @@ const ReviewsReceived = ({ onBack }: ReviewsReceivedProps) => {
 
   const getPlanColor = (planType: string | null) => {
     switch (planType?.toLowerCase()) {
-      case 'basic':
+      case 'starter':
         return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
-      case 'silver':
-        return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
-      case 'gold':
-        return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
+      case 'basic':
+        return 'bg-green-500/10 text-green-500 border-green-500/20';
+      case 'standard':
+        return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
       case 'premium':
         return 'bg-purple-500/10 text-purple-500 border-purple-500/20';
       default:
@@ -257,14 +258,24 @@ const ReviewsReceived = ({ onBack }: ReviewsReceivedProps) => {
                       )}
                       {review.review_type === 'verified' ? 'Verified' : 'Unverified'}
                     </Badge>
-                    <Badge 
-                      className={review.amazon_visible ? 
-                        'bg-orange-500/10 text-orange-500 border-orange-500/20' :
-                        'bg-muted/10 text-muted-foreground border-muted/20'
-                      }
-                    >
-                      {review.amazon_visible ? 'Live on Amazon' : 'Not on Amazon'}
-                    </Badge>
+                    {review.review_link ? (
+                      <a 
+                        href={review.review_link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-block"
+                      >
+                        <Badge className="bg-success/10 text-success border-success/20 hover:bg-success/20 transition-colors cursor-pointer">
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          Live on Amazon
+                        </Badge>
+                      </a>
+                    ) : (
+                      <Badge className="bg-orange-500/10 text-orange-500 border-orange-500/20">
+                        <AlertCircle className="w-3 h-3 mr-1" />
+                        Under Review by Amazon
+                      </Badge>
+                    )}
                   </div>
                 </div>
                 <CardDescription>
