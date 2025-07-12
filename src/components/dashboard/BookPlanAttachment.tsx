@@ -197,7 +197,15 @@ const BookPlanAttachment = () => {
   };
 
   const getAvailablePlans = () => {
-    return reviewPlans.filter(plan => !plan.book_id);
+    // Only show plans that are:
+    // 1. Not attached to any book (!plan.book_id)
+    // 2. Still active (status !== 'completed')
+    // 3. Have remaining reviews (used_reviews < total_reviews)
+    return reviewPlans.filter(plan => 
+      !plan.book_id && 
+      plan.status === 'active' && 
+      plan.used_reviews < plan.total_reviews
+    );
   };
 
   if (loading) {
