@@ -26,7 +26,7 @@ serve(async (req) => {
       throw new Error('Unauthorized')
     }
 
-    // Get all pending payments for this user
+    // Get all pending payments for this user  
     const { data: pendingPayments, error: paymentsError } = await supabase
       .from('payments')
       .select('*')
@@ -35,6 +35,7 @@ serve(async (req) => {
       .order('created_at', { ascending: false })
 
     if (paymentsError) {
+      console.error('Error fetching payments:', paymentsError)
       throw paymentsError
     }
 
@@ -65,6 +66,8 @@ serve(async (req) => {
 
     for (const payment of pendingPayments) {
       try {
+        console.log(`Processing payment ${payment.id} with PayPal ID ${payment.paypal_payment_id}`)
+        
         // Check PayPal order status
         const orderResponse = await fetch(`https://api-m.paypal.com/v2/checkout/orders/${payment.paypal_payment_id}`, {
           method: 'GET',
