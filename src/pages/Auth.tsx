@@ -94,22 +94,10 @@ const Auth = () => {
           className: "border-green-500 bg-green-50 text-green-800"
         });
         
-        // Check for existing survey and show if needed
-        const { data: session } = await supabase.auth.getSession();
-        if (session.session?.user) {
-          const { data: existingSurvey } = await supabase
-            .from('user_surveys')
-            .select('id')
-            .eq('user_id', session.session.user.id)
-            .maybeSingle();
-
-          if (!existingSurvey) {
-            setNewUserId(session.session.user.id);
-            setShowSurvey(true);
-          } else {
-            navigate('/dashboard');
-          }
-        }
+        // Small delay to ensure auth state is updated, then redirect to dashboard
+        setTimeout(() => {
+          navigate('/dashboard', { replace: true });
+        }, 100);
       } else {
         toast({
           title: "Account created! 🎉",
