@@ -54,10 +54,11 @@ const AdminOrders = () => {
   useEffect(() => {
     fetchOrders();
     
-    // Set up real-time subscription
+    // Set up real-time subscription for payments (which act as orders)
     const ordersChannel = supabase
       .channel('orders-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, fetchOrders)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'payments' }, fetchOrders)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, fetchOrders)
       .subscribe();
 
     return () => {
@@ -67,16 +68,49 @@ const AdminOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      const { data, error } = await supabase
-        .from('orders')
-        .select(`
-          *,
-          services (name, category)
-        `)
+      // Fetch payments as orders since that's where the actual data is
+      const { data: paymentsData, error: paymentsError } = await supabase
+        .from('payments')
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setOrders((data as any) || []);
+      if (paymentsError) throw paymentsError;
+
+      // Get profiles for each payment and transform to order format
+      const ordersData = await Promise.all(
+        (paymentsData || []).map(async (payment) => {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('full_name, email')
+            .eq('user_id', payment.user_id)
+            .single();
+
+          // Transform payment to order format
+          return {
+            id: payment.id,
+            user_id: payment.user_id,
+            service_id: 'review-service', // placeholder
+            status: payment.status === 'completed' ? 'completed' : 'pending',
+            payment_status: payment.status,
+            total_amount: payment.amount,
+            manuscript_url: null,
+            customer_notes: null,
+            admin_notes: `Payment for ${payment.plan_name}`,
+            expected_delivery_date: null,
+            completed_at: payment.status === 'completed' ? payment.updated_at : null,
+            created_at: payment.created_at,
+            updated_at: payment.updated_at,
+            services: {
+              name: payment.plan_name,
+              category: payment.plan_type
+            },
+            customer_name: profileData?.full_name || 'Unknown Customer',
+            customer_email: profileData?.email || 'No email'
+          };
+        })
+      );
+
+      setOrders(ordersData);
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast({
@@ -240,8 +274,8 @@ const AdminOrders = () => {
                     </TableCell>
                     <TableCell>
                       <div>
-                        <div className="font-medium">Customer</div>
-                        <div className="text-sm text-muted-foreground font-mono">{order.user_id.slice(0, 8)}...</div>
+                        <div className="font-medium">{(order as any).customer_name}</div>
+                        <div className="text-sm text-muted-foreground">{(order as any).customer_email}</div>
                       </div>
                     </TableCell>
                     <TableCell>

@@ -77,16 +77,16 @@ const AdminCustomers = () => {
       // Calculate lifetime spend for each user
       const customersWithSpend = await Promise.all(
         (profiles || []).map(async (profile) => {
-          // Get actual orders to calculate real lifetime spend
-          const { data: orders } = await supabase
-            .from('orders')
-            .select('total_amount, payment_status')
+          // Get payments to calculate real lifetime spend
+          const { data: payments } = await supabase
+            .from('payments')
+            .select('amount, status, created_at')
             .eq('user_id', profile.user_id);
 
-          // Calculate total spend from actual paid orders
-          const lifetimeSpend = (orders || []).reduce((total, order) => {
-            if (order.payment_status === 'paid') {
-              return total + Number(order.total_amount);
+          // Calculate total spend from completed payments
+          const lifetimeSpend = (payments || []).reduce((total, payment) => {
+            if (payment.status === 'completed') {
+              return total + Number(payment.amount);
             }
             return total;
           }, 0);

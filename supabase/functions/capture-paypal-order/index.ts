@@ -84,6 +84,34 @@ serve(async (req) => {
 
       const totalReviews = reviewCounts[payment.plan_name] || 10
 
+      // Get user profile for customer creation
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single()
+
+      // Create customer record if it doesn't exist
+      const { data: existingCustomer } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('email', profile?.email || user.email)
+        .single()
+
+      if (!existingCustomer && (profile?.email || user.email)) {
+        await supabase
+          .from('customers')
+          .insert({
+            name: profile?.full_name || 'Unknown Customer',
+            email: profile?.email || user.email,
+            phone: profile?.phone || '',
+            lead_source: 'payment_system',
+            is_buyer: true,
+            status: 'active',
+            admin_notes: `Customer created from payment: ${payment.plan_name}`
+          })
+      }
+
       // Create review plan using the database function
       const { data: planResult, error: planError } = await supabase
         .rpc('handle_successful_payment', {
