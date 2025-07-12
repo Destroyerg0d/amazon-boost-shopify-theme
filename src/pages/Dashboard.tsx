@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
+import { SurveyModal } from '@/components/SurveyModal';
 
 // Import dashboard components
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
@@ -58,13 +59,36 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [activeView, setActiveView] = useState<string | null>(null);
+  const [showSurveyModal, setShowSurveyModal] = useState(false);
+  const [hasCheckedSurvey, setHasCheckedSurvey] = useState(false);
 
   useEffect(() => {
     if (user) {
       fetchBooks();
       fetchStats();
+      checkSurveyStatus();
     }
   }, [user]);
+
+  const checkSurveyStatus = async () => {
+    if (!user || hasCheckedSurvey) return;
+    
+    try {
+      const { data: existingSurvey } = await supabase
+        .from('user_surveys')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (!existingSurvey) {
+        setShowSurveyModal(true);
+      }
+      setHasCheckedSurvey(true);
+    } catch (error) {
+      console.error('Error checking survey status:', error);
+      setHasCheckedSurvey(true);
+    }
+  };
 
   const fetchBooks = async () => {
     try {
@@ -264,6 +288,13 @@ const Dashboard = () => {
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl animate-float"></div>
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/10 rounded-full mix-blend-multiply filter blur-3xl animate-float" style={{ animationDelay: '3s' }}></div>
       </div>
+      
+      {/* Survey Modal */}
+      <SurveyModal 
+        isOpen={showSurveyModal}
+        onClose={() => setShowSurveyModal(false)}
+        onComplete={() => setShowSurveyModal(false)}
+      />
       
       <div className="flex relative z-10">
         <DashboardSidebar activeTab={activeTab} setActiveTab={handleTabChange} />

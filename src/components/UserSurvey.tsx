@@ -14,9 +14,10 @@ import { ArrowRight, BookOpen } from 'lucide-react';
 
 interface UserSurveyProps {
   onComplete: () => void;
+  showSkipButton?: boolean;
 }
 
-export const UserSurvey = ({ onComplete }: UserSurveyProps) => {
+export const UserSurvey = ({ onComplete, showSkipButton = true }: UserSurveyProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -384,14 +385,16 @@ export const UserSurvey = ({ onComplete }: UserSurveyProps) => {
               </div>
 
               <div className="flex gap-4 justify-end">
-                <Button 
-                  type="button" 
-                  variant="outline"
-                  onClick={() => onComplete()}
-                  className="flex items-center gap-2"
-                >
-                  Skip for Later
-                </Button>
+                {showSkipButton && (
+                  <Button 
+                    type="button" 
+                    variant="outline"
+                    onClick={() => onComplete()}
+                    className="flex items-center gap-2"
+                  >
+                    Skip for Later
+                  </Button>
+                )}
                 <Button 
                   type="submit" 
                   className="flex items-center gap-2" 

@@ -72,25 +72,36 @@ const Auth = () => {
         description: error.message
       });
     } else {
-      toast({
-        title: "Account created!",
-        description: "Welcome to ReviewProMax!"
-      });
+      // Auto sign in the user after successful signup
+      const { error: signInError } = await signIn(email, password);
       
-      // Check if survey already exists for this user
-      const { data: session } = await supabase.auth.getSession();
-      if (session.session?.user) {
-        const { data: existingSurvey } = await supabase
-          .from('user_surveys')
-          .select('id')
-          .eq('user_id', session.session.user.id)
-          .single();
+      if (signInError) {
+        toast({
+          variant: "destructive", 
+          title: "Account created but sign in failed",
+          description: "Please sign in manually"
+        });
+      } else {
+        toast({
+          title: "Account created!",
+          description: "Welcome to ReviewProMax!"
+        });
+        
+        // Get the current session and set up survey
+        const { data: session } = await supabase.auth.getSession();
+        if (session.session?.user) {
+          const { data: existingSurvey } = await supabase
+            .from('user_surveys')
+            .select('id')
+            .eq('user_id', session.session.user.id)
+            .maybeSingle();
 
-        if (!existingSurvey) {
-          setNewUserId(session.session.user.id);
-          setShowSurvey(true);
-        } else {
-          navigate('/dashboard');
+          if (!existingSurvey) {
+            setNewUserId(session.session.user.id);
+            setShowSurvey(true);
+          } else {
+            navigate('/dashboard');
+          }
         }
       }
     }
