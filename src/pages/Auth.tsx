@@ -75,8 +75,8 @@ const Auth = () => {
         } catch (edgeError) {
           console.error('Edge function error:', edgeError);
           toast({
-            title: "Account Found! 📧",
-            description: "Please check your email and click the confirmation link to complete sign-in.",
+            title: "Please check your email 📧",
+            description: "Wait 5 minutes for the confirmation email and check your spam folder. Click the link to complete sign-in.",
             className: "border-yellow-500 bg-yellow-50 text-yellow-800"
           });
         }
