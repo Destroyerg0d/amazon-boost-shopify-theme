@@ -18,7 +18,7 @@ export const AffiliateSection = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-background via-muted/50 to-background relative overflow-hidden">
+    <section className="py-20 bg-background relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
@@ -45,7 +45,7 @@ export const AffiliateSection = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
           {/* Benefits Cards */}
           <div className="space-y-6">
-            <Card className="bg-gradient-to-br from-green-50/50 to-emerald-50/50 border-green-200/50 dark:from-green-950/20 dark:to-emerald-950/20 dark:border-green-800/20">
+            <Card className="bg-card border shadow-sm">
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
@@ -61,7 +61,7 @@ export const AffiliateSection = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-blue-50/50 to-cyan-50/50 border-blue-200/50 dark:from-blue-950/20 dark:to-cyan-950/20 dark:border-blue-800/20">
+            <Card className="bg-card border shadow-sm">
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
@@ -77,7 +77,7 @@ export const AffiliateSection = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-purple-50/50 to-violet-50/50 border-purple-200/50 dark:from-purple-950/20 dark:to-violet-950/20 dark:border-purple-800/20">
+            <Card className="bg-card border shadow-sm">
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center">
@@ -117,7 +117,7 @@ export const AffiliateSection = () => {
             </div>
 
             {/* Perfect For Section */}
-            <Card className="bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
+            <Card className="bg-card border shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="w-5 h-5" />
