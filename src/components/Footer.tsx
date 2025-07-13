@@ -22,22 +22,22 @@ export const Footer = () => {
         ))}
       </div>
       
-      <div className="container mx-auto px-6 py-12 relative z-10">
-        <div className="grid md:grid-cols-4 gap-8">
+      <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 relative z-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {/* Company Info */}
-          <div className="space-y-4">
+          <div className="space-y-4 sm:col-span-2 lg:col-span-1">
             <h3 className="text-lg font-bold text-foreground">ReviewProMax</h3>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-muted-foreground text-sm leading-relaxed">
               Professional book review services helping authors succeed on Amazon with authentic, quality reviews.
             </p>
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-primary" />
+                <Phone className="w-4 h-4 text-primary flex-shrink-0" />
                 <span>+1 (678) 831-5443</span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-primary" />
-                <span>Support@reviewpromax.com</span>
+                <Mail className="w-4 h-4 text-primary flex-shrink-0" />
+                <span className="break-all">Support@reviewpromax.com</span>
               </div>
             </div>
           </div>
@@ -112,17 +112,6 @@ export const Footer = () => {
                   Refund Policy
                 </Link>
               </li>
-            </ul>
-          </div>
-
-          {/* Services */}
-          <div className="space-y-4">
-            <h4 className="text-md font-semibold text-foreground">Services</h4>
-            <ul className="space-y-2 text-sm">
-              <li className="text-muted-foreground">Professional Book Reviews</li>
-              <li className="text-muted-foreground">Amazon Optimization</li>
-              <li className="text-muted-foreground">Author Consultation</li>
-              <li className="text-muted-foreground">Review Strategy Planning</li>
             </ul>
           </div>
         </div>

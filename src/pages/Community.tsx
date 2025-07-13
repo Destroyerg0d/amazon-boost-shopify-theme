@@ -160,16 +160,16 @@ export const Community = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/10 via-background to-accent/10 py-16">
+      <section className="bg-gradient-to-br from-primary/10 via-background to-accent/10 py-12 sm:py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <div className="text-center mb-6 sm:mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
               Community <span className="text-primary">Forum</span>
             </h1>
-            <p className="text-xl text-muted-foreground mb-6 max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl text-muted-foreground mb-6 max-w-2xl mx-auto">
               Connect with other authors, get help from our community, and share your experience
             </p>
-            <Button onClick={handleCreatePost} size="lg">
+            <Button onClick={handleCreatePost} size="lg" className="w-full sm:w-auto">
               <Plus className="w-5 h-5 mr-2" />
               New Discussion
             </Button>
@@ -188,37 +188,37 @@ export const Community = () => {
             </div>
 
             {/* Quick Stats */}
-            <div className="grid md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
               <Card className="text-center">
-                <CardContent className="pt-4">
-                  <MessageCircle className="w-8 h-8 text-primary mx-auto mb-2" />
-                  <div className="text-2xl font-bold">{posts.length}</div>
-                  <div className="text-sm text-muted-foreground">Discussions</div>
+                <CardContent className="pt-3 sm:pt-4 pb-3 sm:pb-4">
+                  <MessageCircle className="w-6 h-6 sm:w-8 sm:h-8 text-primary mx-auto mb-2" />
+                  <div className="text-lg sm:text-2xl font-bold">{posts.length}</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground">Discussions</div>
                 </CardContent>
               </Card>
               <Card className="text-center">
-                <CardContent className="pt-4">
-                  <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">
+                <CardContent className="pt-3 sm:pt-4 pb-3 sm:pb-4">
+                  <CheckCircle2 className="w-6 h-6 sm:w-8 sm:h-8 text-green-500 mx-auto mb-2" />
+                  <div className="text-lg sm:text-2xl font-bold">
                     {posts.filter(p => p.is_solved).length}
                   </div>
-                  <div className="text-sm text-muted-foreground">Solved</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground">Solved</div>
                 </CardContent>
               </Card>
               <Card className="text-center">
-                <CardContent className="pt-4">
-                  <Users className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">2.5K</div>
-                  <div className="text-sm text-muted-foreground">Members</div>
+                <CardContent className="pt-3 sm:pt-4 pb-3 sm:pb-4">
+                  <Users className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500 mx-auto mb-2" />
+                  <div className="text-lg sm:text-2xl font-bold">2.5K</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground">Members</div>
                 </CardContent>
               </Card>
               <Card className="text-center">
-                <CardContent className="pt-4">
-                  <ThumbsUp className="w-8 h-8 text-orange-500 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">
+                <CardContent className="pt-3 sm:pt-4 pb-3 sm:pb-4">
+                  <ThumbsUp className="w-6 h-6 sm:w-8 sm:h-8 text-orange-500 mx-auto mb-2" />
+                  <div className="text-lg sm:text-2xl font-bold">
                     {posts.reduce((sum, p) => sum + p.upvotes, 0)}
                   </div>
-                  <div className="text-sm text-muted-foreground">Upvotes</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground">Upvotes</div>
                 </CardContent>
               </Card>
             </div>
@@ -226,10 +226,62 @@ export const Community = () => {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
+        <div className="flex flex-col lg:grid lg:grid-cols-4 gap-6 lg:gap-8">
+          {/* Mobile Filter Toggle */}
+          <div className="lg:hidden">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <h3 className="w-full text-sm font-medium text-muted-foreground mb-2">Categories:</h3>
+                  {categories.slice(0, 4).map((category) => {
+                    const Icon = category.icon;
+                    return (
+                      <button
+                        key={category.id}
+                        onClick={() => setSelectedCategory(category.id)}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors ${
+                          selectedCategory === category.id
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted hover:bg-muted/80'
+                        }`}
+                      >
+                        <Icon className="w-3 h-3" />
+                        {category.name}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <h3 className="w-full text-sm font-medium text-muted-foreground mb-2">Sort:</h3>
+                  {[
+                    { id: 'latest', name: 'Latest', icon: Clock },
+                    { id: 'popular', name: 'Popular', icon: ThumbsUp },
+                    { id: 'solved', name: 'Solved', icon: CheckCircle2 }
+                  ].map((sort) => {
+                    const Icon = sort.icon;
+                    return (
+                      <button
+                        key={sort.id}
+                        onClick={() => setSortBy(sort.id)}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors ${
+                          sortBy === sort.id
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted hover:bg-muted/80'
+                        }`}
+                      >
+                        <Icon className="w-3 h-3" />
+                        {sort.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Desktop Sidebar */}
+          <div className="hidden lg:block lg:col-span-1 space-y-6">
             {/* Categories */}
             <Card>
               <CardHeader>
@@ -294,18 +346,18 @@ export const Community = () => {
 
           {/* Main Content */}
           <div className="lg:col-span-3">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold">
                 {selectedCategory === 'all' 
                   ? 'All Discussions' 
                   : categories.find(c => c.id === selectedCategory)?.name
                 }
               </h2>
-              <div className="flex items-center gap-4">
-                <span className="text-muted-foreground">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                <span className="text-sm text-muted-foreground">
                   {posts.length} discussions
                 </span>
-                <Button onClick={handleCreatePost}>
+                <Button onClick={handleCreatePost} className="w-full sm:w-auto">
                   <Plus className="w-4 h-4 mr-2" />
                   New Post
                 </Button>
@@ -336,9 +388,9 @@ export const Community = () => {
               <div className="space-y-4">
                 {posts.map((post) => (
                   <Card key={post.id} className="hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-4">
-                        <Avatar className="w-10 h-10">
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex items-start gap-3 sm:gap-4">
+                        <Avatar className="w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0">
                           <AvatarImage src="" />
                           <AvatarFallback>
                             {post.profiles?.full_name?.charAt(0) || 'U'}
@@ -346,17 +398,17 @@ export const Community = () => {
                         </Avatar>
                         
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Badge variant="outline">{post.category}</Badge>
+                          <div className="flex flex-wrap items-center gap-2 mb-2">
+                            <Badge variant="outline" className="text-xs">{post.category}</Badge>
                             {post.is_solved && (
-                              <Badge variant="default" className="bg-green-500">
+                              <Badge variant="default" className="bg-green-500 text-xs">
                                 <CheckCircle2 className="w-3 h-3 mr-1" />
                                 Solved
                               </Badge>
                             )}
                           </div>
                           
-                          <h3 className="text-lg font-semibold mb-2">
+                          <h3 className="text-base sm:text-lg font-semibold mb-2 leading-tight">
                             <Link 
                               to={`/community/post/${post.id}`}
                               className="hover:text-primary transition-colors"
@@ -365,27 +417,28 @@ export const Community = () => {
                             </Link>
                           </h3>
                           
-                          <p className="text-muted-foreground mb-3 line-clamp-2">
-                            {post.content.substring(0, 200)}...
+                          <p className="text-sm text-muted-foreground mb-3 line-clamp-2 leading-relaxed">
+                            {post.content.substring(0, 150)}...
                           </p>
                           
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                              <span>{post.profiles?.full_name || 'Anonymous'}</span>
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                              <span className="truncate max-w-[120px] sm:max-w-none">{post.profiles?.full_name || 'Anonymous'}</span>
                               <span>•</span>
                               <span>{formatDate(post.created_at)}</span>
                             </div>
                             
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                               <div className="flex items-center gap-1">
-                                <ThumbsUp className="w-4 h-4" />
+                                <ThumbsUp className="w-3 h-3 sm:w-4 sm:h-4" />
                                 {post.upvotes}
                               </div>
                               <div className="flex items-center gap-1">
-                                <MessageCircle className="w-4 h-4" />
+                                <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4" />
                                 {post.reply_count}
                               </div>
-                              <span>{post.view_count} views</span>
+                              <span className="hidden sm:inline">{post.view_count} views</span>
+                              <span className="sm:hidden">{post.view_count}</span>
                             </div>
                           </div>
                         </div>

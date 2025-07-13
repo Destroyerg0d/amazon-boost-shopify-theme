@@ -74,34 +74,34 @@ export const HelpCenter = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/10 via-background to-accent/10 py-20">
+      <section className="bg-gradient-to-br from-primary/10 via-background to-accent/10 py-12 sm:py-16 lg:py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
             How can we <span className="text-primary">help</span> you?
           </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto">
             Find answers to your questions, learn how to use our platform, and get the most out of ReviewProMax
           </p>
           
           {/* Search Bar */}
-          <div className="max-w-2xl mx-auto relative mb-8">
+          <div className="max-w-2xl mx-auto relative mb-6 sm:mb-8">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
             <Input
               placeholder="Search for help articles..."
-              className="pl-12 h-14 text-lg"
+              className="pl-12 h-12 sm:h-14 text-base sm:text-lg"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Button asChild size="lg">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-md sm:max-w-none mx-auto">
+            <Button asChild size="lg" className="w-full sm:w-auto">
               <Link to="/community">
                 <MessageCircle className="w-5 h-5 mr-2" />
                 Visit Community
               </Link>
             </Button>
-            <Button variant="outline" size="lg" asChild>
+            <Button variant="outline" size="lg" asChild className="w-full sm:w-auto">
               <Link to="/contact">
                 Contact Support
               </Link>
@@ -110,45 +110,45 @@ export const HelpCenter = () => {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-8 sm:py-12">
         {/* Quick Stats */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
           <Card className="text-center">
-            <CardContent className="pt-6">
-              <BookOpen className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="text-2xl font-bold mb-2">150+</h3>
-              <p className="text-muted-foreground">Help Articles</p>
+            <CardContent className="pt-4 sm:pt-6 pb-4 sm:pb-6">
+              <BookOpen className="w-8 h-8 sm:w-12 sm:h-12 text-primary mx-auto mb-3 sm:mb-4" />
+              <h3 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2">150+</h3>
+              <p className="text-sm sm:text-base text-muted-foreground">Help Articles</p>
             </CardContent>
           </Card>
           <Card className="text-center">
-            <CardContent className="pt-6">
-              <Users className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="text-2xl font-bold mb-2">10K+</h3>
-              <p className="text-muted-foreground">Community Members</p>
+            <CardContent className="pt-4 sm:pt-6 pb-4 sm:pb-6">
+              <Users className="w-8 h-8 sm:w-12 sm:h-12 text-primary mx-auto mb-3 sm:mb-4" />
+              <h3 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2">10K+</h3>
+              <p className="text-sm sm:text-base text-muted-foreground">Community Members</p>
             </CardContent>
           </Card>
           <Card className="text-center">
-            <CardContent className="pt-6">
-              <MessageCircle className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="text-2xl font-bold mb-2">95%</h3>
-              <p className="text-muted-foreground">Questions Answered</p>
+            <CardContent className="pt-4 sm:pt-6 pb-4 sm:pb-6">
+              <MessageCircle className="w-8 h-8 sm:w-12 sm:h-12 text-primary mx-auto mb-3 sm:mb-4" />
+              <h3 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2">95%</h3>
+              <p className="text-sm sm:text-base text-muted-foreground">Questions Answered</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Featured Articles */}
         {featuredArticles.length > 0 && (
-          <section className="mb-12">
-            <h2 className="text-3xl font-bold mb-6">Featured Articles</h2>
-            <div className="grid md:grid-cols-3 gap-6">
+          <section className="mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Featured Articles</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {featuredArticles.map((article) => (
                 <Card key={article.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
+                  <CardHeader className="pb-3">
                     <div className="flex items-center justify-between mb-2">
-                      <Badge variant="secondary">{article.category}</Badge>
+                      <Badge variant="secondary" className="text-xs">{article.category}</Badge>
                       <Star className="w-4 h-4 text-yellow-500" />
                     </div>
-                    <CardTitle className="text-lg">
+                    <CardTitle className="text-base sm:text-lg leading-tight">
                       <Link 
                         to={`/help/article/${article.id}`}
                         className="hover:text-primary transition-colors"
@@ -157,8 +157,8 @@ export const HelpCenter = () => {
                       </Link>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground mb-4">{article.excerpt}</p>
+                  <CardContent className="pt-0">
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{article.excerpt}</p>
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <span>{article.view_count} views</span>
                       <Link 
@@ -175,9 +175,37 @@ export const HelpCenter = () => {
           </section>
         )}
 
-        <div className="grid lg:grid-cols-4 gap-8">
-          {/* Categories Sidebar */}
-          <div className="lg:col-span-1">
+        <div className="flex flex-col lg:grid lg:grid-cols-4 gap-6 lg:gap-8">
+          {/* Mobile Categories */}
+          <div className="lg:hidden">
+            <Card>
+              <CardContent className="p-4">
+                <h3 className="text-sm font-medium text-muted-foreground mb-3">Categories:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((category) => {
+                    const Icon = category.icon;
+                    return (
+                      <button
+                        key={category.id}
+                        onClick={() => setSelectedCategory(category.id)}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors ${
+                          selectedCategory === category.id
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted hover:bg-muted/80'
+                        }`}
+                      >
+                        <Icon className="w-3 h-3" />
+                        <span className="truncate">{category.name.replace('&', '&')}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Desktop Categories Sidebar */}
+          <div className="hidden lg:block lg:col-span-1">
             <Card>
               <CardHeader>
                 <CardTitle>Categories</CardTitle>
@@ -206,11 +234,11 @@ export const HelpCenter = () => {
 
           {/* Articles Grid */}
           <div className="lg:col-span-3">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-6 mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold">
                 {selectedCategory === 'all' ? 'All Articles' : categories.find(c => c.id === selectedCategory)?.name}
               </h2>
-              <span className="text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {articles.length} articles found
               </span>
             </div>
@@ -234,14 +262,14 @@ export const HelpCenter = () => {
               <div className="space-y-4">
                 {articles.map((article) => (
                   <Card key={article.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex items-center justify-between mb-2">
-                        <Badge variant="outline">{article.category}</Badge>
-                        <span className="text-sm text-muted-foreground">
+                    <CardHeader className="pb-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                        <Badge variant="outline" className="text-xs w-fit">{article.category}</Badge>
+                        <span className="text-xs text-muted-foreground">
                           {article.view_count} views
                         </span>
                       </div>
-                      <CardTitle className="text-xl">
+                      <CardTitle className="text-lg sm:text-xl leading-tight">
                         <Link 
                           to={`/help/article/${article.id}`}
                           className="hover:text-primary transition-colors"
@@ -250,11 +278,11 @@ export const HelpCenter = () => {
                         </Link>
                       </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <p className="text-muted-foreground mb-4">{article.excerpt}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex gap-2">
-                          {article.tags?.slice(0, 3).map((tag) => (
+                    <CardContent className="pt-0">
+                      <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{article.excerpt}</p>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div className="flex flex-wrap gap-1 sm:gap-2">
+                          {article.tags?.slice(0, 2).map((tag) => (
                             <Badge key={tag} variant="secondary" className="text-xs">
                               {tag}
                             </Badge>
@@ -262,7 +290,7 @@ export const HelpCenter = () => {
                         </div>
                         <Link 
                           to={`/help/article/${article.id}`}
-                          className="text-primary hover:underline"
+                          className="text-primary hover:underline text-sm sm:text-base"
                         >
                           Read article →
                         </Link>
