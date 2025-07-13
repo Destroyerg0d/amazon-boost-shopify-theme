@@ -86,7 +86,7 @@ const AdminAffiliates = () => {
         .from('affiliates')
         .select(`
           *,
-          profiles(full_name, email)
+          profiles!affiliates_user_id_fkey(full_name, email)
         `)
         .order('created_at', { ascending: false });
 
@@ -99,7 +99,7 @@ const AdminAffiliates = () => {
           *,
           affiliates(
             affiliate_code,
-            profiles(full_name)
+            profiles!affiliates_user_id_fkey(full_name)
           )
         `)
         .order('created_at', { ascending: false });
@@ -114,7 +114,7 @@ const AdminAffiliates = () => {
           affiliates(
             affiliate_code,
             payment_email,
-            profiles(full_name)
+            profiles!affiliates_user_id_fkey(full_name)
           )
         `)
         .order('created_at', { ascending: false });
