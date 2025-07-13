@@ -12,6 +12,7 @@ import AdminReviews from '@/components/admin/AdminReviews';
 import AdminCustomers from '@/components/admin/AdminCustomers';
 import { AdminReaders } from '@/components/admin/AdminReaders';
 import { AdminSurveys } from '@/components/admin/AdminSurveys';
+import AdminAffiliates from '@/components/admin/AdminAffiliates';
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -22,7 +23,8 @@ import {
   UserCheck,
   UsersRound,
   ClipboardList,
-  CreditCard
+  CreditCard,
+  TrendingUp
 } from 'lucide-react';
 
 const Admin = () => {
@@ -44,7 +46,7 @@ const Admin = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-9 lg:w-auto lg:grid-cols-9">
+          <TabsList className="grid w-full grid-cols-10 lg:w-auto lg:grid-cols-10">
             <TabsTrigger value="dashboard" className="gap-2">
               <LayoutDashboard className="h-4 w-4" />
               Dashboard
@@ -80,6 +82,10 @@ const Admin = () => {
             <TabsTrigger value="surveys" className="gap-2">
               <ClipboardList className="h-4 w-4" />
               Surveys
+            </TabsTrigger>
+            <TabsTrigger value="affiliates" className="gap-2">
+              <TrendingUp className="h-4 w-4" />
+              Affiliates
             </TabsTrigger>
           </TabsList>
 
@@ -117,6 +123,10 @@ const Admin = () => {
 
           <TabsContent value="surveys" className="space-y-6">
             <AdminSurveys />
+          </TabsContent>
+
+          <TabsContent value="affiliates" className="space-y-6">
+            <AdminAffiliates />
           </TabsContent>
         </Tabs>
       </div>

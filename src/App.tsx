@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
+import Affiliate from "./pages/Affiliate";
 import Pricing from "./pages/Pricing";
 import Testimonials from "./pages/Testimonials";
 import Contact from "./pages/Contact";
@@ -63,6 +64,14 @@ const App = () => (
                 <RoleProtectedRoute requiredRole="admin">
                   <Admin />
                 </RoleProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/affiliate" 
+              element={
+                <ProtectedRoute>
+                  <Affiliate />
+                </ProtectedRoute>
               } 
             />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
