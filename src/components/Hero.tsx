@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Star, Users, Sparkles, TrendingUp, Award, Zap } from "lucide-react";
+import { ArrowRight, BookOpen, Star, Users, Sparkles, TrendingUp, Award, Zap, HelpCircle, MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -42,12 +42,88 @@ export const Hero = () => {
   const CurrentIcon = slogans[currentSlogan].icon;
 
   return (
-    <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-slate-900 py-20 md:py-32">`
+    <section className="relative w-full min-h-screen flex flex-col overflow-hidden bg-slate-900">
       {/* Dynamic Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 animate-pulse" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-purple-900/50 to-transparent" />
       </div>
+
+      {/* Navigation Header */}
+      <nav className="relative z-50 w-full">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <BookOpen className="w-8 h-8 text-blue-400" />
+              <span className="text-xl font-bold text-white">ReviewProMax</span>
+            </div>
+            
+            {/* Navigation Links */}
+            <div className="hidden md:flex items-center gap-6">
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate('/help')}
+                className="text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <HelpCircle className="w-4 h-4 mr-2" />
+                Help Center
+              </Button>
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate('/community')}
+                className="text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                <MessageSquare className="w-4 h-4 mr-2" />
+                Community
+              </Button>
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate('#pricing')}
+                className="text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                Pricing
+              </Button>
+              {user ? (
+                <Button 
+                  onClick={() => navigate('/dashboard')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Dashboard
+                </Button>
+              ) : (
+                <Button 
+                  onClick={() => navigate('/auth')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Sign In
+                </Button>
+              )}
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              {user ? (
+                <Button 
+                  size="sm"
+                  onClick={() => navigate('/dashboard')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Dashboard
+                </Button>
+              ) : (
+                <Button 
+                  size="sm"
+                  onClick={() => navigate('/auth')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Sign In
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      </nav>
 
       {/* Animated Particles */}
       <div className="absolute inset-0 overflow-hidden">
@@ -105,10 +181,11 @@ export const Hero = () => {
       </div>
 
       {/* Main Content */}
-      <div className="w-full container mx-auto px-6 relative z-10">
-        <div className="w-full max-w-6xl mx-auto">
-          {/* Split Layout */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="flex-1 flex items-center justify-center w-full">
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="w-full max-w-6xl mx-auto">
+            {/* Split Layout */}
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
             
             {/* Left Content */}
             <div className={`text-white transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
@@ -312,6 +389,7 @@ export const Hero = () => {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </section>
   );
