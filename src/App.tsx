@@ -22,6 +22,10 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CommunitySignup from "./pages/CommunitySignup";
 import ThankYou from "./pages/ThankYou";
 import NotFound from "./pages/NotFound";
+import { HelpCenter } from "./pages/HelpCenter";
+import { Community } from "./pages/Community";
+import { HelpArticle } from "./pages/HelpArticle";
+import { CommunityPost } from "./pages/CommunityPost";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +44,10 @@ const AppContent = () => {
       <Route path="/refund-policy" element={<RefundPolicy />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/community-signup" element={<CommunitySignup />} />
+      <Route path="/help" element={<HelpCenter />} />
+      <Route path="/help/article/:id" element={<HelpArticle />} />
+      <Route path="/community" element={<Community />} />
+      <Route path="/community/post/:id" element={<CommunityPost />} />
       <Route 
         path="/thank-you" 
         element={
