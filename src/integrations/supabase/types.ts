@@ -991,6 +991,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      populate_sample_community_content: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       track_affiliate_conversion: {
         Args: {
           p_payment_id: string
