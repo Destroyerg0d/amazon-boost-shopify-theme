@@ -221,6 +221,21 @@ export const Hero = () => {
                   <span className="text-lg font-bold text-white">1M+ Active Readers</span>
                 </div>
               </div>
+
+              {/* Affiliate CTA */}
+              <div className="mt-6 p-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
+                <p className="text-white/90 text-sm mb-2">
+                  💰 <span className="font-semibold">Earn with ReviewProMax:</span> Join our affiliate program and earn 20% commission
+                </p>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="text-white/80 hover:text-white hover:bg-white/10 p-0"
+                  onClick={() => navigate('/affiliate')}
+                >
+                  Learn More →
+                </Button>
+              </div>
             </div>
 
             {/* Right Visual Section */}

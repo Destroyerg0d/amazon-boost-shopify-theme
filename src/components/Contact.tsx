@@ -222,6 +222,26 @@ export const Contact = () => {
             </div>
           </div>
         </div>
+        
+        {/* Business Opportunities */}
+        <div className="mt-16 text-center bg-gradient-to-r from-primary/5 to-accent/5 rounded-3xl p-8 border border-primary/10">
+          <h3 className="text-2xl font-bold mb-4">Business Opportunities</h3>
+          <p className="text-muted-foreground mb-6">
+            Interested in partnerships, affiliate marketing, or bulk services? We'd love to hear from you.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              variant="outline" 
+              onClick={() => window.open('/affiliate', '_blank')}
+              className="hover:bg-primary hover:text-primary-foreground"
+            >
+              💰 Affiliate Program - Earn 20% Commission
+            </Button>
+            <Button variant="outline">
+              🤝 Partnership Opportunities
+            </Button>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -643,6 +643,30 @@ export const Pricing = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Bottom CTA Section */}
+      <div className="mt-16 text-center bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 rounded-3xl p-8 border border-primary/10">
+        <h3 className="text-2xl font-bold mb-4">Ready to Get More Reviews?</h3>
+        <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+          Join thousands of successful authors who trust ReviewProMax for authentic book reviews.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <Button size="lg" className="bg-primary hover:bg-primary/90">
+            Get Started Today
+          </Button>
+          <div className="text-sm text-muted-foreground">
+            💰 <strong>Earn with us:</strong> Join our{" "}
+            <Button 
+              variant="link" 
+              className="p-0 text-primary hover:text-primary/80" 
+              onClick={() => window.open('/affiliate', '_blank')}
+            >
+              Affiliate Program
+            </Button>{" "}
+            and earn 20% commission
+          </div>
+        </div>
+      </div>
     </section>
   );
 };

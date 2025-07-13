@@ -69,6 +69,25 @@ export const Footer = () => {
             </ul>
           </div>
 
+          {/* Partners & Affiliates */}
+          <div className="space-y-4">
+            <h4 className="text-md font-semibold text-foreground">Partners</h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/affiliate" className="text-muted-foreground hover:text-primary transition-colors">
+                  Affiliate Program
+                </Link>
+              </li>
+              <li>
+                <Link to="/community-signup" className="text-muted-foreground hover:text-primary transition-colors">
+                  Reader Community
+                </Link>
+              </li>
+              <li className="text-muted-foreground">Partner Network</li>
+              <li className="text-muted-foreground">Referral Rewards</li>
+            </ul>
+          </div>
+
           {/* Legal */}
           <div className="space-y-4">
             <h4 className="text-md font-semibold text-foreground">Legal</h4>
