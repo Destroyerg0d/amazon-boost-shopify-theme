@@ -42,7 +42,7 @@ export const Hero = () => {
   const CurrentIcon = slogans[currentSlogan].icon;
 
   return (
-    <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-slate-900">
+    <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-slate-900 py-20 md:py-32">`
       {/* Dynamic Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 animate-pulse" />
@@ -223,17 +223,23 @@ export const Hero = () => {
               </div>
 
               {/* Affiliate CTA */}
-              <div className="mt-6 p-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
-                <p className="text-white/90 text-sm mb-2">
-                  💰 <span className="font-semibold">Earn with ReviewProMax:</span> Join our affiliate program and earn 20% commission
+              <div className="mt-8 p-6 bg-black/40 backdrop-blur-sm rounded-2xl border border-white/20 shadow-lg">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                  <span className="text-white text-lg font-bold">💰 Earn with ReviewProMax</span>
+                </div>
+                <p className="text-white/90 text-base mb-4 leading-relaxed">
+                  <span className="font-semibold text-green-400">20% commission rate</span> • 
+                  <span className="font-semibold text-blue-400"> Real-time tracking</span> • 
+                  <span className="font-semibold text-purple-400"> Monthly payouts</span>
                 </p>
                 <Button 
-                  variant="ghost" 
+                  variant="outline" 
                   size="sm"
-                  className="text-white/80 hover:text-white hover:bg-white/10 p-0"
+                  className="bg-white/10 border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all duration-300"
                   onClick={() => navigate('/affiliate')}
                 >
-                  Learn More →
+                  Join Affiliate Program →
                 </Button>
               </div>
             </div>
