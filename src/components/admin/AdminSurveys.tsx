@@ -44,19 +44,35 @@ export const AdminSurveys = () => {
 
   const fetchSurveys = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch surveys first
+      const { data: surveysData, error: surveysError } = await supabase
         .from('user_surveys')
-        .select(`
-          *,
-          profiles!inner (
-            full_name,
-            email
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setSurveys((data as any) || []);
+      if (surveysError) throw surveysError;
+
+      // Fetch profiles for these survey users
+      const userIds = surveysData?.map(s => s.user_id) || [];
+      let profilesData: any[] = [];
+      
+      if (userIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('user_id, full_name, email')
+          .in('user_id', userIds);
+        
+        if (profilesError) throw profilesError;
+        profilesData = profiles || [];
+      }
+
+      // Combine survey data with profiles
+      const surveysWithProfiles = surveysData?.map(survey => ({
+        ...survey,
+        profiles: profilesData.find(p => p.user_id === survey.user_id)
+      })) || [];
+
+      setSurveys(surveysWithProfiles || []);
     } catch (error) {
       console.error('Error fetching surveys:', error);
       toast({
