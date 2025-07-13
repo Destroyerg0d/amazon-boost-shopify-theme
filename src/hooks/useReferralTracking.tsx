@@ -19,24 +19,39 @@ export const useReferralTracking = () => {
             .select('id')
             .eq('affiliate_code', referralCode)
             .eq('status', 'active')
-            .single();
+            .maybeSingle();
 
           if (affiliate && !affiliateError) {
-            // Track the referral click
-            await supabase
+            // Check if this referral already exists to avoid duplicates
+            const { data: existingReferral } = await supabase
               .from('referrals')
-              .insert({
-                affiliate_id: affiliate.id,
-                referral_code: referralCode,
-                ip_address: await getClientIP(),
-                user_agent: navigator.userAgent,
-                utm_source: urlParams.get('utm_source'),
-                utm_medium: urlParams.get('utm_medium'),
-                utm_campaign: urlParams.get('utm_campaign'),
-                status: 'clicked'
-              });
+              .select('id')
+              .eq('affiliate_id', affiliate.id)
+              .eq('referral_code', referralCode)
+              .gte('clicked_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()) // Within 24 hours
+              .maybeSingle();
 
-            // Update affiliate referral count will be handled by database triggers
+            if (!existingReferral) {
+              // Track the referral click
+              const { error: insertError } = await supabase
+                .from('referrals')
+                .insert({
+                  affiliate_id: affiliate.id,
+                  referral_code: referralCode,
+                  ip_address: await getClientIP(),
+                  user_agent: navigator.userAgent,
+                  utm_source: urlParams.get('utm_source'),
+                  utm_medium: urlParams.get('utm_medium'),
+                  utm_campaign: urlParams.get('utm_campaign'),
+                  status: 'clicked'
+                });
+
+              if (insertError) {
+                console.error('Error inserting referral:', insertError);
+              }
+            }
+          } else if (affiliateError) {
+            console.error('Error finding affiliate:', affiliateError);
           }
 
           // Clean up URL parameters
