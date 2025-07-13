@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useReferralTracking } from "@/hooks/useReferralTracking";
 
 interface PayPalButtonProps {
   planType: 'verified' | 'unverified';
@@ -17,6 +18,7 @@ export const PayPalButton = ({ planType, planName, amount, bookPrice = 0, disabl
   const { user, session } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { trackConversion } = useReferralTracking();
 
   if (!user) {
     return (
@@ -72,6 +74,11 @@ export const PayPalButton = ({ planType, planName, amount, bookPrice = 0, disabl
 
       if (error || !result?.success) {
         throw new Error(error?.message || result?.error || 'Payment capture failed');
+      }
+
+      // Track affiliate conversion if there's a referral
+      if (paymentId) {
+        await trackConversion(paymentId, amount);
       }
 
       toast({
