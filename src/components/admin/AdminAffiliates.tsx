@@ -81,49 +81,81 @@ const AdminAffiliates = () => {
 
   const fetchData = async () => {
     try {
-      // Fetch affiliates with profile data
+      // Fetch affiliates first
       const { data: affiliatesData, error: affiliatesError } = await supabase
         .from('affiliates')
-        .select(`
-          *,
-          profiles!inner(full_name, email)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (affiliatesError) throw affiliatesError;
+
+      // Fetch profiles for these affiliates
+      const userIds = affiliatesData?.map(a => a.user_id) || [];
+      let profilesData: any[] = [];
+      
+      if (userIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('user_id, full_name, email')
+          .in('user_id', userIds);
+        
+        if (profilesError) throw profilesError;
+        profilesData = profiles || [];
+      }
+
+      // Combine affiliate data with profiles
+      const affiliatesWithProfiles = affiliatesData?.map(affiliate => ({
+        ...affiliate,
+        profiles: profilesData.find(p => p.user_id === affiliate.user_id)
+      })) || [];
 
       // Fetch commissions
       const { data: commissionsData, error: commissionsError } = await supabase
         .from('affiliate_commissions')
         .select(`
           *,
-          affiliates(
-            affiliate_code,
-            profiles!inner(full_name)
-          )
+          affiliates(affiliate_code)
         `)
         .order('created_at', { ascending: false });
 
       if (commissionsError) throw commissionsError;
 
+      // Fetch affiliate codes for commissions and add profile names
+      const commissionsWithProfiles = commissionsData?.map(commission => {
+        const affiliate = affiliatesWithProfiles.find(a => a.id === commission.affiliate_id);
+        return {
+          ...commission,
+          affiliates: {
+            affiliate_code: affiliate?.affiliate_code || '',
+            profiles: affiliate?.profiles || null
+          }
+        };
+      }) || [];
+
       // Fetch payouts
       const { data: payoutsData, error: payoutsError } = await supabase
         .from('affiliate_payouts')
-        .select(`
-          *,
-          affiliates(
-            affiliate_code,
-            payment_email,
-            profiles!inner(full_name)
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (payoutsError) throw payoutsError;
 
-      setAffiliates((affiliatesData as unknown as Affiliate[]) || []);
-      setCommissions((commissionsData as unknown as Commission[]) || []);
-      setPayouts((payoutsData as unknown as Payout[]) || []);
+      // Add affiliate and profile data to payouts
+      const payoutsWithProfiles = payoutsData?.map(payout => {
+        const affiliate = affiliatesWithProfiles.find(a => a.id === payout.affiliate_id);
+        return {
+          ...payout,
+          affiliates: {
+            affiliate_code: affiliate?.affiliate_code || '',
+            payment_email: affiliate?.payment_email || '',
+            profiles: affiliate?.profiles || null
+          }
+        };
+      }) || [];
+
+      setAffiliates((affiliatesWithProfiles as unknown as Affiliate[]) || []);
+      setCommissions((commissionsWithProfiles as unknown as Commission[]) || []);
+      setPayouts((payoutsWithProfiles as unknown as Payout[]) || []);
     } catch (error) {
       console.error('Error fetching affiliate data:', error);
       toast({
