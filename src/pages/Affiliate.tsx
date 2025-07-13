@@ -182,7 +182,7 @@ const Affiliate = () => {
   };
 
   const copyReferralLink = (code: string) => {
-    const link = `${window.location.origin}/?ref=${code}`;
+    const link = `https://reviewpromax.com/?ref=${code}`;
     navigator.clipboard.writeText(link);
     toast({
       title: "Copied!",
@@ -353,7 +353,7 @@ const Affiliate = () => {
                   <Label>Main Referral Link</Label>
                   <div className="flex gap-2">
                     <Input
-                      value={`${window.location.origin}/?ref=${affiliate.affiliate_code}`}
+                      value={`https://reviewpromax.com/?ref=${affiliate.affiliate_code}`}
                       readOnly
                     />
                     <Button 
@@ -369,7 +369,7 @@ const Affiliate = () => {
                   <Label>Pricing Page Link</Label>
                   <div className="flex gap-2">
                     <Input
-                      value={`${window.location.origin}/pricing?ref=${affiliate.affiliate_code}`}
+                      value={`https://reviewpromax.com/pricing?ref=${affiliate.affiliate_code}`}
                       readOnly
                     />
                     <Button 
