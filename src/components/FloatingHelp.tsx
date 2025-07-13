@@ -3,9 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { HelpCircle, MessageCircle, Phone, Mail, ExternalLink, CheckCircle, ArrowRight } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { HelpCircle, MessageCircle, Phone, Mail, ExternalLink, CheckCircle, ArrowRight, ShoppingCart, Lock } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useUserPurchases } from '@/hooks/useUserPurchases';
 
 export const FloatingHelp = () => {
+  const { user } = useAuth();
+  const { hasPurchases, loading: purchasesLoading } = useUserPurchases();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -88,6 +93,10 @@ export const FloatingHelp = () => {
                 variant="outline" 
                 className="flex items-center gap-3 h-auto p-4 justify-start hover:bg-primary/5"
                 onClick={() => {
+                  if (!user || !hasPurchases) {
+                    // Show purchase requirement alert instead of navigating
+                    return;
+                  }
                   setIsOpen(false);
                   const contactElement = document.querySelector('#contact') as HTMLElement;
                   if (contactElement) {
@@ -98,11 +107,30 @@ export const FloatingHelp = () => {
                 <MessageCircle className="w-5 h-5 text-purple-500" />
                 <div className="text-left">
                   <div className="font-medium">Live Chat</div>
-                  <div className="text-xs text-muted-foreground">Get instant help</div>
+                  <div className="text-xs text-muted-foreground">
+                    {user && hasPurchases ? "Get instant help" : "Purchase required"}
+                  </div>
                 </div>
-                <ArrowRight className="w-4 h-4 ml-auto" />
+                {user && hasPurchases ? (
+                  <ArrowRight className="w-4 h-4 ml-auto" />
+                ) : (
+                  <Lock className="w-4 h-4 ml-auto text-muted-foreground" />
+                )}
               </Button>
             </div>
+
+            {/* Purchase Requirement Alert */}
+            {(!user || !hasPurchases) && !purchasesLoading && (
+              <Alert className="border-primary/20 bg-primary/5">
+                <ShoppingCart className="h-4 w-4" />
+                <AlertDescription className="text-sm">
+                  <strong>Live Chat & AI Support</strong> are available exclusively for customers who have purchased any review plan with ReviewProMax.
+                  <Button asChild variant="link" className="p-0 h-auto ml-1">
+                    <a href="/pricing">View Plans →</a>
+                  </Button>
+                </AlertDescription>
+              </Alert>
+            )}
 
             {/* FAQ Link */}
             <Card className="bg-muted/50">

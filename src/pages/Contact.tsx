@@ -22,9 +22,16 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { TawkToChat } from "@/components/TawkToChat";
+import { AIChatbot } from "@/components/AIChatbot";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserPurchases } from "@/hooks/useUserPurchases";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ShoppingCart, Lock } from "lucide-react";
 
 export default function Contact() {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const { hasPurchases, loading: purchasesLoading } = useUserPurchases();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -40,6 +47,7 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isScheduleCallSubmitting, setIsScheduleCallSubmitting] = useState(false);
   const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
+  const [isAIChatOpen, setIsAIChatOpen] = useState(false);
   const [isScheduleCallOpen, setIsScheduleCallOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -300,27 +308,49 @@ export default function Contact() {
                 <Button 
                   className="w-full justify-start gap-3 h-14" 
                   variant="outline"
-                  onClick={() => setIsLiveChatOpen(true)}
+                  onClick={() => {
+                    if (user && hasPurchases) {
+                      setIsLiveChatOpen(true);
+                    }
+                  }}
+                  disabled={!user || !hasPurchases}
                 >
                   <MessageCircle className="w-5 h-5" />
                   <div className="text-left">
                     <div className="font-medium">Live Chat</div>
-                    <div className="text-sm text-muted-foreground">Chat with our support team</div>
+                    <div className="text-sm text-muted-foreground">
+                      {user && hasPurchases ? "Chat with our support team" : "Purchase required"}
+                    </div>
                   </div>
-                  <Badge className="ml-auto bg-green-500">Online</Badge>
+                  {user && hasPurchases ? (
+                    <Badge className="ml-auto bg-green-500">Online</Badge>
+                  ) : (
+                    <Lock className="w-4 h-4 ml-auto text-muted-foreground" />
+                  )}
                 </Button>
 
                 <Button 
                   className="w-full justify-start gap-3 h-14" 
                   variant="outline"
-                  onClick={() => setIsLiveChatOpen(true)}
+                  onClick={() => {
+                    if (user && hasPurchases) {
+                      setIsAIChatOpen(true);
+                    }
+                  }}
+                  disabled={!user || !hasPurchases}
                 >
                   <MessageSquare className="w-5 h-5" />
                   <div className="text-left">
-                    <div className="font-medium">Live Chat Support</div>
-                    <div className="text-sm text-muted-foreground">Get instant answers 24/7</div>
+                    <div className="font-medium">AI Chat Support</div>
+                    <div className="text-sm text-muted-foreground">
+                      {user && hasPurchases ? "Get instant answers 24/7" : "Purchase required"}
+                    </div>
                   </div>
-                  <Badge className="ml-auto bg-green-500">Online</Badge>
+                  {user && hasPurchases ? (
+                    <Badge className="ml-auto bg-green-500">Online</Badge>
+                  ) : (
+                    <Lock className="w-4 h-4 ml-auto text-muted-foreground" />
+                  )}
                 </Button>
 
                 <Button 
@@ -334,6 +364,19 @@ export default function Contact() {
                     <div className="text-sm text-muted-foreground">Book a consultation</div>
                   </div>
                 </Button>
+                
+                {/* Purchase Requirement Alert */}
+                {(!user || !hasPurchases) && !purchasesLoading && (
+                  <Alert className="border-primary/20 bg-primary/5">
+                    <ShoppingCart className="h-4 w-4" />
+                    <AlertDescription className="text-sm">
+                      <strong>Live Chat & AI Support</strong> are available exclusively for customers who have purchased any review plan.
+                      <Button asChild variant="link" className="p-0 h-auto ml-1">
+                        <a href="/pricing">View Plans →</a>
+                      </Button>
+                    </AlertDescription>
+                  </Alert>
+                )}
               </CardContent>
             </Card>
 
@@ -499,10 +542,14 @@ export default function Contact() {
         </DialogContent>
       </Dialog>
       
-      {/* Tawk.to Live Chat */}
+      {/* Live Chat Components */}
       <TawkToChat 
         isVisible={isLiveChatOpen} 
         onClose={() => setIsLiveChatOpen(false)} 
+      />
+      <AIChatbot 
+        isOpen={isAIChatOpen} 
+        onClose={() => setIsAIChatOpen(false)} 
       />
     </div>
   );

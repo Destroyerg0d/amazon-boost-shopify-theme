@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { useUserPurchases } from '@/hooks/useUserPurchases';
 
 declare global {
   interface Window {
@@ -13,10 +15,13 @@ interface TawkToChatProps {
 }
 
 export const TawkToChat = ({ isVisible, onClose }: TawkToChatProps) => {
+  const { user } = useAuth();
+  const { hasPurchases, loading: purchasesLoading } = useUserPurchases();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    if (isVisible && !isLoaded) {
+    // Only load chat if user has purchases and is authenticated
+    if (isVisible && !isLoaded && user && hasPurchases) {
       // Load Tawk.to script only when needed
       const script = document.createElement('script');
       script.async = true;
@@ -77,12 +82,12 @@ export const TawkToChat = ({ isVisible, onClose }: TawkToChatProps) => {
     } else if (!isVisible && isLoaded && window.Tawk_API) {
       // Hide the chat widget when not visible
       window.Tawk_API.hideWidget();
-    } else if (isVisible && isLoaded && window.Tawk_API) {
-      // Show the chat widget when visible
+    } else if (isVisible && isLoaded && window.Tawk_API && user && hasPurchases) {
+      // Show the chat widget when visible and user has purchases
       window.Tawk_API.showWidget();
       window.Tawk_API.maximize();
     }
-  }, [isVisible, isLoaded, onClose]);
+  }, [isVisible, isLoaded, onClose, user, hasPurchases]);
 
   // This component doesn't render anything visible
   return null;

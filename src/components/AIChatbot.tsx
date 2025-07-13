@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { X, Send, Bot, User, MessageSquare } from "lucide-react";
+import { X, Send, Bot, User, MessageSquare, ShoppingCart, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserPurchases } from "@/hooks/useUserPurchases";
 
 interface Message {
   id: string;
@@ -19,6 +21,9 @@ interface AIChatbotProps {
 }
 
 export const AIChatbot = ({ isOpen, onClose }: AIChatbotProps) => {
+  const { user } = useAuth();
+  const { hasPurchases, loading: purchasesLoading } = useUserPurchases();
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -101,6 +106,44 @@ export const AIChatbot = ({ isOpen, onClose }: AIChatbotProps) => {
   };
 
   if (!isOpen) return null;
+
+  // Show access restriction if user is not logged in or has no purchases
+  if (!user || (!hasPurchases && !purchasesLoading)) {
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md shadow-glow border-primary/20">
+          <CardHeader className="text-center">
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Lock className="w-8 h-8 text-primary" />
+            </div>
+            <CardTitle className="text-xl">AI Chat Support</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <p className="text-muted-foreground">
+              AI Chat Support is available exclusively for customers who have purchased any review plan with ReviewProMax.
+            </p>
+            <div className="bg-primary/5 rounded-lg p-4">
+              <div className="flex items-center gap-2 justify-center mb-2">
+                <ShoppingCart className="w-5 h-5 text-primary" />
+                <span className="font-medium text-primary">Purchase Required</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                This premium support feature helps existing customers get the most out of their review campaigns.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={onClose} className="flex-1">
+                Close
+              </Button>
+              <Button asChild className="flex-1">
+                <a href="/pricing">View Plans</a>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
