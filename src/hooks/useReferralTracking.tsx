@@ -32,23 +32,36 @@ export const useReferralTracking = () => {
               .maybeSingle();
 
             if (!existingReferral) {
+              // Get IP address (don't await since it's optional)
+              let ipAddress = null;
+              try {
+                ipAddress = await getClientIP();
+              } catch (error) {
+                console.log('Could not get IP address:', error);
+              }
+
               // Track the referral click
-              const { error: insertError } = await supabase
+              const { data: referralData, error: insertError } = await supabase
                 .from('referrals')
                 .insert({
                   affiliate_id: affiliate.id,
                   referral_code: referralCode,
-                  ip_address: await getClientIP(),
+                  ip_address: ipAddress,
                   user_agent: navigator.userAgent,
                   utm_source: urlParams.get('utm_source'),
                   utm_medium: urlParams.get('utm_medium'),
                   utm_campaign: urlParams.get('utm_campaign'),
                   status: 'clicked'
-                });
+                })
+                .select();
 
               if (insertError) {
                 console.error('Error inserting referral:', insertError);
+              } else {
+                console.log('Referral tracked successfully:', referralData);
               }
+            } else {
+              console.log('Referral already exists within 24 hours');
             }
           } else if (affiliateError) {
             console.error('Error finding affiliate:', affiliateError);
