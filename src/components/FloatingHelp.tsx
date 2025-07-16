@@ -25,38 +25,35 @@ export const FloatingHelp = () => {
           </Button>
         </DialogTrigger>
         
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md bg-slate-900 border-slate-700 text-white">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <MessageCircle className="w-5 h-5 text-primary" />
+            <DialogTitle className="flex items-center gap-2 text-white">
+              <MessageCircle className="w-5 h-5 text-blue-400" />
               Need Help?
             </DialogTitle>
           </DialogHeader>
           
           <div className="space-y-4">
             {/* Quick Start Guide */}
-            <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-primary/20">
+            <Card className="bg-slate-800/50 border-slate-700">
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  Quick Start Guide
-                </CardTitle>
-                <CardDescription>
+                <CardTitle className="text-lg flex items-center gap-2 text-white">
+                  <CheckCircle className="w-5 h-5 text-green-400" />
                   Get started in 3 simple steps
-                </CardDescription>
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="w-6 h-6 rounded-full flex items-center justify-center p-0 text-xs">1</Badge>
-                  <span className="text-sm">Create your account</span>
+                  <div className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs font-medium">1</div>
+                  <span className="text-sm text-slate-300">Create your account</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="w-6 h-6 rounded-full flex items-center justify-center p-0 text-xs">2</Badge>
-                  <span className="text-sm">Upload your book details</span>
+                  <div className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs font-medium">2</div>
+                  <span className="text-sm text-slate-300">Upload your book details</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge variant="secondary" className="w-6 h-6 rounded-full flex items-center justify-center p-0 text-xs">3</Badge>
-                  <span className="text-sm">Choose your review plan</span>
+                  <div className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs font-medium">3</div>
+                  <span className="text-sm text-slate-300">Choose your review plan</span>
                 </div>
               </CardContent>
             </Card>
@@ -65,33 +62,33 @@ export const FloatingHelp = () => {
             <div className="grid grid-cols-1 gap-3">
               <Button 
                 variant="outline" 
-                className="flex items-center gap-3 h-auto p-4 justify-start hover:bg-primary/5"
+                className="flex items-center gap-3 h-auto p-4 justify-start hover:bg-slate-700/50 border-slate-600 text-white"
                 onClick={() => window.open('mailto:support@reviewpromax.com', '_blank')}
               >
-                <Mail className="w-5 h-5 text-blue-500" />
+                <Mail className="w-5 h-5 text-blue-400" />
                 <div className="text-left">
-                  <div className="font-medium">Email Support</div>
-                  <div className="text-xs text-muted-foreground">support@reviewpromax.com</div>
+                  <div className="font-medium text-white">Email Support</div>
+                  <div className="text-xs text-slate-400">support@reviewpromax.com</div>
                 </div>
-                <ExternalLink className="w-4 h-4 ml-auto" />
+                <ExternalLink className="w-4 h-4 ml-auto text-slate-400" />
               </Button>
 
               <Button 
                 variant="outline" 
-                className="flex items-center gap-3 h-auto p-4 justify-start hover:bg-primary/5"
+                className="flex items-center gap-3 h-auto p-4 justify-start hover:bg-slate-700/50 border-slate-600 text-white"
                 onClick={() => window.open('tel:+1234567890', '_blank')}
               >
-                <Phone className="w-5 h-5 text-green-500" />
+                <Phone className="w-5 h-5 text-green-400" />
                 <div className="text-left">
-                  <div className="font-medium">Phone Support</div>
-                  <div className="text-xs text-muted-foreground">Mon-Fri 9AM-6PM EST</div>
+                  <div className="font-medium text-white">Phone Support</div>
+                  <div className="text-xs text-slate-400">Mon-Fri 9AM-6PM EST</div>
                 </div>
-                <ExternalLink className="w-4 h-4 ml-auto" />
+                <ExternalLink className="w-4 h-4 ml-auto text-slate-400" />
               </Button>
 
               <Button 
                 variant="outline" 
-                className="flex items-center gap-3 h-auto p-4 justify-start hover:bg-primary/5"
+                className="flex items-center gap-3 h-auto p-4 justify-start hover:bg-slate-700/50 border-slate-600 text-white"
                 onClick={() => {
                   if (!user || !hasPurchases) {
                     // Show purchase requirement alert instead of navigating
@@ -104,28 +101,28 @@ export const FloatingHelp = () => {
                   }
                 }}
               >
-                <MessageCircle className="w-5 h-5 text-purple-500" />
+                <MessageCircle className="w-5 h-5 text-purple-400" />
                 <div className="text-left">
-                  <div className="font-medium">Live Chat</div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="font-medium text-white">Live Chat</div>
+                  <div className="text-xs text-slate-400">
                     {user && hasPurchases ? "Get instant help" : "Purchase required"}
                   </div>
                 </div>
                 {user && hasPurchases ? (
-                  <ArrowRight className="w-4 h-4 ml-auto" />
+                  <ArrowRight className="w-4 h-4 ml-auto text-slate-400" />
                 ) : (
-                  <Lock className="w-4 h-4 ml-auto text-muted-foreground" />
+                  <Lock className="w-4 h-4 ml-auto text-slate-400" />
                 )}
               </Button>
             </div>
 
             {/* Purchase Requirement Alert */}
             {(!user || !hasPurchases) && !purchasesLoading && (
-              <Alert className="border-primary/20 bg-primary/5">
-                <ShoppingCart className="h-4 w-4" />
-                <AlertDescription className="text-sm">
-                  <strong>Live Chat & AI Support</strong> are available exclusively for customers who have purchased any review plan with ReviewProMax.
-                  <Button asChild variant="link" className="p-0 h-auto ml-1">
+              <Alert className="border-slate-600 bg-slate-800/50">
+                <ShoppingCart className="h-4 w-4 text-slate-400" />
+                <AlertDescription className="text-sm text-slate-300">
+                  <strong className="text-white">Live Chat & AI Support</strong> are available exclusively for customers who have purchased any review plan with ReviewProMax.
+                  <Button asChild variant="link" className="p-0 h-auto ml-1 text-blue-400 hover:text-blue-300">
                     <a href="/pricing">View Plans →</a>
                   </Button>
                 </AlertDescription>
@@ -133,14 +130,14 @@ export const FloatingHelp = () => {
             )}
 
             {/* FAQ Link */}
-            <Card className="bg-muted/50">
+            <Card className="bg-slate-800/50 border-slate-600">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-sm">Frequently Asked Questions</div>
-                    <div className="text-xs text-muted-foreground">Find answers to common questions</div>
+                    <div className="font-medium text-sm text-white">Frequently Asked Questions</div>
+                    <div className="text-xs text-slate-400">Find answers to common questions</div>
                   </div>
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white hover:bg-slate-700">
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
