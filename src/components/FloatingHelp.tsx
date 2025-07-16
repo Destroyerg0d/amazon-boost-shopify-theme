@@ -76,7 +76,13 @@ export const FloatingHelp = () => {
               <Button 
                 variant="outline" 
                 className="flex items-center gap-3 h-auto p-4 justify-start hover:bg-slate-700/50 border-slate-600 text-white"
-                onClick={() => window.open('https://calendly.com/reviewpromax/consultation', '_blank')}
+                onClick={() => {
+                  setIsOpen(false);
+                  const contactElement = document.querySelector('#contact') as HTMLElement;
+                  if (contactElement) {
+                    window.scrollTo({ top: contactElement.offsetTop, behavior: 'smooth' });
+                  }
+                }}
               >
                 <Phone className="w-5 h-5 text-green-400" />
                 <div className="text-left">
