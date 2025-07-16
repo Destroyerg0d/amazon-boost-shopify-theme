@@ -76,12 +76,12 @@ export const FloatingHelp = () => {
               <Button 
                 variant="outline" 
                 className="flex items-center gap-3 h-auto p-4 justify-start hover:bg-slate-700/50 border-slate-600 text-white"
-                onClick={() => window.open('tel:+1234567890', '_blank')}
+                onClick={() => window.open('https://calendly.com/reviewpromax/consultation', '_blank')}
               >
                 <Phone className="w-5 h-5 text-green-400" />
                 <div className="text-left">
-                  <div className="font-medium text-white">Phone Support</div>
-                  <div className="text-xs text-slate-400">Mon-Fri 9AM-6PM EST</div>
+                  <div className="font-medium text-white">Book Appointment</div>
+                  <div className="text-xs text-slate-400">Schedule a call with our team</div>
                 </div>
                 <ExternalLink className="w-4 h-4 ml-auto text-slate-400" />
               </Button>
