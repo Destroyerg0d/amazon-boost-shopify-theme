@@ -60,7 +60,6 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [activeView, setActiveView] = useState<string | null>(null);
   const [showSurveyModal, setShowSurveyModal] = useState(false);
-  const [hasCheckedSurvey, setHasCheckedSurvey] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -71,7 +70,7 @@ const Dashboard = () => {
   }, [user]);
 
   const checkSurveyStatus = async () => {
-    if (!user || hasCheckedSurvey) return;
+    if (!user) return;
     
     try {
       const { data: existingSurvey } = await supabase
@@ -80,13 +79,12 @@ const Dashboard = () => {
         .eq('user_id', user.id)
         .maybeSingle();
 
+      // Only show survey if user hasn't completed one yet
       if (!existingSurvey) {
         setShowSurveyModal(true);
       }
-      setHasCheckedSurvey(true);
     } catch (error) {
       console.error('Error checking survey status:', error);
-      setHasCheckedSurvey(true);
     }
   };
 
