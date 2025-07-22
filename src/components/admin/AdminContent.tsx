@@ -102,59 +102,85 @@ const AdminContent = () => {
   const fetchAllContent = async () => {
     setLoading(true);
     try {
-      // Fetch help articles with author info
+      // Fetch help articles
       const { data: articles, error: articlesError } = await supabase
         .from('help_articles')
-        .select(`
-          *,
-          profiles:author_id (
-            full_name,
-            email
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (articlesError) throw articlesError;
+      if (articlesError) {
+        console.error('Articles error:', articlesError);
+        throw articlesError;
+      }
 
-      // Fetch community posts with author info
+      // Fetch community posts
       const { data: posts, error: postsError } = await supabase
         .from('community_posts')
-        .select(`
-          *,
-          profiles:author_id (
-            full_name,
-            email
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (postsError) throw postsError;
+      if (postsError) {
+        console.error('Posts error:', postsError);
+        throw postsError;
+      }
 
-      // Fetch community replies with author and post info
+      // Fetch community replies
       const { data: replies, error: repliesError } = await supabase
         .from('community_replies')
-        .select(`
-          *,
-          profiles:author_id (
-            full_name,
-            email
-          ),
-          community_posts (
-            title
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (repliesError) throw repliesError;
+      if (repliesError) {
+        console.error('Replies error:', repliesError);
+        throw repliesError;
+      }
 
-      setHelpArticles((articles as any) || []);
-      setCommunityPosts((posts as any) || []);
-      setCommunityReplies((replies as any) || []);
+      // Fetch all profiles to map authors
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('user_id, full_name, email');
+
+      if (profilesError) {
+        console.error('Profiles error:', profilesError);
+        // Don't throw error for profiles, just continue without author info
+      }
+
+      // Create a profile lookup map
+      const profileMap = profiles?.reduce((acc, profile) => {
+        acc[profile.user_id] = profile;
+        return acc;
+      }, {} as Record<string, any>) || {};
+
+      // Add profile info to articles
+      const articlesWithProfiles = articles?.map(article => ({
+        ...article,
+        profiles: article.author_id ? profileMap[article.author_id] : null
+      })) || [];
+
+      // Add profile info to posts
+      const postsWithProfiles = posts?.map(post => ({
+        ...post,
+        profiles: profileMap[post.author_id] || null
+      })) || [];
+
+      // Add profile and post info to replies
+      const repliesWithInfo = replies?.map(reply => {
+        const relatedPost = posts?.find(post => post.id === reply.post_id);
+        return {
+          ...reply,
+          profiles: profileMap[reply.author_id] || null,
+          community_posts: relatedPost ? { title: relatedPost.title } : null
+        };
+      }) || [];
+
+      setHelpArticles(articlesWithProfiles);
+      setCommunityPosts(postsWithProfiles);
+      setCommunityReplies(repliesWithInfo);
     } catch (error) {
       console.error('Error fetching content:', error);
       toast({
         title: "Error",
-        description: "Failed to fetch content",
+        description: `Failed to fetch content: ${error instanceof Error ? error.message : 'Unknown error'}`,
         variant: "destructive",
       });
     } finally {
