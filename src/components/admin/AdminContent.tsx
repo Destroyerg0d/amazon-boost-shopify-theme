@@ -99,6 +99,10 @@ const AdminContent = () => {
     fetchAllContent();
   }, []);
 
+  const forceRefresh = () => {
+    fetchAllContent();
+  };
+
   const fetchAllContent = async () => {
     setLoading(true);
     try {
@@ -559,9 +563,15 @@ const AdminContent = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold">Content Management</h2>
-        <p className="text-muted-foreground">Manage all website content, articles, posts, and discussions</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">Content Management</h2>
+          <p className="text-muted-foreground">Manage all website content, articles, posts, and discussions</p>
+        </div>
+        <Button onClick={forceRefresh} variant="outline" className="gap-2">
+          <HelpCircle className="h-4 w-4" />
+          Refresh
+        </Button>
       </div>
 
       <Tabs defaultValue="articles" className="space-y-6">
