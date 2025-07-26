@@ -48,52 +48,72 @@ const Admin = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-11 lg:w-auto lg:grid-cols-11">
-            <TabsTrigger value="dashboard" className="gap-2">
-              <LayoutDashboard className="h-4 w-4" />
-              Dashboard
-            </TabsTrigger>
-            <TabsTrigger value="payments" className="gap-2">
-              <CreditCard className="h-4 w-4" />
-              Payments
-            </TabsTrigger>
-            <TabsTrigger value="orders" className="gap-2">
-              <ShoppingCart className="h-4 w-4" />
-              Orders
-            </TabsTrigger>
-            <TabsTrigger value="books" className="gap-2">
-              <BookOpen className="h-4 w-4" />
-              Books
-            </TabsTrigger>
-            <TabsTrigger value="customers" className="gap-2">
-              <UserCheck className="h-4 w-4" />
-              Customers
-            </TabsTrigger>
-            <TabsTrigger value="readers" className="gap-2">
-              <UsersRound className="h-4 w-4" />
-              Readers
-            </TabsTrigger>
-            <TabsTrigger value="users" className="gap-2">
-              <Users className="h-4 w-4" />
-              Users
-            </TabsTrigger>
-            <TabsTrigger value="reviews" className="gap-2">
-              <Settings className="h-4 w-4" />
-              Add Reviews
-            </TabsTrigger>
-            <TabsTrigger value="surveys" className="gap-2">
-              <ClipboardList className="h-4 w-4" />
-              Surveys
-            </TabsTrigger>
-            <TabsTrigger value="affiliates" className="gap-2">
-              <TrendingUp className="h-4 w-4" />
-              Affiliates
-            </TabsTrigger>
-            <TabsTrigger value="content" className="gap-2">
-              <FileText className="h-4 w-4" />
-              Content
-            </TabsTrigger>
-          </TabsList>
+          <div className="grid gap-4">
+            {/* Core Operations */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-2">Core Operations</h3>
+              <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+                <TabsTrigger value="dashboard" className="gap-2">
+                  <LayoutDashboard className="h-4 w-4" />
+                  Dashboard
+                </TabsTrigger>
+                <TabsTrigger value="orders" className="gap-2">
+                  <ShoppingCart className="h-4 w-4" />
+                  Orders
+                </TabsTrigger>
+                <TabsTrigger value="payments" className="gap-2">
+                  <CreditCard className="h-4 w-4" />
+                  Payments
+                </TabsTrigger>
+                <TabsTrigger value="books" className="gap-2">
+                  <BookOpen className="h-4 w-4" />
+                  Books
+                </TabsTrigger>
+              </TabsList>
+            </div>
+
+            {/* User Management */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-2">User Management</h3>
+              <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+                <TabsTrigger value="users" className="gap-2">
+                  <Users className="h-4 w-4" />
+                  Users
+                </TabsTrigger>
+                <TabsTrigger value="customers" className="gap-2">
+                  <UserCheck className="h-4 w-4" />
+                  Customers
+                </TabsTrigger>
+                <TabsTrigger value="readers" className="gap-2">
+                  <UsersRound className="h-4 w-4" />
+                  Readers
+                </TabsTrigger>
+                <TabsTrigger value="affiliates" className="gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  Affiliates
+                </TabsTrigger>
+              </TabsList>
+            </div>
+
+            {/* Content & Services */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-2">Content & Services</h3>
+              <TabsList className="grid w-full grid-cols-2 lg:grid-cols-3">
+                <TabsTrigger value="content" className="gap-2">
+                  <FileText className="h-4 w-4" />
+                  Content
+                </TabsTrigger>
+                <TabsTrigger value="reviews" className="gap-2">
+                  <Settings className="h-4 w-4" />
+                  Reviews
+                </TabsTrigger>
+                <TabsTrigger value="surveys" className="gap-2">
+                  <ClipboardList className="h-4 w-4" />
+                  Surveys
+                </TabsTrigger>
+              </TabsList>
+            </div>
+          </div>
 
           <TabsContent value="dashboard" className="space-y-6">
             <AdminDashboard />
