@@ -235,7 +235,7 @@ const RecentBooks = ({ books, onAddBook, onViewBook, onEditBook, onDeleteBook }:
               
               {books.length > 3 && (
                 <div className="text-center pt-4 border-t">
-                  <Button variant="outline" onClick={() => {/* Navigate to full books list */}}>
+                  <Button variant="outline" onClick={() => window.location.href = '/books'}>
                     View All Books ({books.length})
                   </Button>
                 </div>

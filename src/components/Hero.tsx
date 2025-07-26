@@ -79,7 +79,12 @@ export const Hero = () => {
               </Button>
               <Button 
                 variant="ghost" 
-                onClick={() => navigate('#pricing')}
+                onClick={() => {
+                  const pricingElement = document.getElementById('pricing');
+                  if (pricingElement) {
+                    pricingElement.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
                 className="text-white/80 hover:text-white hover:bg-white/10 transition-colors"
               >
                 Pricing

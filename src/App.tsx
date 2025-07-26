@@ -26,6 +26,8 @@ import { HelpCenter } from "./pages/HelpCenter";
 import { Community } from "./pages/Community";
 import { HelpArticle } from "./pages/HelpArticle";
 import { CommunityPost } from "./pages/CommunityPost";
+import { CommunityNew } from "./pages/CommunityNew";
+import BooksList from "./pages/BooksList";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +50,25 @@ const AppContent = () => {
       <Route path="/help/article/:id" element={<HelpArticle />} />
       <Route path="/community" element={<Community />} />
       <Route path="/community/post/:id" element={<CommunityPost />} />
+      <Route 
+        path="/community/new" 
+        element={
+          <ProtectedRoute>
+            <CommunityNew />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/books" 
+        element={
+          <ProtectedRoute>
+            <BooksList 
+              onBack={() => window.history.back()} 
+              onAddBook={() => window.location.href = '/dashboard?tab=books&action=add'} 
+            />
+          </ProtectedRoute>
+        } 
+      />
       <Route 
         path="/thank-you" 
         element={

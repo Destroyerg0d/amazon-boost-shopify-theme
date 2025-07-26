@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import BookDetailsModal from '@/components/dashboard/BookDetailsModal';
+import { BookEditModal } from '@/components/dashboard/BookEditModal';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -37,6 +39,7 @@ interface Book {
   admin_feedback: string | null;
   author_note: string | null;
   uploaded_at: string;
+  updated_at: string | null;
 }
 
 interface BooksListProps {
@@ -50,6 +53,9 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -80,12 +86,8 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
   };
 
   const handleViewDetails = (book: Book) => {
-    // You can implement a detailed view modal or navigate to a details page
-    toast({
-      title: "Book Details",
-      description: `Viewing details for "${book.title}"`,
-    });
-    console.log('View book details:', book);
+    setSelectedBook(book);
+    setIsDetailsModalOpen(true);
   };
 
   const handleEditBook = (book: Book) => {
@@ -98,12 +100,8 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
       return;
     }
     
-    // You can implement edit functionality or navigate to edit page
-    toast({
-      title: "Edit Book",
-      description: `Edit mode for "${book.title}" - Feature coming soon!`,
-    });
-    console.log('Edit book:', book);
+    setSelectedBook(book);
+    setIsEditModalOpen(true);
   };
 
   const handleDeleteBook = async (book: Book) => {
@@ -383,6 +381,25 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
           ))}
         </div>
       )}
+
+      <BookDetailsModal
+        book={selectedBook}
+        isOpen={isDetailsModalOpen}
+        onClose={() => {
+          setIsDetailsModalOpen(false);
+          setSelectedBook(null);
+        }}
+      />
+      
+      <BookEditModal
+        book={selectedBook}
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedBook(null);
+        }}
+        onSave={fetchBooks}
+      />
     </div>
   );
 };
