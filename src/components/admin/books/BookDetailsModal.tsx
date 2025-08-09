@@ -46,6 +46,8 @@ const BookDetailsModal = ({ book, onReview, getStatusBadge }: BookDetailsModalPr
                 src={book.front_cover_url}
                 alt={book.title}
                 className="w-full max-w-48 h-auto object-cover rounded-lg shadow-md mx-auto"
+                loading="lazy"
+                decoding="async"
               />
             ) : (
               <div className="w-full max-w-48 h-64 bg-muted rounded-lg flex items-center justify-center mx-auto">

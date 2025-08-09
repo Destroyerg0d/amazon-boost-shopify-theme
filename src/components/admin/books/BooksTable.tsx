@@ -42,6 +42,10 @@ const BooksTable = ({ books, getStatusBadge, onReview }: BooksTableProps) => {
                       src={book.front_cover_url}
                       alt={book.title}
                       className="w-10 h-14 object-cover rounded"
+                      loading="lazy"
+                      decoding="async"
+                      width={40}
+                      height={56}
                     />
                   ) : (
                     <div className="w-10 h-14 bg-muted rounded flex items-center justify-center">

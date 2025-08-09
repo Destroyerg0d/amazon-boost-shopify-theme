@@ -233,12 +233,12 @@ export const Hero = () => {
 
               {/* Main Headline */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
-                Get Authentic
+                <span className="block">ReviewProMax.com —</span>
                 <span className="block bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent animate-pulse">
-                  Book Reviews
+                  Buy Amazon KDP Reviews
                 </span>
                 <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white/90">
-                  from Our Million+ Reader Community
+                  Get authentic book reviews from our million+ reader community
                 </span>
               </h1>
 

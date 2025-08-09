@@ -71,6 +71,54 @@ const servicesJsonLd = [
   },
 ];
 
+const faqJsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What is ReviewProMax.com?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "ReviewProMax.com connects authors with a large ARC reader community to collect honest, helpful book reviews and improve visibility on Amazon Kindle Direct Publishing (KDP).",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Are your reviews compliant with Amazon guidelines?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "We focus on genuine reader feedback. We never offer incentives in exchange for a positive review, and readers are free to share their honest opinions in line with Amazon’s guidelines.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How fast will I receive reviews?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Most campaigns begin receiving reader feedback within a few days, with typical delivery rolling in over 7–14 days depending on genre and plan.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Do you support Kindle Unlimited and all genres?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, we support KU and most genres. We exclude extreme or prohibited content per platform policies.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "How do I get started?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Choose a plan on our Pricing page or contact support at Support@reviewpromax.com to discuss a custom campaign.",
+        },
+      },
+    ],
+  },
+];
 const routeMetaMap: { match: (p: string) => boolean; title: string; description: string; noindex?: boolean }[] = [
   {
     match: (p) => p === "/",
@@ -131,7 +179,7 @@ export const DefaultSEO: React.FC = () => {
 
   const baseStructured: any[] = [orgJsonLd, websiteJsonLd];
   if (pathname === "/") {
-    baseStructured.push(...servicesJsonLd);
+    baseStructured.push(...servicesJsonLd, ...faqJsonLd);
   }
 
   return (
