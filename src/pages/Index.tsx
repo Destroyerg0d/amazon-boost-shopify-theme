@@ -10,7 +10,7 @@ import { FloatingHelp } from "@/components/FloatingHelp";
 
 const Index = () => {
   return (
-    <div className="min-h-screen">
+    <main className="min-h-screen" role="main">
       <Hero />
       <ReaderCommunity />
       <AuthorJourney />
@@ -24,7 +24,7 @@ const Index = () => {
       </div>
       <Footer />
       <FloatingHelp />
-    </div>
+    </main>
   );
 };
 

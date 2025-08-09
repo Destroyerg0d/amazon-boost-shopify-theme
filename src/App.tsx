@@ -28,6 +28,8 @@ import { HelpArticle } from "./pages/HelpArticle";
 import { CommunityPost } from "./pages/CommunityPost";
 import { CommunityNew } from "./pages/CommunityNew";
 import BooksList from "./pages/BooksList";
+import { HelmetProvider } from "react-helmet-async";
+import DefaultSEO from "@/components/DefaultSEO";
 
 const queryClient = new QueryClient();
 
@@ -113,9 +115,12 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <AppContent />
-        </BrowserRouter>
+        <HelmetProvider>
+          <BrowserRouter>
+            <DefaultSEO />
+            <AppContent />
+          </BrowserRouter>
+        </HelmetProvider>
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
