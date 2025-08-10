@@ -426,6 +426,9 @@ const BookUpload = ({ onBack, onBookAdded }: BookUploadProps) => {
                             src={coverPreview} 
                             alt="Cover preview" 
                             className="w-32 h-48 object-cover mx-auto rounded border"
+                            decoding="async"
+                            width={128}
+                            height={192}
                           />
                           <p className="text-sm text-muted-foreground">Click to change cover</p>
                         </div>

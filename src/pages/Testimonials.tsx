@@ -297,8 +297,12 @@ const TestimonialsPage = () => {
                 <div className="flex items-center">
                   <img 
                     src={testimonial.image} 
-                    alt={testimonial.name}
+                    alt={`Photo of ${testimonial.name} — ${testimonial.business}`}
                     className="w-12 h-12 rounded-full object-cover mr-4"
+                    loading="lazy"
+                    decoding="async"
+                    width={48}
+                    height={48}
                   />
                   <div>
                     <p className="font-semibold text-foreground">👤 {testimonial.name}</p>

@@ -1,29 +1,33 @@
 import { Hero } from "@/components/Hero";
-import { ReaderCommunity } from "@/components/ReaderCommunity";
-import { AuthorJourney } from "@/components/AuthorJourney";
-import { Pricing } from "@/components/Pricing";
-import { AffiliateSection } from "@/components/AffiliateSection";
-import { Testimonials } from "@/components/Testimonials";
-import { Contact } from "@/components/Contact";
-import { Footer } from "@/components/Footer";
-import { FloatingHelp } from "@/components/FloatingHelp";
+import { lazy, Suspense } from "react";
+
+const ReaderCommunity = lazy(() => import("@/components/ReaderCommunity").then(m => ({ default: m.ReaderCommunity })));
+const AuthorJourney = lazy(() => import("@/components/AuthorJourney").then(m => ({ default: m.AuthorJourney })));
+const Pricing = lazy(() => import("@/components/Pricing").then(m => ({ default: m.Pricing })));
+const AffiliateSection = lazy(() => import("@/components/AffiliateSection").then(m => ({ default: m.AffiliateSection })));
+const Testimonials = lazy(() => import("@/components/Testimonials").then(m => ({ default: m.Testimonials })));
+const Contact = lazy(() => import("@/components/Contact").then(m => ({ default: m.Contact })));
+const Footer = lazy(() => import("@/components/Footer").then(m => ({ default: m.Footer })));
+const FloatingHelp = lazy(() => import("@/components/FloatingHelp").then(m => ({ default: m.FloatingHelp })));
 
 const Index = () => {
   return (
     <main className="min-h-screen" role="main">
       <Hero />
-      <ReaderCommunity />
-      <AuthorJourney />
-      <div id="pricing">
-        <Pricing />
-      </div>
-      <AffiliateSection />
-      <Testimonials />
-      <div id="contact">
-        <Contact />
-      </div>
-      <Footer />
-      <FloatingHelp />
+      <Suspense fallback={<div className="container mx-auto px-4 py-12 text-center text-muted-foreground" aria-busy="true">Loading…</div>}>
+        <ReaderCommunity />
+        <AuthorJourney />
+        <div id="pricing">
+          <Pricing />
+        </div>
+        <AffiliateSection />
+        <Testimonials />
+        <div id="contact">
+          <Contact />
+        </div>
+        <Footer />
+        <FloatingHelp />
+      </Suspense>
     </main>
   );
 };

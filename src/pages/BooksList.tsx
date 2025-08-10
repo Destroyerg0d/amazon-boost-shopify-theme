@@ -373,6 +373,10 @@ const BooksList = ({ onBack, onAddBook }: BooksListProps) => {
                       src={book.front_cover_url} 
                       alt={`Cover of ${book.title}`}
                       className="w-20 h-28 object-cover rounded border shadow-sm"
+                      loading="lazy"
+                      decoding="async"
+                      width={80}
+                      height={112}
                     />
                   </div>
                 </CardContent>
