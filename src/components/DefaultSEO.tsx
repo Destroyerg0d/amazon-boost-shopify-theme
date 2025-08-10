@@ -151,16 +151,45 @@ const routeMetaMap: { match: (p: string) => boolean; title: string; description:
     title: "Author Community",
     description: "Join authors discussing KDP reviews, marketing, and growth.",
   },
-  { match: (p) => p.startsWith("/privacy"), title: "Privacy Policy", description: "Our privacy practices.", },
-  { match: (p) => p.startsWith("/refund"), title: "Refund Policy", description: "Refund and cancellation terms.", },
-  { match: (p) => p.startsWith("/shipping"), title: "Shipping Policy", description: "Shipping and delivery details.", },
-  { match: (p) => p.startsWith("/terms"), title: "Terms of Service", description: "Service terms and conditions.", },
+  {
+    match: (p) => p.startsWith("/community-signup"),
+    title: "Join Our Reader Community",
+    description: "Sign up to connect with ARC readers and start getting honest reviews.",
+  },
+  { match: (p) => p.startsWith("/privacy-policy"), title: "Privacy Policy", description: "Our privacy practices.", },
+  { match: (p) => p.startsWith("/refund-policy"), title: "Refund Policy", description: "Refund and cancellation terms.", },
+  { match: (p) => p.startsWith("/shipping-policy"), title: "Shipping Policy", description: "Shipping and delivery details.", },
+  { match: (p) => p.startsWith("/terms-of-service"), title: "Terms of Service", description: "Service terms and conditions.", },
   // Noindex sections
   { match: (p) => p.startsWith("/auth"), title: "Sign In", description: "Access your ReviewProMax account.", noindex: true },
   { match: (p) => p.startsWith("/dashboard"), title: "Dashboard", description: "Your account dashboard.", noindex: true },
   { match: (p) => p.startsWith("/admin"), title: "Admin", description: "Admin area.", noindex: true },
   { match: (p) => p.startsWith("/thank-you"), title: "Thank You", description: "Order confirmation.", noindex: true },
+  { match: (p) => p.startsWith("/books"), title: "Books", description: "Your books.", noindex: true },
+  { match: (p) => p.startsWith("/affiliate"), title: "Affiliate Program", description: "Affiliate dashboard.", noindex: true },
 ];
+
+function createBreadcrumbJsonLd(pathname: string) {
+  const segments = pathname.split('/').filter(Boolean);
+  const itemListElement: any[] = [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL }
+  ];
+  let pathAcc = '';
+  segments.forEach((seg, index) => {
+    pathAcc += '/' + seg;
+    itemListElement.push({
+      '@type': 'ListItem',
+      position: index + 2,
+      name: seg.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+      item: `${SITE_URL}${pathAcc}`,
+    });
+  });
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement,
+  };
+}
 
 export const DefaultSEO: React.FC = () => {
   const { pathname } = useLocation();
@@ -177,9 +206,26 @@ export const DefaultSEO: React.FC = () => {
     );
   }, [pathname]);
 
-  const baseStructured: any[] = [orgJsonLd, websiteJsonLd];
+  const baseStructured: any[] = [orgJsonLd, websiteJsonLd, createBreadcrumbJsonLd(pathname)];
   if (pathname === "/") {
     baseStructured.push(...servicesJsonLd, ...faqJsonLd);
+  }
+  if (pathname.startsWith("/pricing")) {
+    baseStructured.push({
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: "Amazon KDP Review Plans",
+      provider: { "@type": "Organization", name: BRAND },
+      url: `${SITE_URL}/pricing`,
+      offers: {
+        "@type": "AggregateOffer",
+        priceCurrency: "USD",
+        lowPrice: "49",
+        highPrice: "499",
+        offerCount: "3",
+        availability: "https://schema.org/InStock",
+      },
+    });
   }
 
   return (
