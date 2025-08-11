@@ -1,16 +1,14 @@
 Sitemap: https://reviewpromax.com/sitemap.xml
 
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
 Allow: /
+
+# Prevent crawling of private and duplicate areas
+Disallow: /auth
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /thank-you
+Disallow: /books
+Disallow: /affiliate
+Disallow: /community/new
+Disallow: /help/article/

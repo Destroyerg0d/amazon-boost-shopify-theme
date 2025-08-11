@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 const SITE_URL = "https://reviewpromax.com";
 const DEFAULT_OG_IMAGE = "https://reviewpromax.com/og-image.png";
 const BRAND = "ReviewProMax";
+const DEFAULT_DESCRIPTION = "Buy verified Amazon KDP book reviews to boost visibility and sales. ReviewProMax helps authors get more reviews, improve rankings, and grow readership.";
 const DEFAULT_KEYWORDS = [
   "ReviewProMax",
   "Buy Amazon KDP reviews",
@@ -36,6 +37,7 @@ export const SEO: React.FC<SEOProps> = ({
   const fullTitle = title ? `${title} | ${BRAND}` : `${BRAND} | Buy Amazon KDP Reviews`;
   const canonical = `${SITE_URL}${canonicalPath === "/" ? "" : canonicalPath}`;
   const allKeywords = (keywords && keywords.length ? keywords : DEFAULT_KEYWORDS).join(", ");
+  const desc = description ?? DEFAULT_DESCRIPTION;
 
   return (
     <Helmet>
@@ -53,7 +55,7 @@ export const SEO: React.FC<SEOProps> = ({
       {/* Open Graph */}
       <meta property="og:site_name" content={BRAND} />
       <meta property="og:title" content={title ? fullTitle : `${BRAND} | Buy Amazon KDP Reviews`} />
-      {description && <meta property="og:description" content={description} />}
+      <meta property="og:description" content={desc} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={canonical} />
       <meta property="og:image" content={ogImage || DEFAULT_OG_IMAGE} />
@@ -61,7 +63,7 @@ export const SEO: React.FC<SEOProps> = ({
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title ? fullTitle : `${BRAND} | Buy Amazon KDP Reviews`} />
-      {description && <meta name="twitter:description" content={description} />} 
+      <meta name="twitter:description" content={desc} /> 
       <meta name="twitter:image" content={ogImage || DEFAULT_OG_IMAGE} />
 
       {/* Structured Data */}
