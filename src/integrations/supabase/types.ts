@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -678,7 +678,7 @@ export type Database = {
           conversion_value: number | null
           converted_at: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           referral_code: string
           referred_user_id: string | null
           status: string
@@ -693,7 +693,7 @@ export type Database = {
           conversion_value?: number | null
           converted_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           referral_code: string
           referred_user_id?: string | null
           status?: string
@@ -708,7 +708,7 @@ export type Database = {
           conversion_value?: number | null
           converted_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           referral_code?: string
           referred_user_id?: string | null
           status?: string
@@ -966,35 +966,29 @@ export type Database = {
     }
     Functions: {
       add_user_role: {
-        Args: { p_user_id: string; p_role: string }
+        Args: { p_role: string; p_user_id: string }
         Returns: undefined
       }
-      generate_affiliate_code: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_affiliate_code: { Args: never; Returns: string }
       handle_successful_payment: {
         Args: {
-          p_payment_id: string
-          p_user_id: string
-          p_plan_type: string
-          p_plan_name: string
           p_amount: number
+          p_payment_id: string
+          p_plan_name: string
+          p_plan_type: string
           p_total_reviews: number
+          p_user_id: string
         }
         Returns: string
       }
       has_role: {
         Args: {
-          _user_id: string
           _role: Database["public"]["Enums"]["user_role"]
+          _user_id: string
         }
         Returns: boolean
       }
-      populate_sample_community_content: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      populate_sample_community_content: { Args: never; Returns: string }
       track_affiliate_conversion: {
         Args: {
           p_payment_id: string
